@@ -16,6 +16,6 @@ public class Middleware implements IMiddleware {
     }
 
     // TODO
-    private synchronized void initMiddleware(String flightHost, int flightPort, String carHost, int carPort, String roomHost, int roomPort) {}
+    public synchronized void initMiddleware(String flightHost, int flightPort, String carHost, int carPort, String roomHost, int roomPort) {}
 
 }

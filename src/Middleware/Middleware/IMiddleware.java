@@ -5,7 +5,7 @@ package Middleware;
  *
  * TODO: define contracts for methods to properly handle transactions, crashes of ResourceManager servers ... and more that we don't know about yet
  */
-public interface IMiddleware implements Runnable {
+public interface IMiddleware extends Runnable {
 
     /**
      * Initialize hosts addresses and ports for each of the ResourceManager servers

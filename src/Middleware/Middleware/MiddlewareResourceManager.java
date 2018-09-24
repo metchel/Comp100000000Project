@@ -88,7 +88,7 @@ public class MiddlewareResourceManager implements IResourceManager {
     }
 
     // TODO
-    public int synchronized queryRoomsPrice(int id, String location) throws RemoteException {
+    public synchronized int queryRoomsPrice(int id, String location) throws RemoteException {
         return -1;
     }
 
@@ -99,7 +99,7 @@ public class MiddlewareResourceManager implements IResourceManager {
 
     // TODO
     public synchronized boolean reserveCar(int id, int customerID, String location) throws RemoteException {
-        returm false;
+        return false;
     }
 
     // TODO
@@ -114,6 +114,6 @@ public class MiddlewareResourceManager implements IResourceManager {
 
     // TODO
     public String getName() throws RemoteException {
-        return ""
+        return "";
     }
 }
