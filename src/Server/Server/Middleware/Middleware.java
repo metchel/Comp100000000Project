@@ -4,7 +4,9 @@ import Server.Interface.*;
 
 public class Middleware implements IResourceManager {
 
-    final MiddlewareResourceManager resourceManager;
+    IResourceManager flight_resourceManager = null;
+    IResourceManager car_resourceManager = null;
+    IResourceManager hotel_resourceManager = null;
 
     public Middleware(int port, MiddlewareResourceManager manager) {
         resourceManager = manager;

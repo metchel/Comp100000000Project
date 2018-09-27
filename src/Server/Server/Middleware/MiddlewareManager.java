@@ -10,13 +10,15 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
-public class MiddlewareResourceManager extends ResourceManager {
+public class MiddlewareManager extends Middleware {
 
     private static String s_serverName = "Middleware";
 
     private static String s_rmiPrefix = "group30";
 
-    private ArrayList<ResourceManager> resourceManagers = new ArrayList<ResourceManager>();
+    private static String[] name = new String[]{"Hotel","Flight","Car"}
+
+    //private ArrayList<ResourceManager> resourceManagers = new ArrayList<ResourceManager>();
 
     public static void main(String args[])
     {
@@ -28,7 +30,7 @@ public class MiddlewareResourceManager extends ResourceManager {
         // Create the RMI server entry
         try {
             // Create a new Server object
-            MiddlewareResourceManager middleware = new MiddlewareResourceManager(s_serverName);
+            MiddlewareManager middleware = new MiddlewareResourceManager(s_serverName);
 
             // Dynamically generate the stub (client proxy)
             IResourceManager resourceManager = (IResourceManager)UnicastRemoteObject.exportObject(middleware, 0);
@@ -68,6 +70,36 @@ public class MiddlewareResourceManager extends ResourceManager {
         {
             System.setSecurityManager(new SecurityManager());
         }
+
+
+        // Need to reference the RMIRegister to reference the backend objects
+        try{
+            boolean first = true;
+            while(true){
+                try{
+                    Registry registry = LocateRegistry.getRegistry(server,port);
+                    flight_resourceManager = (IResourceManager)registry.lookup(s_rmiPrefix + name[0]);
+                    car_resourceManager = (IResourceManager)registry.lookup(s_rmiPrefix + name[1]);
+                    hotel_resourceManager = (IResourceManager)registry.lookup(s_rmiPrefix + name[2]);
+                    System.out.println("Connected")
+                    break;
+                }
+                catch (NotBoundException|RemoteException e) {
+                    if (first) {
+                        System.out.println("Waiting for server");
+                        first = false;
+                    }
+                }
+                Thread.sleep(500);
+            }
+        }
+        catch (Exception e) {
+            System.err.println((char)27 + "[31;1mServer exception: " + (char)27 + "[0mUncaught exception");
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+
     }
 
     public MiddlewareResourceManager(String name)
