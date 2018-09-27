@@ -3,9 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="fac91074-0f2a-4523-b9c7-2fbb72ff4dbe" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Server/Server/Common/ResourceManager.java" afterPath="$PROJECT_DIR$/src/Server/Server/Common/ResourceManager.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Server/Server/Middleware/Middleware.java" afterPath="$PROJECT_DIR$/src/Server/Server/Middleware/Middleware.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Server/Server/Middleware/MiddlewareManager.java" afterPath="$PROJECT_DIR$/src/Server/Server/Middleware/MiddlewareManager.java" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -19,6 +17,16 @@
       <content type="file-editors">
         <state>
           <leaf>
+            <file leaf-file-name="Client.java" pinned="false" current-in-tab="false">
+              <entry file="file://$PROJECT_DIR$/src/Client/Client/Client.java">
+                <provider selected="true" editor-type-id="text-editor">
+                  <state relative-caret-position="186">
+                    <caret line="236" column="22" lean-forward="false" selection-start-line="236" selection-start-column="17" selection-end-line="236" selection-end-column="22" />
+                    <folding />
+                  </state>
+                </provider>
+              </entry>
+            </file>
             <file leaf-file-name="RMIResourceManager.java" pinned="false" current-in-tab="false">
               <entry file="file://$PROJECT_DIR$/src/Server/Server/RMI/RMIResourceManager.java">
                 <provider selected="true" editor-type-id="text-editor">
@@ -32,11 +40,11 @@
                 </provider>
               </entry>
             </file>
-            <file leaf-file-name="IResourceManager.java" pinned="false" current-in-tab="true">
+            <file leaf-file-name="IResourceManager.java" pinned="false" current-in-tab="false">
               <entry file="file://$PROJECT_DIR$/src/Server/Server/Interface/IResourceManager.java">
                 <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="423">
-                    <caret line="209" column="30" lean-forward="false" selection-start-line="208" selection-start-column="4" selection-end-line="209" selection-end-column="30" />
+                  <state relative-caret-position="135">
+                    <caret line="152" column="31" lean-forward="false" selection-start-line="152" selection-start-column="15" selection-end-line="152" selection-end-column="31" />
                     <folding>
                       <element signature="imports" expanded="true" />
                     </folding>
@@ -48,7 +56,7 @@
               <entry file="file://$PROJECT_DIR$/src/Client/Client/RMIClient.java">
                 <provider selected="true" editor-type-id="text-editor">
                   <state relative-caret-position="-611">
-                    <caret line="14" column="4" lean-forward="false" selection-start-line="14" selection-start-column="4" selection-end-line="15" selection-end-column="43" />
+                    <caret line="14" column="4" lean-forward="false" selection-start-line="14" selection-start-column="4" selection-end-line="14" selection-end-column="4" />
                     <folding>
                       <element signature="e#1345#1346#0" expanded="true" />
                       <element signature="e#1359#1360#0" expanded="true" />
@@ -57,21 +65,11 @@
                 </provider>
               </entry>
             </file>
-            <file leaf-file-name="Client.java" pinned="false" current-in-tab="false">
-              <entry file="file://$PROJECT_DIR$/src/Client/Client/Client.java">
-                <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="475">
-                    <caret line="155" column="13" lean-forward="true" selection-start-line="155" selection-start-column="13" selection-end-line="155" selection-end-column="13" />
-                    <folding />
-                  </state>
-                </provider>
-              </entry>
-            </file>
-            <file leaf-file-name="ResourceManager.java" pinned="false" current-in-tab="false">
+            <file leaf-file-name="ResourceManager.java" pinned="false" current-in-tab="true">
               <entry file="file://$PROJECT_DIR$/src/Server/Server/Common/ResourceManager.java">
                 <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="220">
-                    <caret line="295" column="0" lean-forward="true" selection-start-line="295" selection-start-column="0" selection-end-line="295" selection-end-column="0" />
+                  <state relative-caret-position="237">
+                    <caret line="359" column="32" lean-forward="false" selection-start-line="359" selection-start-column="19" selection-end-line="359" selection-end-column="32" />
                     <folding>
                       <element signature="e#0#13036#0" expanded="true" />
                       <element signature="imports" expanded="true" />
@@ -100,8 +98,8 @@
       <file leaf-file-name="Middleware.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Server/Server/Middleware/Middleware.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="793">
-              <caret line="82" column="51" lean-forward="true" selection-start-line="82" selection-start-column="51" selection-end-line="82" selection-end-column="51" />
+            <state relative-caret-position="711">
+              <caret line="82" column="149" lean-forward="false" selection-start-line="82" selection-start-column="149" selection-end-line="82" selection-end-column="149" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#430#431#0" expanded="true" />
@@ -187,9 +185,15 @@
       <find>m_resourceManager</find>
       <find>addf</find>
       <find>getName</find>
+      <find>newcustomer</find>
       <find>newCustomer</find>
       <find>m_reso</find>
-      <find>newcustomer</find>
+      <find>queryp</find>
+      <find>queryflight</find>
+      <find>query</find>
+      <find>queryprice</find>
+      <find>queryflightprice</find>
+      <find>reserve</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -215,6 +219,7 @@
         <option value="$PROJECT_DIR$/src/Server/Makefile" />
         <option value="$PROJECT_DIR$/src/Server/Server/Middleware/MiddlewareManager.java" />
         <option value="$PROJECT_DIR$/src/Server/Server/Common/ResourceManager.java" />
+        <option value="$PROJECT_DIR$/src/Client/Client/Client.java" />
         <option value="$PROJECT_DIR$/src/Server/Server/Middleware/Middleware.java" />
       </list>
     </option>
@@ -443,12 +448,12 @@
       <option name="presentableId" value="Default" />
       <updated>1537635049144</updated>
       <workItem from="1537635052609" duration="4300000" />
-      <workItem from="1538065169555" duration="15860000" />
+      <workItem from="1538065169555" duration="17055000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="20160000" />
+    <option name="totallyTimeSpent" value="21355000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1456" height="1056" extended-state="6" />
@@ -810,36 +815,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Server/Server/Common/ResourceManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="220">
-          <caret line="295" column="0" lean-forward="true" selection-start-line="295" selection-start-column="0" selection-end-line="295" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#13036#0" expanded="true" />
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Client/Client/RMIClient.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-611">
-          <caret line="14" column="4" lean-forward="false" selection-start-line="14" selection-start-column="4" selection-end-line="15" selection-end-column="43" />
-          <folding>
-            <element signature="e#1345#1346#0" expanded="true" />
-            <element signature="e#1359#1360#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Client/Client/Client.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="475">
-          <caret line="155" column="13" lean-forward="true" selection-start-line="155" selection-start-column="13" selection-end-line="155" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Server/Server/RMI/RMIResourceManager.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="605">
@@ -851,11 +826,41 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/Client/Client/Client.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="186">
+          <caret line="236" column="22" lean-forward="false" selection-start-line="236" selection-start-column="17" selection-end-line="236" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Client/Client/RMIClient.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-611">
+          <caret line="14" column="4" lean-forward="false" selection-start-line="14" selection-start-column="4" selection-end-line="14" selection-end-column="4" />
+          <folding>
+            <element signature="e#1345#1346#0" expanded="true" />
+            <element signature="e#1359#1360#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/Server/Server/Interface/IResourceManager.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="423">
-          <caret line="209" column="30" lean-forward="false" selection-start-line="208" selection-start-column="4" selection-end-line="209" selection-end-column="30" />
+        <state relative-caret-position="135">
+          <caret line="152" column="31" lean-forward="false" selection-start-line="152" selection-start-column="15" selection-end-line="152" selection-end-column="31" />
           <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Server/Server/Common/ResourceManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="237">
+          <caret line="359" column="32" lean-forward="false" selection-start-line="359" selection-start-column="19" selection-end-line="359" selection-end-column="32" />
+          <folding>
+            <element signature="e#0#13036#0" expanded="true" />
             <element signature="imports" expanded="true" />
           </folding>
         </state>
@@ -863,8 +868,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Server/Server/Middleware/Middleware.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="793">
-          <caret line="82" column="51" lean-forward="true" selection-start-line="82" selection-start-column="51" selection-end-line="82" selection-end-column="51" />
+        <state relative-caret-position="711">
+          <caret line="82" column="149" lean-forward="false" selection-start-line="82" selection-start-column="149" selection-end-line="82" selection-end-column="149" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#430#431#0" expanded="true" />
