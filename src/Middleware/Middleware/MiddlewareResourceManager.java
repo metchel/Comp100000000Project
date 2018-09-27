@@ -1,10 +1,79 @@
 package Middleware;
 
-import Server.Interface.IResourceManager;
+import Server.Interface.*;
+import Server.Common.*
+import java.rmi.NotBoundException;
+import java.util.*;
 
-public class MiddlewareResourceManager implements IResourceManager {
+import java.rmi.registry.Registry;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+
+public class MiddlewareResourceManager extends ResourceManager {
+
+    private static String s_serverName = "Middleware";
+
+    private static String s_rmiPrefix = "group30";
 
     private ArrayList<ResourceManager> resourceManagers = new ArrayList<ResourceManager>();
+
+    public static void main(String args[])
+    {
+        if (args.length > 0)
+        {
+            s_serverName = args[0];
+        }
+
+        // Create the RMI server entry
+        try {
+            // Create a new Server object
+            MiddlewareResourceManager middleware = new MiddlewareResourceManager(s_serverName);
+
+            // Dynamically generate the stub (client proxy)
+            IResourceManager resourceManager = (IResourceManager)UnicastRemoteObject.exportObject(middleware, 0);
+
+            // Bind the remote object's stub in the registry
+            Registry l_registry;
+            try {
+                l_registry = LocateRegistry.createRegistry(1099);
+            } catch (RemoteException e) {
+                l_registry = LocateRegistry.getRegistry(1099);
+            }
+            final Registry registry = l_registry;
+            registry.rebind(s_rmiPrefix + s_serverName, resourceManager);
+
+            Runtime.getRuntime().addShutdownHook(new Thread() {
+                public void run() {
+                    try {
+                        registry.unbind(s_rmiPrefix + s_serverName);
+                        System.out.println("'" + s_serverName + "' Middlew2are resource manager unbound");
+                    }
+                    catch(Exception e) {
+                        System.err.println((char)27 + "[31;1mServer exception: " + (char)27 + "[0mUncaught exception");
+                        e.printStackTrace();
+                    }
+                }
+            });
+            System.out.println("'" + s_serverName + "' Middleware resource manager server ready and bound to '" + s_rmiPrefix + s_serverName + "'");
+        }
+        catch (Exception e) {
+            System.err.println((char)27 + "[31;1mServer exception: " + (char)27 + "[0mUncaught exception");
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        // Create and install a security manager
+        if (System.getSecurityManager() == null)
+        {
+            System.setSecurityManager(new SecurityManager());
+        }
+    }
+
+    public MiddlewareResourceManager(String name)
+    {
+        super(name);
+    }
 
     public MiddlewareResourceManager(ResourceManager[] resourceManagers) {
         for (ResourceManager rm: resourceManagers) {
@@ -12,108 +81,4 @@ public class MiddlewareResourceManager implements IResourceManager {
         }
     }
 
-    // TODO
-    public synchronized boolean addFlight(int id, int flightNum, int flightSeats, int flightPrice) throws RemoteException {
-        return false;
-    }
-
-    // TODO
-    public synchronized boolean addCars(int id, String location, int numCars, int price) throws RemoteException {
-        return false;
-    }
-
-    // TODO
-    public synchronized boolean addRooms(int id, String location, int numRooms, int price) throws RemoteException {
-        return false;
-    }
-
-    // TODO
-    public synchronized int newCustomer(int id) throws RemoteException {
-        return -1;
-    }
-
-    // TODO
-    public synchronized boolean newCustomer(int id, int cid) throws RemoteException {
-        return false;
-    }
-
-    // TODO
-    public synchronized boolean deleteFlight(int id, int flightNum) throws RemoteException {
-        return false;
-    }
-
-    // TODO
-    public synchronized boolean deleteCars(int id, String location) throws RemoteException {
-        return false;
-    }
-
-    // TODO
-    public synchronized boolean deleteRooms(int id, String location) throws RemoteException {
-        return false;
-    }
-
-    // TODO
-    public synchronized boolean deleteCustomer(int id, int customerID) throws RemoteException {
-        return false;
-    }
-
-    // TODO
-    public synchronized int queryFlight(int id, int flightNumber) throws RemoteException {
-        return -1;
-    }
-
-    // TODO
-    public synchronized int queryCars(int id, String location) throws RemoteException {
-        return -1;
-    }
-
-    // TODO
-    public synchronized int queryRooms(int id, String location) throws RemoteException {
-        return -1;
-    }
-
-    // TODO
-    public synchronized String queryCustomerInfo(int id, int customerID)  throws RemoteException {
-        return "";
-    }
-
-    // TODO
-    public synchronized int queryFlightPrice(int id, int flightNumber) throws RemoteException {
-        return -1;
-    }
-
-    // TODO
-    public synchronized int queryCarsPrice(int id, String location) throws RemoteException {
-        return -1
-    }
-
-    // TODO
-    public synchronized int queryRoomsPrice(int id, String location) throws RemoteException {
-        return -1;
-    }
-
-    //TODO
-    public synchronized boolean reserveFlight(int id, int customerID, int flightNumber) throws RemoteException {
-        return false;
-    }
-
-    // TODO
-    public synchronized boolean reserveCar(int id, int customerID, String location) throws RemoteException {
-        return false;
-    }
-
-    // TODO
-    public synchronized boolean reserveRoom(int id, int customerID, String location) throws RemoteException {
-        return false;
-    }
-
-    // TODO
-    public boolean bundle(int id, int customerID, Vector<String> flightNumbers, String location, boolean car, boolean room) throws RemoteException {
-        return false;
-    }
-
-    // TODO
-    public String getName() throws RemoteException {
-        return "";
-    }
 }
