@@ -16,7 +16,7 @@ public class MiddlewareManager extends Middleware {
 
     private static String s_rmiPrefix = "group30";
 
-    private static String[] name = new String[]{"Rooms","Flights","Cars"};
+    private static String[] name = new String[]{"Rooms","Flights","Cars", "Customers"};
 
     private static String s_serverHost = "localhost";
     private static int s_serverPort = 1099;
@@ -84,6 +84,7 @@ public class MiddlewareManager extends Middleware {
                     flight_resourceManager = (IResourceManager)registry.lookup(s_rmiPrefix + name[0]);
                     car_resourceManager = (IResourceManager)registry.lookup(s_rmiPrefix + name[1]);
                     hotel_resourceManager = (IResourceManager)registry.lookup(s_rmiPrefix + name[2]);
+                    customer_resourceManager = (IResourceManager)registry.lookup(s_rmiPrefix + name[3]);
                     System.out.println("Connected");
                     break;
                 }
