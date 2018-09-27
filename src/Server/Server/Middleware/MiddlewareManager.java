@@ -1,4 +1,4 @@
-package Middleware;
+package Server.Middleware;
 
 import Server.Interface.*;
 import Server.Common.*;
