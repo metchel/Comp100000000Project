@@ -6,15 +6,13 @@ import java.rmi.RemoteException;
 import java.io.*;
 
 
-public class Middleware implements IResourceManager {
+public abstract class Middleware implements IResourceManager {
 
-    IResourceManager flight_resourceManager = null;
-    IResourceManager car_resourceManager = null;
-    IResourceManager hotel_resourceManager = null;
-
-    public Middleware(int port, MiddlewareResourceManager manager) {
-        resourceManager = manager;
-    }
+    static IResourceManager flight_resourceManager = null;
+    static IResourceManager car_resourceManager = null;
+    static IResourceManager hotel_resourceManager = null;
+    protected String m_name = "";
+    public Middleware(String p_name) {m_name = p_name; }
 
     // IMiddleware implements Runnable, must implement that here
     public void run() {

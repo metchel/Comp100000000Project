@@ -1,7 +1,7 @@
 package Middleware;
 
 import Server.Interface.*;
-import Server.Common.*
+import Server.Common.*;
 import java.rmi.NotBoundException;
 import java.util.*;
 
@@ -16,7 +16,10 @@ public class MiddlewareManager extends Middleware {
 
     private static String s_rmiPrefix = "group30";
 
-    private static String[] name = new String[]{"Rooms","Flights","Cars"}
+    private static String[] name = new String[]{"Rooms","Flights","Cars"};
+
+    private static String s_serverHost = "localhost";
+    private static int s_serverPort = 1099;
 
 
     public static void main(String args[])
@@ -77,11 +80,11 @@ public class MiddlewareManager extends Middleware {
             boolean first = true;
             while(true){
                 try{
-                    Registry registry = LocateRegistry.getRegistry(server,port);
+                    Registry registry = LocateRegistry.getRegistry(s_serverHost,s_serverPort);
                     flight_resourceManager = (IResourceManager)registry.lookup(s_rmiPrefix + name[0]);
                     car_resourceManager = (IResourceManager)registry.lookup(s_rmiPrefix + name[1]);
                     hotel_resourceManager = (IResourceManager)registry.lookup(s_rmiPrefix + name[2]);
-                    System.out.println("Connected")
+                    System.out.println("Connected");
                     break;
                 }
                 catch (NotBoundException|RemoteException e) {
@@ -103,10 +106,10 @@ public class MiddlewareManager extends Middleware {
 
     }
 
-    public MiddlewareResourceManager(String name)
-    {
+    public MiddlewareManager(String name){
         super(name);
     }
+    
 
 
 }
