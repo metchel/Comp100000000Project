@@ -38,7 +38,6 @@ public abstract class Middleware implements IResourceManager {
     public boolean newCustomer(int xid, int cid) throws RemoteException {
         return (customer_resourceManager.newCustomer(xid, cid));
     }
-
     public boolean deleteFlight(int xid, int flightNum) throws RemoteException {
         return (flight_resourceManager.deleteFlight(xid, flightNum));
     }
