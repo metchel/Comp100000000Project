@@ -14,7 +14,7 @@ public class MiddlewareManager extends Middleware {
 
     private static String s_serverName = "Middleware";
 
-    private static String s_rmiPrefix = "group30";
+    private static String s_rmiPrefix = "group30s";
 
     private static String[] name = new String[]{"Hotel","Flight","Car"}
 
