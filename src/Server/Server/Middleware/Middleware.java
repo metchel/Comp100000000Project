@@ -1,8 +1,8 @@
 package Middleware;
 
-import Server.Common.ResourceManager;
+import Server.Interface.*;
 
-public class Middleware implements IMiddleware {
+public class Middleware implements IResourceManager {
 
     final MiddlewareResourceManager resourceManager;
 
