@@ -80,7 +80,19 @@ public abstract class Middleware implements IResourceManager {
     public boolean reserveRoom(int xid, int cid, String location) throws RemoteException {
         return (hotel_resourceManager.reserveRoom(xid, cid, location));
     }
+    //This needs better error checking to make sure it went through-has correct return value
     public boolean bundle(int xid, int cid, Vector<String> flightNumbers, String location, boolean car, boolean room) throws RemoteException {
+        boolean status = true;
+        for(int flightNumber : flightNumbers){
+            status = reserveFlight(xid, cid, flightNumber);
+        }
+        if(car){
+            status = reserveCar(xid, cid, location);
+        }
+        if(room){
+            status = reserveRoom(xid, cid, location);
+        }
+        return status;
 
     }
     public String getName() throws RemoteException{
