@@ -16,7 +16,7 @@ public class MiddlewareManager extends Middleware {
 
     private static String s_rmiPrefix = "group30";
 
-    private static String[] name = new String[]{"Hotel","Flight","Car"}
+    private static String[] name = new String[]{"Rooms","Flights","Cars"}
 
 
     public static void main(String args[])
@@ -56,6 +56,7 @@ public class MiddlewareManager extends Middleware {
                     }
                 }
             });
+
             System.out.println("'" + s_serverName + "' Middleware resource manager server ready and bound to '" + s_rmiPrefix + s_serverName + "'");
         }
         catch (Exception e) {
