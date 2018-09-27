@@ -14,11 +14,10 @@ public class MiddlewareManager extends Middleware {
 
     private static String s_serverName = "Middleware";
 
-    private static String s_rmiPrefix = "group30s";
+    private static String s_rmiPrefix = "group30";
 
     private static String[] name = new String[]{"Hotel","Flight","Car"}
 
-    //private ArrayList<ResourceManager> resourceManagers = new ArrayList<ResourceManager>();
 
     public static void main(String args[])
     {
@@ -30,7 +29,7 @@ public class MiddlewareManager extends Middleware {
         // Create the RMI server entry
         try {
             // Create a new Server object
-            MiddlewareManager middleware = new MiddlewareResourceManager(s_serverName);
+            MiddlewareManager middleware = new MiddlewareManager(s_serverName);
 
             // Dynamically generate the stub (client proxy)
             IResourceManager resourceManager = (IResourceManager)UnicastRemoteObject.exportObject(middleware, 0);
@@ -49,7 +48,7 @@ public class MiddlewareManager extends Middleware {
                 public void run() {
                     try {
                         registry.unbind(s_rmiPrefix + s_serverName);
-                        System.out.println("'" + s_serverName + "' Middlew2are resource manager unbound");
+                        System.out.println("'" + s_serverName + "' Middleware resource manager unbound");
                     }
                     catch(Exception e) {
                         System.err.println((char)27 + "[31;1mServer exception: " + (char)27 + "[0mUncaught exception");
@@ -100,6 +99,7 @@ public class MiddlewareManager extends Middleware {
         }
 
 
+
     }
 
     public MiddlewareResourceManager(String name)
@@ -107,10 +107,5 @@ public class MiddlewareManager extends Middleware {
         super(name);
     }
 
-    public MiddlewareResourceManager(ResourceManager[] resourceManagers) {
-        for (ResourceManager rm: resourceManagers) {
-            this.resourceManagers.add(rm);
-        }
-    }
 
 }
