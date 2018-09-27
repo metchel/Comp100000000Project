@@ -30,7 +30,7 @@ public abstract class Middleware implements IResourceManager {
     }
 
     public boolean addRooms(int xid, String location, int count, int price) throws RemoteException {
-        return (hotel_resourceManager.addRooms(xid, location, numRooms, price));
+        return (hotel_resourceManager.addRooms(xid, location, count, price));
     }
 
     public int newCustomer(int xid) throws RemoteException {
@@ -75,16 +75,17 @@ public abstract class Middleware implements IResourceManager {
         return (flight_resourceManager.reserveFlight(xid, customerID, flightNumber));
     }
     public boolean reserveCar(int xid, int customerID, String location) throws RemoteException {
-        return (car_resourceManager.reserveFlight(xid, customerID, location));
+        return (car_resourceManager.reserveCar(xid, customerID, location));
     }
     public boolean reserveRoom(int xid, int customerID, String location) throws RemoteException {
-        return (hotel_resourceManager.reserveFlight(xid, customerID, location));
+        return (hotel_resourceManager.reserveRoom(xid, customerID, location));
     }
     public boolean bundle(int xid, int customerID, Vector<String> flightNumbers, String location, boolean car, boolean room) throws RemoteException {
     }
     public String getName() throws RemoteException{
+        return m_name;
     }
-    // TODO
+
     public synchronized void initMiddleware(String flightHost, int flightPort, String carHost, int carPort, String roomHost, int roomPort) {}
 
 }
