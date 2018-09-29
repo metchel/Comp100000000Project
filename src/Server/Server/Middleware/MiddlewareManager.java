@@ -16,7 +16,7 @@ public class MiddlewareManager extends Middleware {
 
     private static String s_rmiPrefix = "group30";
 
-    private static String[] name = new String[]{"Rooms","Flights","Cars", "Customers"};
+    private static String[] name = new String[]{"Rooms","Flights","Cars","Customers"};
 
     private static String s_serverHost = "localhost";
     private static int s_serverPort = 1099;
