@@ -84,7 +84,7 @@ public class MiddlewareManager extends Middleware {
                     flight_resourceManager = (IResourceManager)registry.lookup(s_rmiPrefix + name[0]);
                     car_resourceManager = (IResourceManager)registry.lookup(s_rmiPrefix + name[1]);
                     hotel_resourceManager = (IResourceManager)registry.lookup(s_rmiPrefix + name[2]);
-                    customer_resourceManager = (IResourceManager)registry.lookup(s_rmiPrefix + name[3]);
+                    //customer_resourceManager = (IResourceManager)registry.lookup(s_rmiPrefix + name[3]);
                     System.out.println("Connected");
                     break;
                 }
