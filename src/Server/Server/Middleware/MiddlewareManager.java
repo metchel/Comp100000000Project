@@ -90,6 +90,7 @@ public class MiddlewareManager extends Middleware {
                 }
                 catch (NotBoundException|RemoteException e) {
                     if (first) {
+                        e.printStackTrace();
                         System.out.println("Waiting for server");
                         first = false;
                     }
