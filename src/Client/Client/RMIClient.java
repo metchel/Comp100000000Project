@@ -24,7 +24,6 @@ public class RMIClient extends Client
 		if (args.length > 0)
 		{
 			s_serverHost = args[0];
-			System.out.println(s_serverHost);
 		}
 		if (args.length > 1)
 		{
@@ -78,6 +77,7 @@ public class RMIClient extends Client
 				}
 				catch (NotBoundException|RemoteException e) {
 					if (first) {
+						e.printStackTrace();
 						System.out.println("Waiting for '" + name + "' server [" + server + ":" + port + "/" + s_rmiPrefix + name + "]");
 						first = false;
 					}
