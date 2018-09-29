@@ -24,6 +24,7 @@ public class RMIClient extends Client
 		if (args.length > 0)
 		{
 			s_serverHost = args[0];
+			System.out.println(s_serverHost)
 		}
 		if (args.length > 1)
 		{
