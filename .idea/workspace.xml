@@ -5,12 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fac91074-0f2a-4523-b9c7-2fbb72ff4dbe" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Client/Client/Client.class" afterPath="$PROJECT_DIR$/src/Client/Client/Client.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Client/Client/TCPClient.class" afterPath="$PROJECT_DIR$/src/Client/Client/TCPClient.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Client/Client/RMIClient.java" afterPath="$PROJECT_DIR$/src/Client/Client/RMIClient.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Client/java.policy" afterPath="$PROJECT_DIR$/src/Client/java.policy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Client/run_client.sh" afterPath="$PROJECT_DIR$/src/Client/run_client.sh" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -65,17 +60,17 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="RMIClient.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="RMIClient.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Client/Client/RMIClient.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="26" column="43" lean-forward="false" selection-start-line="26" selection-start-column="43" selection-end-line="26" selection-end-column="43" />
+            <state relative-caret-position="238">
+              <caret line="25" column="35" lean-forward="true" selection-start-line="25" selection-start-column="35" selection-end-line="25" selection-end-column="35" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="run_client.sh" pinned="false" current-in-tab="true">
+      <file leaf-file-name="run_client.sh" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Client/run_client.sh">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="34">
@@ -174,8 +169,8 @@
         <option value="$PROJECT_DIR$/src/Server/Makefile" />
         <option value="$PROJECT_DIR$/src/Server/run_servers.sh" />
         <option value="$PROJECT_DIR$/src/Server/Server/Middleware/MiddlewareManager.java" />
-        <option value="$PROJECT_DIR$/src/Client/Client/RMIClient.java" />
         <option value="$PROJECT_DIR$/src/Client/run_client.sh" />
+        <option value="$PROJECT_DIR$/src/Client/Client/RMIClient.java" />
       </list>
     </option>
   </component>
@@ -415,12 +410,12 @@
       <workItem from="1538254314594" duration="226000" />
       <workItem from="1538254709509" duration="2114000" />
       <workItem from="1538257221766" duration="162000" />
-      <workItem from="1538257876225" duration="4717000" />
+      <workItem from="1538257876225" duration="4782000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="33377000" />
+    <option name="totallyTimeSpent" value="33442000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1456" height="1056" extended-state="6" />
@@ -798,18 +793,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Client/Client/RMIClient.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="26" column="43" lean-forward="false" selection-start-line="26" selection-start-column="43" selection-end-line="26" selection-end-column="43" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Client/run_client.sh">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="34">
           <caret line="2" column="95" lean-forward="false" selection-start-line="2" selection-start-column="95" selection-end-line="2" selection-end-column="95" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Client/Client/RMIClient.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="25" column="35" lean-forward="true" selection-start-line="25" selection-start-column="35" selection-end-line="25" selection-end-column="35" />
           <folding />
         </state>
       </provider>
