@@ -16,7 +16,9 @@ public class MiddlewareManager extends Middleware {
 
     private static String s_rmiPrefix = "group30";
 
-    private static String[] name = new String[]{"Rooms","Flights","Cars","Customers"};
+    private static String[] serverNames = new String[]{"lab2-15.cs.mcgill.ca","lab2-17.cs.mcgill.ca","lab2-19.cs.mcgill.ca","lab2-21.cs.mcgill.ca"}
+
+    private static String[] name = new String[]{"Flights","Cars","Rooms","Customers"};
 
     private static String s_serverHost = "localhost";
     private static int s_serverPort = 1099;
@@ -80,9 +82,11 @@ public class MiddlewareManager extends Middleware {
             boolean first = true;
             while(true){
                 try{
-                    Registry registry = LocateRegistry.getRegistry(s_serverHost,s_serverPort);
+                    Registry registry = LocateRegistry.getRegistry(serverNames[0],s_serverPort);
                     flight_resourceManager = (IResourceManager)registry.lookup(s_rmiPrefix + name[0]);
+                    Registry registry = LocateRegistry.getRegistry(serverNames[1],s_serverPort);
                     car_resourceManager = (IResourceManager)registry.lookup(s_rmiPrefix + name[1]);
+                    Registry registry = LocateRegistry.getRegistry(serverNames[2],s_serverPort);
                     hotel_resourceManager = (IResourceManager)registry.lookup(s_rmiPrefix + name[2]);
                     //customer_resourceManager = (IResourceManager)registry.lookup(s_rmiPrefix + name[3]);
                     System.out.println("Connected");
