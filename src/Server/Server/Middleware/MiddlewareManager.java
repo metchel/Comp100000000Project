@@ -24,10 +24,10 @@ public class MiddlewareManager extends Middleware {
 
     public static void main(String args[])
     {
-        if (args.length > 0)
+        /*if (args.length > 0)
         {
             s_serverName = args[0];
-        }
+        }*/
 
         // Create the RMI server entry
         try {
