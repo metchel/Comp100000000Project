@@ -82,11 +82,11 @@ public abstract class Middleware implements IResourceManager {
         return (flight_resourceManager.reserveFlight(xid, cid, flightNumber));
     }
     public boolean reserveCar(int xid, int cid, String location) throws RemoteException {
-        customer_resourceManager.reserveCar(xid, cid, flightNumber);
+        customer_resourceManager.reserveCar(xid, cid, location);
         return (car_resourceManager.reserveCar(xid, cid, location));
     }
     public boolean reserveRoom(int xid, int cid, String location) throws RemoteException {
-        customer_resourceManager.reserveRoom(xid, cid, flightNumber);
+        customer_resourceManager.reserveRoom(xid, cid, location);
         return (hotel_resourceManager.reserveRoom(xid, cid, location));
     }
     //TODO:This needs better error checking to make sure it went through-has correct return value
