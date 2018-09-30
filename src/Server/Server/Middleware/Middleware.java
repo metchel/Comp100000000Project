@@ -36,6 +36,9 @@ public abstract class Middleware implements IResourceManager {
         return (customer_resourceManager.newCustomer(xid));
     }
     public boolean newCustomer(int xid, int cid) throws RemoteException {
+        flight_resourceManager.newCustomer(xid, cid);
+        hotel_resourceManager.newCustomer(xid,cid);
+        car_resourceManager.newCustomer(xid,cid);
         return (customer_resourceManager.newCustomer(xid, cid));
     }
     public boolean deleteFlight(int xid, int flightNum) throws RemoteException {
@@ -48,6 +51,9 @@ public abstract class Middleware implements IResourceManager {
         return (hotel_resourceManager.deleteRooms(xid, location));
     }
     public boolean deleteCustomer(int xid, int cid) throws RemoteException {
+        flight_resourceManager.deleteCustomer(xid, cid);
+        hotel_resourceManager.deleteCustomer(xid,cid);
+        car_resourceManager.deleteCustomer(xid,cid);
         return (customer_resourceManager.deleteCustomer(xid, cid));
     }
     public int queryFlight(int xid, int flightNumber) throws RemoteException {
