@@ -16,7 +16,7 @@ public class MiddlewareManager extends Middleware {
 
     private static String s_rmiPrefix = "group30";
 
-    private static String[] serverNames = new String[]{"lab2-15.cs.mcgill.ca","lab2-17.cs.mcgill.ca","lab2-19.cs.mcgill.ca","lab2-21.cs.mcgill.ca"};
+    //private static String[] serverNames = new String[]{"lab2-15.cs.mcgill.ca","lab2-17.cs.mcgill.ca","lab2-19.cs.mcgill.ca","lab2-21.cs.mcgill.ca"};
 
     private static String[] name = new String[]{"Flights","Cars","Rooms","Customers"};
 
