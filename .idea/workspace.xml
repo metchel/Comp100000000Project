@@ -5,7 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fac91074-0f2a-4523-b9c7-2fbb72ff4dbe" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Server/Server/Middleware/Middleware.java" afterPath="$PROJECT_DIR$/src/Server/Server/Middleware/Middleware.java" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -21,7 +20,7 @@
         <entry file="file://$PROJECT_DIR$/src/Server/Server/Middleware/MiddlewareManager.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="119">
-              <caret line="10" column="43" lean-forward="true" selection-start-line="10" selection-start-column="43" selection-end-line="10" selection-end-column="43" />
+              <caret line="10" column="43" lean-forward="false" selection-start-line="10" selection-start-column="43" selection-end-line="10" selection-end-column="43" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -52,8 +51,8 @@
       <file leaf-file-name="Middleware.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Server/Server/Middleware/Middleware.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="495">
-              <caret line="71" column="61" lean-forward="true" selection-start-line="71" selection-start-column="61" selection-end-line="71" selection-end-column="61" />
+            <state relative-caret-position="648">
+              <caret line="71" column="44" lean-forward="false" selection-start-line="71" selection-start-column="44" selection-end-line="71" selection-end-column="44" />
               <folding />
             </state>
           </provider>
@@ -73,7 +72,7 @@
         <entry file="file://$PROJECT_DIR$/src/Server/Server/Common/Trace.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="459">
-              <caret line="39" column="0" lean-forward="true" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
+              <caret line="39" column="0" lean-forward="false" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -415,12 +414,12 @@
       <workItem from="1538257876225" duration="6115000" />
       <workItem from="1538264029181" duration="6306000" />
       <workItem from="1538319503632" duration="1033000" />
-      <workItem from="1538320552693" duration="8433000" />
+      <workItem from="1538320552693" duration="8675000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="50547000" />
+    <option name="totallyTimeSpent" value="50789000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1456" height="1056" extended-state="6" />
@@ -780,7 +779,7 @@
     <entry file="file://$PROJECT_DIR$/src/Server/Server/Common/Trace.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="459">
-          <caret line="39" column="0" lean-forward="true" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
+          <caret line="39" column="0" lean-forward="false" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -812,7 +811,7 @@
     <entry file="file://$PROJECT_DIR$/src/Server/Server/Middleware/MiddlewareManager.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
-          <caret line="10" column="43" lean-forward="true" selection-start-line="10" selection-start-column="43" selection-end-line="10" selection-end-column="43" />
+          <caret line="10" column="43" lean-forward="false" selection-start-line="10" selection-start-column="43" selection-end-line="10" selection-end-column="43" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -821,8 +820,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Server/Server/Middleware/Middleware.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="495">
-          <caret line="71" column="61" lean-forward="true" selection-start-line="71" selection-start-column="61" selection-end-line="71" selection-end-column="61" />
+        <state relative-caret-position="648">
+          <caret line="71" column="44" lean-forward="false" selection-start-line="71" selection-start-column="44" selection-end-line="71" selection-end-column="44" />
           <folding />
         </state>
       </provider>

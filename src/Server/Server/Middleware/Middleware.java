@@ -69,7 +69,7 @@ public abstract class Middleware implements IResourceManager {
         String carBill = car_resourceManager.queryCustomerInfo(xid,cid);
         String hotelBill = (hotel_resourceManager.queryCustomerInfo(xid,cid).substring(21));
         String flightBill = (flight_resourceManager.queryCustomerInfo(xid,cid).substring(21));
-        return (carBill+'\n'+hotelBill+'\n'+flightBill+'\n');
+        return (carBill+hotelBill+flightBill);
     }
     public int queryFlightPrice(int xid, int flightNumber) throws RemoteException{
         return (flight_resourceManager.queryFlightPrice(xid, flightNumber));
