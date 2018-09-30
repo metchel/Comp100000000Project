@@ -82,13 +82,14 @@ public class MiddlewareManager extends Middleware {
             boolean first = true;
             while(true){
                 try{
-                    Registry registryOne = LocateRegistry.getRegistry(serverNames[0],s_serverPort);
+                    Registry registryOne = LocateRegistry.getRegistry(args[0],s_serverPort);
                     flight_resourceManager = (IResourceManager)registryOne.lookup(s_rmiPrefix + name[0]);
-                    Registry registryTwo = LocateRegistry.getRegistry(serverNames[1],s_serverPort);
+                    Registry registryTwo = LocateRegistry.getRegistry(args[1],s_serverPort);
                     car_resourceManager = (IResourceManager)registryTwo.lookup(s_rmiPrefix + name[1]);
-                    Registry registryThree = LocateRegistry.getRegistry(serverNames[2],s_serverPort);
+                    Registry registryThree = LocateRegistry.getRegistry(args[2],s_serverPort);
                     hotel_resourceManager = (IResourceManager)registryThree.lookup(s_rmiPrefix + name[2]);
-                    //customer_resourceManager = (IResourceManager)registry.lookup(s_rmiPrefix + name[3]);
+                    Registry registryFour = LocateRegistry.getRegistry(args[3], s_serverPort);
+                    customer_resourceManager = (IResourceManager)registryFour.lookup(s_rmiPrefix + name[3]);
                     System.out.println("Connected");
                     break;
                 }
