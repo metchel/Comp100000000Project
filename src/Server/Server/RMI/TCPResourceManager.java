@@ -121,8 +121,10 @@ public class TCPResourceManager extends ResourceManager {
 
                     if (rm.addFlight(id, flightNum, flightSeats, flightPrice)) {
                         System.out.println("Flight added");
+                        out.println("true");
                     } else {
                         System.out.println("Flight could not be added");
+                        out.println("false");
                     }
                     break;
                 }
@@ -141,8 +143,10 @@ public class TCPResourceManager extends ResourceManager {
 
                     if (rm.addCars(id, location, numCars, price)) {
                         System.out.println("Cars added");
+                        out.println("true");
                     } else {
                         System.out.println("Cars could not be added");
+                        out.println("false");
                     }
                     break;
                 }
@@ -161,8 +165,10 @@ public class TCPResourceManager extends ResourceManager {
 
                     if (rm.addRooms(id, location, numRooms, price)) {
                         System.out.println("Rooms added");
+                        out.println("true");
                     } else {
                         System.out.println("Rooms could not be added");
+                        out.println("false");
                     }
                     break;
                 }
@@ -175,6 +181,7 @@ public class TCPResourceManager extends ResourceManager {
                     int customer = rm.newCustomer(id);
 
                     System.out.println("Add customer ID: " + customer);
+                    out.println("true");
                     break;
                 }
                 case AddCustomerID: {
@@ -188,8 +195,10 @@ public class TCPResourceManager extends ResourceManager {
 
                     if (rm.newCustomer(id, customerID)) {
                         System.out.println("Add customer ID: " + customerID);
+                        out.println("true");
                     } else {
                         System.out.println("Customer could not be added");
+                        out.println("false");
                     }
                     break;
                 }
@@ -204,8 +213,10 @@ public class TCPResourceManager extends ResourceManager {
 
                     if (rm.deleteFlight(id, flightNum)) {
                         System.out.println("Flight Deleted");
+                        out.println("true");
                     } else {
                         System.out.println("Flight could not be deleted");
+                        out.println("false");
                     }
                     break;
                 }
@@ -220,8 +231,10 @@ public class TCPResourceManager extends ResourceManager {
 
                     if (rm.deleteCars(id, location)) {
                         System.out.println("Cars Deleted");
+                        out.println("true");
                     } else {
                         System.out.println("Cars could not be deleted");
+                        out.println("false");
                     }
                     break;
                 }
@@ -236,8 +249,10 @@ public class TCPResourceManager extends ResourceManager {
 
                     if (rm.deleteRooms(id, location)) {
                         System.out.println("Rooms Deleted");
+                        out.println("true");
                     } else {
                         System.out.println("Rooms could not be deleted");
+                        out.println("false");
                     }
                     break;
                 }
@@ -252,8 +267,10 @@ public class TCPResourceManager extends ResourceManager {
 
                     if (rm.deleteCustomer(id, customerID)) {
                         System.out.println("Customer Deleted");
+                        out.println("true");
                     } else {
                         System.out.println("Customer could not be deleted");
+                        out.println("false");
                     }
                     break;
                 }
@@ -268,6 +285,7 @@ public class TCPResourceManager extends ResourceManager {
 
                     int seats = rm.queryFlight(id, flightNum);
                     System.out.println("Number of seats available: " + seats);
+                    out.println(Integer.toString(seats));
                     break;
                 }
                 case QueryCars: {
@@ -281,6 +299,7 @@ public class TCPResourceManager extends ResourceManager {
 
                     int numCars = rm.queryCars(id, location);
                     System.out.println("Number of cars at this location: " + numCars);
+                    out.println(Integer.toString(numCars));
                     break;
                 }
                 case QueryRooms: {
@@ -294,6 +313,7 @@ public class TCPResourceManager extends ResourceManager {
 
                     int numRoom = rm.queryRooms(id, location);
                     System.out.println("Number of rooms at this location: " + numRoom);
+                    out.println(Integer.toString(numRoom));
                     break;
                 }
                 case QueryCustomer: {
@@ -307,6 +327,7 @@ public class TCPResourceManager extends ResourceManager {
 
                     String bill = rm.queryCustomerInfo(id, customerID);
                     System.out.print(bill);
+                    out.println(bill);
                     break;
                 }
                 case QueryFlightPrice: {
@@ -320,6 +341,7 @@ public class TCPResourceManager extends ResourceManager {
 
                     int price = rm.queryFlightPrice(id, flightNum);
                     System.out.println("Price of a seat: " + price);
+                    out.println(Integer.toString(price));
                     break;
                 }
                 case QueryCarsPrice: {
@@ -333,6 +355,7 @@ public class TCPResourceManager extends ResourceManager {
 
                     int price = rm.queryCarsPrice(id, location);
                     System.out.println("Price of cars at this location: " + price);
+                    out.println(Integer.toString(price));
                     break;
                 }
                 case QueryRoomsPrice: {
@@ -346,6 +369,7 @@ public class TCPResourceManager extends ResourceManager {
 
                     int price = rm.queryRoomsPrice(id, location);
                     System.out.println("Price of rooms at this location: " + price);
+                    out.println(Integer.toString(price));
                     break;
                 }
                 case ReserveFlight: {
@@ -361,8 +385,10 @@ public class TCPResourceManager extends ResourceManager {
 
                     if (rm.reserveFlight(id, customerID, flightNum)) {
                         System.out.println("Flight Reserved");
+                        out.println("true");
                     } else {
                         System.out.println("Flight could not be reserved");
+                        out.println("false");
                     }
                     break;
                 }
@@ -379,8 +405,10 @@ public class TCPResourceManager extends ResourceManager {
 
                     if (rm.reserveCar(id, customerID, location)) {
                         System.out.println("Car Reserved");
+                        out.println("true");
                     } else {
                         System.out.println("Car could not be reserved");
+                        out.println("false");
                     }
                     break;
                 }
@@ -397,8 +425,10 @@ public class TCPResourceManager extends ResourceManager {
 
                     if (rm.reserveRoom(id, customerID, location)) {
                         System.out.println("Room Reserved");
+                        out.println("true");
                     } else {
                         System.out.println("Room could not be reserved");
+                        out.println("false");
                     }
                     break;
                 }
@@ -430,8 +460,10 @@ public class TCPResourceManager extends ResourceManager {
 
                     if (rm.bundle(id, customerID, flightNumbers, location, car, room)) {
                         System.out.println("Bundle Reserved");
+                        out.println("true");
                     } else {
                         System.out.println("Bundle could not be reserved");
+                        out.println("false");
                     }
                     break;
                 }
