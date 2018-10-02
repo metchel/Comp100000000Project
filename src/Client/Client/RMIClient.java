@@ -19,7 +19,7 @@ public class RMIClient extends Client
 	private static String s_rmiPrefix = "group30";
 
 	public static void main(String args[])
-	{	
+	{
 		if (args.length > 0)
 		{
 			s_serverHost = args[0];
