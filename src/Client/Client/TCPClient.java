@@ -14,7 +14,7 @@ import java.io.*;
 public class TCPClient extends ClientAlt
 {
     private static String serverHost = "localhost";
-    private static int serverPort = 1099;
+    private static int serverPort = 999;
     //private static String s_serverName = "Server";
 
     //private static String s_rmiPrefix = "group30";
@@ -60,8 +60,13 @@ public class TCPClient extends ClientAlt
 
     public void connectServer(String serverHost, int serverPort) throws UnknownHostException, IOException
     {
-        server = new Socket(serverHost,serverPort);
-        System.out.println("Connected to "+server.getInetAddress());
+        try {
+            server = new Socket(serverHost, serverPort);
+            System.out.println("Connected to " + server.getInetAddress());
+        }catch(IOException e){
+            e.printStackTrace();
+            return;
+        }
         in = new BufferedReader(new InputStreamReader(server.getInputStream()));
         out = new PrintWriter(server.getOutputStream(),true);
     }

@@ -5,6 +5,8 @@ import Server.Common.*;
 import java.rmi.NotBoundException;
 import java.util.*;
 import java.net.*;
+import java.io.*;
+
 
 public class TCPMiddlewareManager extends Middleware {
 
@@ -22,12 +24,15 @@ public class TCPMiddlewareManager extends Middleware {
 
     public static void main(String args[])
     {
-        ServerSocket server = new ServerSocket(port);
-        while(true){
-            Socket client = server.accept();
-            System.out.println("Client "+client.getInetAddress()+"connected.");
-            BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
-
+        try {
+            ServerSocket server = new ServerSocket(serverPort);
+            while (true) {
+                Socket client = server.accept();
+                System.out.println("Client " + client.getInetAddress() + "connected.");
+                BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
+            }
+        }catch(IOException e){
+            e.printStackTrace();
         }
 
 
