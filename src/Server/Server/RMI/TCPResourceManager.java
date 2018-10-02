@@ -45,7 +45,6 @@ public class TCPResourceManager extends ResourceManager {
         PrintWriter out;
 
         public ActiveConnection(Socket socket) {
-            System.out.println("heys");
             this.clientSocket = socket;
             System.out.println("Active Connection constructor!");
         }
