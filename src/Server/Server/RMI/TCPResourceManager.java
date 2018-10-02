@@ -69,7 +69,7 @@ public class TCPResourceManager extends ResourceManager {
                 Vector<String> arguments = new Vector<String>();
                 while(true){
                     String input = in.readLine();
-                    if (input == null || input.equals(".")) {
+                    if (input == null || input.equals(".") || input.equals("")) {
                         break;
                     }
                     System.out.println("Server recieved: "+input);
