@@ -39,6 +39,7 @@ public class TCPClient extends ClientAlt
         {
             System.setSecurityManager(new SecurityManager());
         }
+        System.out.println(serverHost+":"+(Integer.toString(serverPort));
         try {
             TCPClient client = new TCPClient();
             client.connectServer();
