@@ -41,6 +41,8 @@ public class TCPResourceManager extends ResourceManager {
     private static class ActiveConnection extends Thread {
         Socket clientSocket;
         TCPResourceManager rm = new TCPResourceManager(serverName);
+        BufferedReader in;
+        PrintWriter out;
 
         public ActiveConnection(Socket socket) {
             System.out.println("heys");
@@ -64,8 +66,8 @@ public class TCPResourceManager extends ResourceManager {
 
         public void run() {
             try {
-                BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-                PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+                in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                out = new PrintWriter(clientSocket.getOutputStream(), true);
                 Vector<String> arguments = new Vector<String>();
                 while(true){
                     String input = in.readLine();
