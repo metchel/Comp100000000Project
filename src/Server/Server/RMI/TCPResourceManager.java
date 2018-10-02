@@ -70,11 +70,12 @@ public class TCPResourceManager extends ResourceManager {
                 while(true){
                     String input = in.readLine();
                     if (input == null || input.equals(".") || input.equals("")) {
-                        break;
+                        continue;
                     }
                     System.out.println("Server recieved: "+input);
                     arguments = parse(input);
                     Command cmd = Command.fromString((String)arguments.elementAt(0));
+                    execute(cmd,arguments);
                 }
             }catch (IOException e) {
                 System.out.println("Error in TCPResourceManager run()");
