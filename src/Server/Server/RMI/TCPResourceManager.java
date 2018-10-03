@@ -342,7 +342,7 @@ public class TCPResourceManager extends ResourceManager {
                     String bill = rm.queryCustomerInfo(id, customerID);
                     System.out.print(bill);
                     out.println(bill);
-                    out.println("end")
+                    out.println("end");
                     break;
                 }
                 case QueryFlightPrice: {
