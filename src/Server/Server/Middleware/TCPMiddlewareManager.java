@@ -19,7 +19,7 @@ public class TCPMiddlewareManager  {
     private static String[] rmNames = new String[]{"Flights","Cars","Rooms","Customers"};
 
     private static String s_serverHost = "localhost";
-    private static int serverPort = 1304;
+    private static int serverPort = 1305;
     Socket carRM;
     Socket flightRM;
     Socket hotelRM;
@@ -32,6 +32,7 @@ public class TCPMiddlewareManager  {
     static PrintWriter flightOut;
     static PrintWriter hotelOut;
     static PrintWriter customerOut;
+    static ServerSocket server;
 
 
 
@@ -59,13 +60,13 @@ public class TCPMiddlewareManager  {
 
 
         try {
-            ServerSocket server = new ServerSocket(serverPort);
+            server = new ServerSocket(serverPort);
             try {
                 while (true) {
                     new ActiveConnection(server.accept()).start();
                     Socket client = server.accept();
                     System.out.println("Client " + client.getInetAddress() + "connected.");
-                    BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
+                    //BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
                 }
             } finally {
                 server.close();
@@ -163,6 +164,7 @@ public class TCPMiddlewareManager  {
                     flightOut.close();
                     hotelOut.close();
                     customerOut.close();
+                    server.close();
                 } catch (IOException e) {
                     System.out.println("Couldn't close a socket");
                 }
@@ -456,7 +458,7 @@ public class TCPMiddlewareManager  {
                             break;
                         }
                     }
-                    stringBuff.append(System.lineSeparator());
+                    //stringBuff.append(System.lineSeparator());
                     //String respH = stringBuff.toString();
                     //System.out.println("respH"+respH);
 
@@ -467,7 +469,7 @@ public class TCPMiddlewareManager  {
                             break;
                         }
                     }
-                    stringBuff.append(System.lineSeparator());
+                    //stringBuff.append(System.lineSeparator());
                     //String respF = stringBuff.toString();
                     //System.out.println("respF"+respF);
 
@@ -478,7 +480,7 @@ public class TCPMiddlewareManager  {
                             break;
                         }
                     }
-                    stringBuff.append(System.lineSeparator());
+                    //stringBuff.append(System.lineSeparator());
                     //line = stringBuff.toString();
                     String resp = stringBuff.toString();
                     System.out.println("resp"+resp);

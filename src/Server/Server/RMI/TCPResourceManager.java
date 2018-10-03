@@ -14,13 +14,14 @@ import java.net.Socket;
 
 public class TCPResourceManager extends ResourceManager {
     private static String serverName = "Server";
-    private static int serverPort = 1304;
+    private static int serverPort = 1305;
+    static ServerSocket server;
 
     //private static String s_rmiPrefix = "group30";
 
     public static void main(String args[]) {
         try {
-            ServerSocket server = new ServerSocket(serverPort);
+            server = new ServerSocket(serverPort);
             try {
                 while (true) {
                     System.out.println("hey");
@@ -85,6 +86,7 @@ public class TCPResourceManager extends ResourceManager {
                     clientSocket.close();
                     in.close();
                     out.close();
+                    server.close();
                 } catch (IOException e) {
                     System.out.println("Couldn't close a socket");
                 }
