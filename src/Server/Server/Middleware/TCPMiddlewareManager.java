@@ -19,7 +19,7 @@ public class TCPMiddlewareManager  {
     private static String[] rmNames = new String[]{"Flights","Cars","Rooms","Customers"};
 
     private static String s_serverHost = "localhost";
-    private static int serverPort = 1288;
+    private static int serverPort = 1290;
     Socket carRM;
     Socket flightRM;
     Socket hotelRM;
@@ -453,28 +453,28 @@ public class TCPMiddlewareManager  {
                         System.out.println(line);
                         stringBuff.append(line);
                     }
-                    String respH = stringBuff.toString();
-                    System.out.println("respH"+respH);
+                    //String respH = stringBuff.toString();
+                    //System.out.println("respH"+respH);
 
                     flightOut.println(packet);
                     while(flightIn.ready() && (line = flightIn.readLine()) != null){
                         stringBuff.append(line);
                     }
-                    String respF = stringBuff.toString();
-                    System.out.println("respF"+respF);
+                    //String respF = stringBuff.toString();
+                    //System.out.println("respF"+respF);
 
                     carOut.println(packet);
                     while(carIn.ready() && (line = carIn.readLine()) != null){
                         stringBuff.append(line);
                     }
                     //line = stringBuff.toString();
-                    String respC = stringBuff.toString();
-                    System.out.println("respC"+respC);
+                    String resp = stringBuff.toString();
+                    System.out.println("resp"+resp);
 
                     //customerOut.println(packet+"\n");
                     //String responseF = customerIn.readLine();
-                    System.out.println(stringBuff.toString());
-                    outC.println(respC+respH+respF);
+                    System.out.println("test"+stringBuff.toString());
+                    outC.println(resp);
                     //System.out.print(bill);
                     break;
                 }
