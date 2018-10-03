@@ -8,7 +8,7 @@ import java.net.*;
 import java.io.*;
 
 
-public class TCPMiddlewareManager extends MiddlewareAlt {
+public class TCPMiddlewareManager  {
 
     private static String s_serverName = "Middleware";
 
@@ -48,7 +48,7 @@ public class TCPMiddlewareManager extends MiddlewareAlt {
         }
 
         try {
-            TCPMiddlewareManager mwm = new TCPMiddlewareManager("Middleware");
+            TCPMiddlewareManager mwm = new TCPMiddlewareManager();
             mwm.connectToRMs();
         }
         catch (Exception e) {
@@ -102,8 +102,8 @@ public class TCPMiddlewareManager extends MiddlewareAlt {
         customerOut = new PrintWriter(customerRM.getOutputStream(),true);
     }
 
-    public TCPMiddlewareManager(String name){
-        super(name);
+    public TCPMiddlewareManager(){
+        super();
     }
 
     private static class ActiveConnection extends Thread {
@@ -527,24 +527,45 @@ public class TCPMiddlewareManager extends MiddlewareAlt {
                     System.out.println("-Car Location: " + arguments.elementAt(arguments.size()-2));
                     System.out.println("-Room Location: " + arguments.elementAt(arguments.size()-1));
 
-                    String commandName = arguments.elementAt(0);
+
                     String id = arguments.elementAt(1);
                     String customerID = arguments.elementAt(2);
-                    String packet = commandName+","+id+","+customerID;
+                    String packet = id+","+customerID+",";
 
 
                     for (int i = 0; i < arguments.size() - 6; ++i)
                     {
-                        packet = packet+","+arguments.elementAt(3+i);
+                        flightOut.println("ReserveFlight,"+packet+arguments.elementAt(3+i));
+                        if((flightIn.readLine()).equals("false")) {
+                            outC.println("false");
+                            break;
+                        }
+                        //packet = packet+","+arguments.elementAt(3+i);
                     }
                     String location = arguments.elementAt(arguments.size()-3);
                     String car = arguments.elementAt(arguments.size()-2);
                     String room = arguments.elementAt(arguments.size()-1);
 
-                    packet = packet + location + car + room;
-                    customerOut.println(packet+"\n");
-                    String response = customerIn.readLine();
-                    System.out.println(response);
+                    if (car.equals("true")){
+                        carOut.println("ReserveCar,"+packet+location);
+                        if((carIn.readLine()).equals("false")) {
+                            outC.println("false");
+                            break;
+                        }
+                    }
+                    if (room.equals("true")){
+                        hotelOut.println("ReserveRoom,"+packet+location);
+                        if((hotelIn.readLine()).equals("false")) {
+                            outC.println("false");
+                            break;
+                        }
+                    }
+                    outC.println("true");
+
+                    //packet = packet + location + car + room;
+                   // customerOut.println(packet+"\n");
+                    //String response = customerIn.readLine();
+                   // System.out.println(response);
                     break;
                 }
                 case Quit:

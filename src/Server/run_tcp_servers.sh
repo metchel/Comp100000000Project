@@ -1,9 +1,7 @@
 #!/bin/bash
-
 #TODO: SPECIFY THE HOSTNAMES OF 4 CS MACHINES (lab1-1, cs-2, etc...)
-MACHINES=(lab2-1.cs.mcgill.ca lab2-2.cs.mcgill.ca lab2-3.cs.mcgill.ca lab2-4.cs.mcgill.ca lab2-5.cs.mcgill.ca)
+MACHINES=(lab2-6.cs.mcgill.ca lab2-7.cs.mcgill.ca lab2-8.cs.mcgill.ca lab2-9.cs.mcgill.ca lab2-10.cs.mcgill.ca)
 USER="oclark2@"
-
 tmux new-session \; \
 	split-window -h \; \
 	split-window -h \; \
