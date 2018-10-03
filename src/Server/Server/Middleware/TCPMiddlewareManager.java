@@ -415,6 +415,7 @@ public class TCPMiddlewareManager  {
                     String respC = carIn.readLine();
                     //customerOut.println(packet+"\n");
                     //String responseF = customerIn.readLine();
+                    System.out.println(respH+respF+respC);
                     outC.println(respH+respF+respC);
                     //System.out.print(bill);
                     break;

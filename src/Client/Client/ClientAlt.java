@@ -503,7 +503,7 @@ public abstract class ClientAlt
                 packet = packet+","+location+","+car+","+room;
                 out.println(packet+"\n");
                 String response = in.readLine();
-                System.out.println(response);
+                //System.out.println(response);
                 if (response.equals("true")){
                     System.out.println("Bundle Reserved");
                 }else{
