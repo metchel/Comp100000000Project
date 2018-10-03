@@ -449,7 +449,7 @@ public class TCPMiddlewareManager  {
                     String packet = commandName+","+id+","+customerID;
 
                     hotelOut.println(packet);
-                    while((line = hotelIn.readLine()) != "end"){
+                    while((line = hotelIn.readLine()) != "end\n"){
                         System.out.println(line);
                         stringBuff.append(line);
                     }
@@ -457,14 +457,14 @@ public class TCPMiddlewareManager  {
                     System.out.println("respH"+respH);
 
                     flightOut.println(packet);
-                    while((line = flightIn.readLine()) != "end"){
+                    while((line = flightIn.readLine()) != "end\n"){
                         stringBuff.append(line);
                     }
                     String respF = stringBuff.toString();
                     System.out.println("respF"+respF);
 
                     carOut.println(packet);
-                    while((line = carIn.readLine()) != "end"){
+                    while((line = carIn.readLine()) != "end\n"){
                         stringBuff.append(line);
                     }
                     //line = stringBuff.toString();
