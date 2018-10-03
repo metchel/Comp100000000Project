@@ -1,3 +1,3 @@
-grant codebase "file:/mnt/c/Users/Oliver Clark/Documents/McGill/Semester7/Comp512/Comp100000000Project/src/Client/" {
+grant codebase "file:/mnt/c/Users/Oliver Clark/Documents/McGill/Semester7/COMP512/Comp100000000Project/src/Client/" {
 permission java.security.AllPermission;
 };
