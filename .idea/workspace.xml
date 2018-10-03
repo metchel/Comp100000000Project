@@ -5,6 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fac91074-0f2a-4523-b9c7-2fbb72ff4dbe" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Server/Server/Middleware/TCPMiddlewareManager.java" afterPath="$PROJECT_DIR$/src/Server/Server/Middleware/TCPMiddlewareManager.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Server/Server/RMI/TCPResourceManager.java" afterPath="$PROJECT_DIR$/src/Server/Server/RMI/TCPResourceManager.java" />
     </list>
@@ -76,8 +77,8 @@
       <file leaf-file-name="TCPMiddlewareManager.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Server/Server/Middleware/TCPMiddlewareManager.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="357">
-              <caret line="21" column="40" lean-forward="false" selection-start-line="21" selection-start-column="40" selection-end-line="21" selection-end-column="40" />
+            <state relative-caret-position="211">
+              <caret line="451" column="61" lean-forward="true" selection-start-line="451" selection-start-column="61" selection-end-line="451" selection-end-column="61" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -88,8 +89,8 @@
       <file leaf-file-name="TCPResourceManager.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Server/Server/RMI/TCPResourceManager.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="272">
-              <caret line="16" column="40" lean-forward="false" selection-start-line="16" selection-start-column="40" selection-end-line="16" selection-end-column="40" />
+            <state relative-caret-position="765">
+              <caret line="344" column="29" lean-forward="true" selection-start-line="344" selection-start-column="29" selection-end-line="344" selection-end-column="29" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -485,12 +486,12 @@
       <workItem from="1538500790034" duration="3583000" />
       <workItem from="1538584324332" duration="4101000" />
       <workItem from="1538589415816" duration="173000" />
-      <workItem from="1538589780759" duration="8530000" />
+      <workItem from="1538589780759" duration="8812000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="95151000" />
+    <option name="totallyTimeSpent" value="95433000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1456" height="1056" extended-state="6" />
@@ -785,10 +786,10 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <marker date="1538598315123" expanded="true" signature="56425:56442" ph="..." />
-            <marker date="1538598315123" expanded="true" signature="56425:56460" ph="..." />
-            <marker date="1538598315123" expanded="true" signature="56425:56473" ph="..." />
-            <marker date="1538598315123" expanded="true" signature="56425:56488" ph="..." />
+            <marker date="1538598597665" expanded="true" signature="56563:56580" ph="..." />
+            <marker date="1538598597665" expanded="true" signature="56563:56598" ph="..." />
+            <marker date="1538598597665" expanded="true" signature="56563:56611" ph="..." />
+            <marker date="1538598597665" expanded="true" signature="56563:56626" ph="..." />
           </folding>
         </state>
       </provider>
@@ -885,8 +886,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Server/Server/RMI/TCPResourceManager.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="16" column="40" lean-forward="false" selection-start-line="16" selection-start-column="40" selection-end-line="16" selection-end-column="40" />
+        <state relative-caret-position="765">
+          <caret line="344" column="29" lean-forward="true" selection-start-line="344" selection-start-column="29" selection-end-line="344" selection-end-column="29" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -895,8 +896,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Server/Server/Middleware/TCPMiddlewareManager.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="357">
-          <caret line="21" column="40" lean-forward="false" selection-start-line="21" selection-start-column="40" selection-end-line="21" selection-end-column="40" />
+        <state relative-caret-position="211">
+          <caret line="451" column="61" lean-forward="true" selection-start-line="451" selection-start-column="61" selection-end-line="451" selection-end-column="61" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

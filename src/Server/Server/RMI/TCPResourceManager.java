@@ -14,7 +14,7 @@ import java.net.Socket;
 
 public class TCPResourceManager extends ResourceManager {
     private static String serverName = "Server";
-    private static int serverPort = 1285;
+    private static int serverPort = 1286;
 
     //private static String s_rmiPrefix = "group30";
 
@@ -342,7 +342,7 @@ public class TCPResourceManager extends ResourceManager {
                     String bill = rm.queryCustomerInfo(id, customerID);
                     System.out.print(bill);
                     out.println(bill);
-                    out.println("end");
+                    out.print("end");
                     break;
                 }
                 case QueryFlightPrice: {
