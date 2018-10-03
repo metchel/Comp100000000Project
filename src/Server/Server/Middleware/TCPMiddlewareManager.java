@@ -19,7 +19,7 @@ public class TCPMiddlewareManager  {
     private static String[] rmNames = new String[]{"Flights","Cars","Rooms","Customers"};
 
     private static String s_serverHost = "localhost";
-    private static int serverPort = 1302;
+    private static int serverPort = 1303;
     Socket carRM;
     Socket flightRM;
     Socket hotelRM;
@@ -456,6 +456,7 @@ public class TCPMiddlewareManager  {
                             break;
                         }
                     }
+                    stringBuff.append(System.lineSeparator());
                     //String respH = stringBuff.toString();
                     //System.out.println("respH"+respH);
 
@@ -466,6 +467,7 @@ public class TCPMiddlewareManager  {
                             break;
                         }
                     }
+                    stringBuff.append(System.lineSeparator());
                     //String respF = stringBuff.toString();
                     //System.out.println("respF"+respF);
 
@@ -476,6 +478,7 @@ public class TCPMiddlewareManager  {
                             break;
                         }
                     }
+                    stringBuff.append(System.lineSeparator());
                     //line = stringBuff.toString();
                     String resp = stringBuff.toString();
                     System.out.println("resp"+resp);
