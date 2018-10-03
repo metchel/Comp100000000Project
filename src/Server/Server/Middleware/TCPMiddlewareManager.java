@@ -19,7 +19,7 @@ public class TCPMiddlewareManager  {
     private static String[] rmNames = new String[]{"Flights","Cars","Rooms","Customers"};
 
     private static String s_serverHost = "localhost";
-    private static int serverPort = 1240;
+    private static int serverPort = 1245;
     Socket carRM;
     Socket flightRM;
     Socket hotelRM;
@@ -251,10 +251,13 @@ public class TCPMiddlewareManager  {
 
                     System.out.println("Adding a new customer [xid=" + arguments.elementAt(1) + "]");
 
-                    String commandName = arguments.elementAt(0);
+                    String commandName = "AddCustomerID";
                     String id = arguments.elementAt(1);
+                    String newid = Integer.parseInt(String.valueOf(id) +
+                            String.valueOf(Calendar.getInstance().get(Calendar.MILLISECOND)) +
+                            String.valueOf(Math.round(Math.random() * 100 + 1)));
 
-                    String packet = commandName+","+id;
+                    String packet = commandName+","+id+","+newid;
 
                     hotelOut.println(packet);
                     String response = hotelIn.readLine();
@@ -436,20 +439,35 @@ public class TCPMiddlewareManager  {
                     System.out.println("Querying customer information [xid=" + arguments.elementAt(1) + "]");
                     System.out.println("-Customer ID: " + arguments.elementAt(2));
 
+                    StringBuffer stringBuff = new StringBuffer();
+                    String line = null;
+
+
                     String commandName = arguments.elementAt(0);
                     String id = arguments.elementAt(1);
                     String customerID = arguments.elementAt(2);
                     String packet = commandName+","+id+","+customerID;
+
                     hotelOut.println(packet);
-                    String respH = hotelIn.readLine();
+                    while((line = hotelIn.readLine()) != null){
+                        stringBuff.append(line);
+                    }
+                    //String respH = hotelIn.readLine();
                     flightOut.println(packet);
-                    String respF = flightIn.readLine();
+                    while((line = flightIn.readLine()) != null){
+                        stringBuff.append(line);
+                    }
+                   // String respF = flightIn.readLine();
                     carOut.println(packet);
-                    String respC = carIn.readLine();
+                    while((line = carIn.readLine()) != null){
+                        stringBuff.append(line);
+                    }
+                    line = stringBuff.toString();
+                   // String respC = carIn.readLine();
                     //customerOut.println(packet+"\n");
                     //String responseF = customerIn.readLine();
-                    System.out.println(respH+respF+respC);
-                    outC.println(respH+respF+respC);
+                    System.out.println(line);
+                    outC.println(line);
                     //System.out.print(bill);
                     break;
                 }

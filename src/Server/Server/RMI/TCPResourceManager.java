@@ -14,7 +14,7 @@ import java.net.Socket;
 
 public class TCPResourceManager extends ResourceManager {
     private static String serverName = "Server";
-    private static int serverPort = 1240;
+    private static int serverPort = 1245;
 
     //private static String s_rmiPrefix = "group30";
 
@@ -181,20 +181,21 @@ public class TCPResourceManager extends ResourceManager {
                     System.out.println("Adding a new customer [xid=" + arguments.elementAt(1) + "]");
 
                     int id = toInt(arguments.elementAt(1));
-                    int customerID = Integer.parseInt(String.valueOf(id) +
+                    //int customerID = Integer.parseInt(String.valueOf(id) +
                             String.valueOf(Calendar.getInstance().get(Calendar.MILLISECOND)) +
                             String.valueOf(Math.round(Math.random() * 100 + 1)));
-                    //int customer = rm.newCustomer(id);
-                    if (rm.newCustomer(id, customerID)) {
+
+                    int customer = rm.newCustomer(id);
+                    /*if (rm.newCustomer(id, customerID)) {
                         System.out.println("Add customer ID: " + customerID);
                         out.println("true");
                     } else {
                         System.out.println("Customer could not be added");
                         out.println("false");
-                    }
+                    }*/
 
-                    //System.out.println("Add customer ID: " + customer);
-                    //out.println("true");
+                    System.out.println("Add customer ID: " + customer);
+                    out.println("true");
                     break;
                 }
                 case AddCustomerID: {
