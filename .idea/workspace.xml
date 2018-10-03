@@ -5,7 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fac91074-0f2a-4523-b9c7-2fbb72ff4dbe" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Server/Server/Middleware/TCPMiddlewareManager.java" afterPath="$PROJECT_DIR$/src/Server/Server/Middleware/TCPMiddlewareManager.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Server/Server/RMI/TCPResourceManager.java" afterPath="$PROJECT_DIR$/src/Server/Server/RMI/TCPResourceManager.java" />
     </list>
@@ -486,12 +485,12 @@
       <workItem from="1538500790034" duration="3583000" />
       <workItem from="1538584324332" duration="4101000" />
       <workItem from="1538589415816" duration="173000" />
-      <workItem from="1538589780759" duration="9777000" />
+      <workItem from="1538589780759" duration="10129000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="96398000" />
+    <option name="totallyTimeSpent" value="96750000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1456" height="1056" extended-state="6" />
@@ -786,10 +785,10 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <marker date="1538599563665" expanded="true" signature="56555:56572" ph="..." />
-            <marker date="1538599563665" expanded="true" signature="56555:56590" ph="..." />
-            <marker date="1538599563665" expanded="true" signature="56555:56603" ph="..." />
-            <marker date="1538599563665" expanded="true" signature="56555:56618" ph="..." />
+            <marker date="1538599916858" expanded="true" signature="56426:56443" ph="..." />
+            <marker date="1538599916858" expanded="true" signature="56426:56461" ph="..." />
+            <marker date="1538599916858" expanded="true" signature="56426:56474" ph="..." />
+            <marker date="1538599916858" expanded="true" signature="56426:56489" ph="..." />
           </folding>
         </state>
       </provider>
