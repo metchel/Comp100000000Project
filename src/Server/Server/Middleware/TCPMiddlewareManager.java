@@ -246,10 +246,13 @@ public class TCPMiddlewareManager  {
 
                     String packet = commandName+","+id;
                     hotelOut.println(packet);
+                    String response = hotelIn.readLine();
                     flightOut.println(packet);
+                    response = flightIn.readLine();
                     carOut.println(packet);
-                    customerOut.println(packet+"\n");
-                    String response = customerIn.readLine();
+                    response = flightIn.readLine();
+                    customerOut.println(packet);
+                    response = customerIn.readLine();
                     outC.println(response);
                     //System.out.println("Add customer ID: " + customer);
                     break;
@@ -266,10 +269,13 @@ public class TCPMiddlewareManager  {
 
                     String packet = commandName+","+id+","+customerID;
                     hotelOut.println(packet);
+                    String response = hotelIn.readLine();
                     flightOut.println(packet);
+                    response = flightIn.readLine();
                     carOut.println(packet);
+                    response = flightIn.readLine();
                     customerOut.println(packet);
-                    String response = customerIn.readLine();
+                    response = customerIn.readLine();
                     outC.println(response);
 
                     break;
@@ -338,10 +344,13 @@ public class TCPMiddlewareManager  {
                     String packet = commandName+","+id+","+customerID;
 
                     hotelOut.println(packet);
+                    String response = hotelIn.readLine();
                     flightOut.println(packet);
+                    response = flightIn.readLine();
                     carOut.println(packet);
+                    response = flightIn.readLine();
                     customerOut.println(packet);
-                    String response = customerIn.readLine();
+                    response = customerIn.readLine();
                     outC.println(response);
                     break;
                 }
