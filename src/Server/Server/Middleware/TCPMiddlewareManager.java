@@ -19,7 +19,7 @@ public class TCPMiddlewareManager  {
     private static String[] rmNames = new String[]{"Flights","Cars","Rooms","Customers"};
 
     private static String s_serverHost = "localhost";
-    private static int serverPort = 1235;
+    private static int serverPort = 1236;
     Socket carRM;
     Socket flightRM;
     Socket hotelRM;

@@ -14,7 +14,7 @@ import java.io.*;
 public class TCPClient extends ClientAlt
 {
     private static String serverHost = "localhost";
-    private static int serverPort = 1234;
+    private static int serverPort = 1236;
     //private static String s_serverName = "Server";
 
     //private static String s_rmiPrefix = "group30";
