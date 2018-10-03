@@ -5,10 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fac91074-0f2a-4523-b9c7-2fbb72ff4dbe" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Client/Client/ClientAlt.java" afterPath="$PROJECT_DIR$/src/Client/Client/ClientAlt.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Server/Server/Middleware/TCPMiddlewareManager.java" afterPath="$PROJECT_DIR$/src/Server/Server/Middleware/TCPMiddlewareManager.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Server/run_tcp_servers.sh" afterPath="$PROJECT_DIR$/src/Server/run_tcp_servers.sh" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -51,11 +48,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="ClientAlt.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="ClientAlt.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Client/Client/ClientAlt.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="595">
-              <caret line="509" column="46" lean-forward="false" selection-start-line="509" selection-start-column="46" selection-end-line="509" selection-end-column="46" />
+            <state relative-caret-position="255">
+              <caret line="177" column="59" lean-forward="false" selection-start-line="177" selection-start-column="59" selection-end-line="177" selection-end-column="59" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -69,10 +66,10 @@
             <state relative-caret-position="0">
               <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding>
-                <marker date="1538588214582" expanded="true" signature="57848:57865" ph="..." />
-                <marker date="1538588214582" expanded="true" signature="57848:57883" ph="..." />
-                <marker date="1538588214582" expanded="true" signature="57848:57896" ph="..." />
-                <marker date="1538588214582" expanded="true" signature="57848:57911" ph="..." />
+                <marker date="1538588326621" expanded="true" signature="57368:57385" ph="..." />
+                <marker date="1538588326621" expanded="true" signature="57368:57403" ph="..." />
+                <marker date="1538588326621" expanded="true" signature="57368:57416" ph="..." />
+                <marker date="1538588326621" expanded="true" signature="57368:57431" ph="..." />
               </folding>
             </state>
           </provider>
@@ -126,7 +123,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="run_tcp_servers.sh" pinned="false" current-in-tab="true">
+      <file leaf-file-name="run_tcp_servers.sh" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Server/run_tcp_servers.sh">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="34">
@@ -242,9 +239,9 @@
         <option value="$PROJECT_DIR$/src/Server/Server/RMI/TCPResourceManager.java" />
         <option value="$PROJECT_DIR$/src/Server/run_tcp_middleware.sh" />
         <option value="$PROJECT_DIR$/src/Client/Client/Client.java" />
-        <option value="$PROJECT_DIR$/src/Client/Client/ClientAlt.java" />
         <option value="$PROJECT_DIR$/src/Server/Server/Middleware/TCPMiddlewareManager.java" />
         <option value="$PROJECT_DIR$/src/Server/run_tcp_servers.sh" />
+        <option value="$PROJECT_DIR$/src/Client/Client/ClientAlt.java" />
       </list>
     </option>
   </component>
@@ -503,12 +500,12 @@
       <workItem from="1538351806239" duration="6881000" />
       <workItem from="1538435542191" duration="12866000" />
       <workItem from="1538500790034" duration="3583000" />
-      <workItem from="1538584324332" duration="2976000" />
+      <workItem from="1538584324332" duration="3088000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="85323000" />
+    <option name="totallyTimeSpent" value="85435000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1456" height="1056" extended-state="6" />
@@ -828,10 +825,10 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <marker date="1538588214582" expanded="true" signature="57848:57865" ph="..." />
-            <marker date="1538588214582" expanded="true" signature="57848:57883" ph="..." />
-            <marker date="1538588214582" expanded="true" signature="57848:57896" ph="..." />
-            <marker date="1538588214582" expanded="true" signature="57848:57911" ph="..." />
+            <marker date="1538588326621" expanded="true" signature="57368:57385" ph="..." />
+            <marker date="1538588326621" expanded="true" signature="57368:57403" ph="..." />
+            <marker date="1538588326621" expanded="true" signature="57368:57416" ph="..." />
+            <marker date="1538588326621" expanded="true" signature="57368:57431" ph="..." />
           </folding>
         </state>
       </provider>
@@ -850,16 +847,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-661">
           <caret line="309" column="12" lean-forward="false" selection-start-line="309" selection-start-column="11" selection-end-line="309" selection-end-column="12" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Client/Client/ClientAlt.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="595">
-          <caret line="509" column="46" lean-forward="false" selection-start-line="509" selection-start-column="46" selection-end-line="509" selection-end-column="46" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -919,6 +906,16 @@
         <state relative-caret-position="34">
           <caret line="2" column="97" lean-forward="false" selection-start-line="2" selection-start-column="97" selection-end-line="2" selection-end-column="97" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Client/Client/ClientAlt.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="177" column="59" lean-forward="false" selection-start-line="177" selection-start-column="59" selection-end-line="177" selection-end-column="59" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

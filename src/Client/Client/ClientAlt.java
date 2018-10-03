@@ -175,7 +175,7 @@ public abstract class ClientAlt
                 out.println(packet+"\n");
                 String response = in.readLine();
                 //System.out.println(response);
-                System.out.println("Add customer ID: " + customer);
+                System.out.println("Add customer ID: " + id);
                 break;
             }
             case AddCustomerID: {
