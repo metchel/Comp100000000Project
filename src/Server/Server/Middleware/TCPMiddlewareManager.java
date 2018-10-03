@@ -253,11 +253,11 @@ public class TCPMiddlewareManager  {
 
                     String commandName = "AddCustomerID";
                     String id = arguments.elementAt(1);
-                    String newid = Integer.parseInt(String.valueOf(id) +
+                    int newid = Integer.parseInt(String.valueOf(id) +
                             String.valueOf(Calendar.getInstance().get(Calendar.MILLISECOND)) +
                             String.valueOf(Math.round(Math.random() * 100 + 1)));
 
-                    String packet = commandName+","+id+","+newid;
+                    String packet = commandName+","+id+","+Integer.toString(newid);
 
                     hotelOut.println(packet);
                     String response = hotelIn.readLine();
