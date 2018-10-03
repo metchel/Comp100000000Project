@@ -19,7 +19,7 @@ public class TCPMiddlewareManager  {
     private static String[] rmNames = new String[]{"Flights","Cars","Rooms","Customers"};
 
     private static String s_serverHost = "localhost";
-    private static int serverPort = 1286;
+    private static int serverPort = 1288;
     Socket carRM;
     Socket flightRM;
     Socket hotelRM;
@@ -449,7 +449,7 @@ public class TCPMiddlewareManager  {
                     String packet = commandName+","+id+","+customerID;
 
                     hotelOut.println(packet);
-                    while((line = hotelIn.readLine()) != "end"){
+                    while(hotelIn.ready() && (line = hotelIn.readLine()) != null){
                         System.out.println(line);
                         stringBuff.append(line);
                     }
@@ -457,14 +457,14 @@ public class TCPMiddlewareManager  {
                     System.out.println("respH"+respH);
 
                     flightOut.println(packet);
-                    while((line = flightIn.readLine()) != "end"){
+                    while(flightIn.ready() && (line = flightIn.readLine()) != null){
                         stringBuff.append(line);
                     }
                     String respF = stringBuff.toString();
                     System.out.println("respF"+respF);
 
                     carOut.println(packet);
-                    while((line = carIn.readLine()) != "end"){
+                    while(carIn.ready() && (line = carIn.readLine()) != null){
                         stringBuff.append(line);
                     }
                     //line = stringBuff.toString();
