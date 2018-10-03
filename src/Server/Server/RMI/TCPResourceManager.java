@@ -181,11 +181,11 @@ public class TCPResourceManager extends ResourceManager {
                     System.out.println("Adding a new customer [xid=" + arguments.elementAt(1) + "]");
 
                     int id = toInt(arguments.elementAt(1));
-                    //int customerID = Integer.parseInt(String.valueOf(id) +
+                    int customerID = Integer.parseInt(String.valueOf(id) +
                             String.valueOf(Calendar.getInstance().get(Calendar.MILLISECOND)) +
                             String.valueOf(Math.round(Math.random() * 100 + 1)));
 
-                    int customer = rm.newCustomer(id);
+                    int customer = rm.newCustomer(id, customerID);
                     /*if (rm.newCustomer(id, customerID)) {
                         System.out.println("Add customer ID: " + customerID);
                         out.println("true");
