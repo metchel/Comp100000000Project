@@ -19,7 +19,7 @@ public class TCPMiddlewareManager  {
     private static String[] rmNames = new String[]{"Flights","Cars","Rooms","Customers"};
 
     private static String s_serverHost = "localhost";
-    private static int serverPort = 1238;
+    private static int serverPort = 1239;
     Socket carRM;
     Socket flightRM;
     Socket hotelRM;
@@ -245,14 +245,19 @@ public class TCPMiddlewareManager  {
                     String id = arguments.elementAt(1);
 
                     String packet = commandName+","+id;
+
                     hotelOut.println(packet);
                     String response = hotelIn.readLine();
+
                     flightOut.println(packet);
                     response = flightIn.readLine();
+
                     carOut.println(packet);
-                    response = flightIn.readLine();
+                    response = carIn.readLine();
+
                     customerOut.println(packet);
                     response = customerIn.readLine();
+
                     outC.println(response);
                     //System.out.println("Add customer ID: " + customer);
                     break;
@@ -278,13 +283,13 @@ public class TCPMiddlewareManager  {
                     System.out.println("Flight response"+response);
 
                     carOut.println(packet);
-                    response = flightIn.readLine();
+                    response = carIn.readLine();
                     System.out.println("Car response"+response);
 
                     customerOut.println(packet);
                     response = customerIn.readLine();
                     System.out.println("Customer response"+response);
-                    
+
                     outC.println(response);
 
                     break;
