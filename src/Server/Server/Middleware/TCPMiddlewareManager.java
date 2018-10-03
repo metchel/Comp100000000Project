@@ -245,6 +245,9 @@ public class TCPMiddlewareManager  {
                     String id = arguments.elementAt(1);
 
                     String packet = commandName+","+id;
+                    hotelOut.println(packet);
+                    flightOut.println(packet);
+                    carOut.println(packet);
                     customerOut.println(packet+"\n");
                     String response = customerIn.readLine();
                     outC.println(response);
@@ -262,7 +265,10 @@ public class TCPMiddlewareManager  {
                     String customerID = arguments.elementAt(2);
 
                     String packet = commandName+","+id+","+customerID;
-                    customerOut.println(packet+"\n");
+                    hotelOut.println(packet);
+                    flightOut.println(packet);
+                    carOut.println(packet);
+                    customerOut.println(packet);
                     String response = customerIn.readLine();
                     outC.println(response);
 
@@ -331,7 +337,10 @@ public class TCPMiddlewareManager  {
 
                     String packet = commandName+","+id+","+customerID;
 
-                    customerOut.println(packet+"\n");
+                    hotelOut.println(packet);
+                    flightOut.println(packet);
+                    carOut.println(packet);
+                    customerOut.println(packet);
                     String response = customerIn.readLine();
                     outC.println(response);
                     break;
@@ -398,9 +407,15 @@ public class TCPMiddlewareManager  {
                     String id = arguments.elementAt(1);
                     String customerID = arguments.elementAt(2);
                     String packet = commandName+","+id+","+customerID;
-                    customerOut.println(packet+"\n");
-                    String response = customerIn.readLine();
-                    outC.println(response);
+                    hotelOut.println(packet);
+                    String respH = hotelIn.readLine();
+                    flightOut.println(packet);
+                    String respF = flightIn.readLine();
+                    carOut.println(packet);
+                    String respC = carIn.readLine();
+                    //customerOut.println(packet+"\n");
+                    //String responseF = customerIn.readLine();
+                    outC.println(respH+respF+respC);
                     //System.out.print(bill);
                     break;
                 }

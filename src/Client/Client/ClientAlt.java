@@ -500,7 +500,7 @@ public abstract class ClientAlt
                 String car = arguments.elementAt(arguments.size()-2);
                 String room = arguments.elementAt(arguments.size()-1);
 
-                packet = packet + location + car + room;
+                packet = packet+","+location+","+car+","+room;
                 out.println(packet+"\n");
                 String response = in.readLine();
                 System.out.println(response);
