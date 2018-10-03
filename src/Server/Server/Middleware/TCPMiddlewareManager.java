@@ -19,7 +19,7 @@ public class TCPMiddlewareManager  {
     private static String[] rmNames = new String[]{"Flights","Cars","Rooms","Customers"};
 
     private static String s_serverHost = "localhost";
-    private static int serverPort = 1239;
+    private static int serverPort = 1240;
     Socket carRM;
     Socket flightRM;
     Socket hotelRM;
@@ -149,10 +149,20 @@ public class TCPMiddlewareManager  {
                     execute(cmd, arguments);
                 }
             }catch (IOException e) {
-            System.out.println("Error in TCPResourceManager run()");
+                System.out.println("Error in TCPResourceManager run()");
             }finally {
                 try {
                     clientSocket.close();
+                    inC.close();
+                    outC.close();
+                    carIn.close();
+                    flightIn.close();
+                    hotelIn.close();
+                    customerIn.close();
+                    carOut.close();
+                    flightOut.close();
+                    hotelOut.close();
+                    customerOut.close();
                 } catch (IOException e) {
                     System.out.println("Couldn't close a socket");
                 }
