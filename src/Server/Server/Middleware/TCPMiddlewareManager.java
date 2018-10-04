@@ -2,7 +2,6 @@ package Server.Middleware;
 
 import Server.Interface.*;
 import Server.Common.*;
-import java.rmi.NotBoundException;
 import java.util.*;
 import java.net.*;
 import java.io.*;
@@ -681,11 +680,5 @@ public class TCPMiddlewareManager  {
         {
             return (new Boolean(string)).booleanValue();
         }
-
-
-
     }
-
-
-
 }
