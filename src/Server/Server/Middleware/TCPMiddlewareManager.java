@@ -10,16 +10,9 @@ import java.io.*;
 
 public class TCPMiddlewareManager  {
 
-    private static String s_serverName = "Middleware";
-
-    //private static String s_rmiPrefix = "group30";
-
     private static String[] serverNames = new String[4];
-
     private static String[] rmNames = new String[]{"Flights","Cars","Rooms","Customers"};
-
-    private static String s_serverHost = "localhost";
-    private static int serverPort = 1305;
+    private static int serverPort = 1306;
     Socket carRM;
     Socket flightRM;
     Socket hotelRM;
@@ -64,8 +57,8 @@ public class TCPMiddlewareManager  {
             try {
                 while (true) {
                     new ActiveConnection(server.accept()).start();
-                    Socket client = server.accept();
-                    System.out.println("Client " + client.getInetAddress() + "connected.");
+                    //Socket client = server.accept();
+
                     //BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
                 }
             } finally {
@@ -114,7 +107,8 @@ public class TCPMiddlewareManager  {
 
         public ActiveConnection(Socket socket) {
             this.clientSocket = socket;
-            System.out.println("Active Connection constructor!");
+            System.out.println("Active Connection constructed");
+            System.out.println("Client " + socket.getInetAddress() + "connected.");
         }
 
         public static Vector<String> parse(String command)
@@ -150,7 +144,7 @@ public class TCPMiddlewareManager  {
                     execute(cmd, arguments);
                 }
             }catch (IOException e) {
-                System.out.println("Error in TCPResourceManager run()");
+                System.out.println("Error in TCPMiddlewareManager run()");
             }finally {
                 try {
                     clientSocket.close();
@@ -178,14 +172,6 @@ public class TCPMiddlewareManager  {
             {
                 case Help:
                 {
-                    /*if (arguments.size() == 1) {
-                        System.out.println(Command.description());
-                    } else if (arguments.size() == 2) {
-                        Command l_cmd = Command.fromString((String)arguments.elementAt(1));
-                        System.out.println(l_cmd.toString());
-                    } else {
-                        System.err.println((char)27 + "[31;1mCommand exception: " + (char)27 + "[0mImproper use of help command. Location \"help\" or \"help,<CommandName>\"");
-                    }*/
                     break;
                 }
                 case AddFlight: {
@@ -196,14 +182,23 @@ public class TCPMiddlewareManager  {
                     System.out.println("-Flight Seats: " + arguments.elementAt(3));
                     System.out.println("-Flight Price: " + arguments.elementAt(4));
 
-                    String commandName = arguments.elementAt(0);
+                    String packetArray [] = (String[])arguments.toArray();
+                    String packet = null;
+                    for (String argum : packetArray) {
+                        packet = argum + ",";
+
+                    }
+                    packet.substring(0, packet.length() - 1);
+
+                   /* String commandName = arguments.elementAt(0);
                     String id = arguments.elementAt(1);
                     String flightNum = arguments.elementAt(2);
                     String flightSeats = arguments.elementAt(3);
                     String flightPrice = arguments.elementAt(4);
 
                     String packet = commandName+","+id+","+flightNum+","+flightSeats+","+flightPrice;
-                    flightOut.println(packet+"\n");
+                    */
+                    flightOut.println(packet);
                     String response = flightIn.readLine();
                     outC.println(response);
                     break;
@@ -216,6 +211,14 @@ public class TCPMiddlewareManager  {
                     System.out.println("-Number of Cars: " + arguments.elementAt(3));
                     System.out.println("-Car Price: " + arguments.elementAt(4));
 
+                    String packetArray [] = (String[])arguments.toArray();
+                    String packet = null;
+                    for (String argum : packetArray) {
+                        packet = argum + ",";
+
+                    }
+                    packet.substring(0, packet.length() - 1);
+/*
                     String commandName = arguments.elementAt(0);
                     String id = arguments.elementAt(1);
                     String location = arguments.elementAt(2);
@@ -223,7 +226,8 @@ public class TCPMiddlewareManager  {
                     String price = arguments.elementAt(4);
 
                     String packet = commandName+","+id+","+location+","+numCars+","+price;
-                    carOut.println(packet+"\n");
+                    */
+                    carOut.println(packet);
                     String response = carIn.readLine();
                     outC.println(response);
                     break;
@@ -236,6 +240,13 @@ public class TCPMiddlewareManager  {
                     System.out.println("-Number of Rooms: " + arguments.elementAt(3));
                     System.out.println("-Room Price: " + arguments.elementAt(4));
 
+                    String packetArray [] = (String[])arguments.toArray();
+                    String packet = null;
+                    for (String argum : packetArray) {
+                        packet = argum + ",";
+                    }
+                    packet.substring(0, packet.length() - 1);
+                    /*
                     String commandName = arguments.elementAt(0);
                     String id = arguments.elementAt(1);
                     String location = arguments.elementAt(2);
@@ -243,7 +254,8 @@ public class TCPMiddlewareManager  {
                     String price = arguments.elementAt(4);
 
                     String packet = commandName+","+id+","+location+","+numRooms+","+price;
-                    hotelOut.println(packet+"\n");
+                    */
+                    hotelOut.println(packet);
                     String response = hotelIn.readLine();
                     outC.println(response);
                     break;
@@ -263,15 +275,35 @@ public class TCPMiddlewareManager  {
 
                     hotelOut.println(packet);
                     String response = hotelIn.readLine();
+                    System.out.println("Room response"+response);
+                    if (response.equals("false")){
+                        outC.println(response);
+                        break;
+                    }
 
                     flightOut.println(packet);
                     response = flightIn.readLine();
+                    System.out.println("Flight response"+response);
+                    if (response.equals("false")){
+                        outC.println(response);
+                        break;
+                    }
 
                     carOut.println(packet);
                     response = carIn.readLine();
+                    System.out.println("Car response"+response);
+                    if (response.equals("false")){
+                        outC.println(response);
+                        break;
+                    }
 
                     customerOut.println(packet);
                     response = customerIn.readLine();
+                    System.out.println("Customer response"+response);
+                    if (response.equals("false")){
+                        outC.println(response);
+                        break;
+                    }
 
                     outC.println(response);
                     //System.out.println("Add customer ID: " + customer);
@@ -292,18 +324,34 @@ public class TCPMiddlewareManager  {
                     hotelOut.println(packet);
                     String response = hotelIn.readLine();
                     System.out.println("Hotel response"+response);
+                    if (response.equals("false")){
+                        outC.println(response);
+                        break;
+                    }
 
                     flightOut.println(packet);
                     response = flightIn.readLine();
                     System.out.println("Flight response"+response);
+                    if (response.equals("false")){
+                        outC.println(response);
+                        break;
+                    }
 
                     carOut.println(packet);
                     response = carIn.readLine();
                     System.out.println("Car response"+response);
+                    if (response.equals("false")){
+                        outC.println(response);
+                        break;
+                    }
 
                     customerOut.println(packet);
                     response = customerIn.readLine();
                     System.out.println("Customer response"+response);
+                    if (response.equals("false")){
+                        outC.println(response);
+                        break;
+                    }
 
                     outC.println(response);
 
@@ -315,13 +363,22 @@ public class TCPMiddlewareManager  {
                     System.out.println("Deleting a flight [xid=" + arguments.elementAt(1) + "]");
                     System.out.println("-Flight Number: " + arguments.elementAt(2));
 
+                    String packetArray [] = (String[])arguments.toArray();
+                    String packet = null;
+                    for (String argum : packetArray) {
+                        packet = argum + ",";
+
+                    }
+                    packet.substring(0, packet.length() - 1);
+                    /*
+
                     String commandName = arguments.elementAt(0);
                     String id = arguments.elementAt(1);
                     String flightNum = arguments.elementAt(2);
 
                     String packet = commandName+","+id+","+flightNum;
-
-                    flightOut.println(packet+"\n");
+*/
+                    flightOut.println(packet);
                     String response = flightIn.readLine();
                     outC.println(response);
                     break;
@@ -332,13 +389,21 @@ public class TCPMiddlewareManager  {
                     System.out.println("Deleting all cars at a particular location [xid=" + arguments.elementAt(1) + "]");
                     System.out.println("-Car Location: " + arguments.elementAt(2));
 
+                    String packetArray [] = (String[])arguments.toArray();
+                    String packet = null;
+                    for (String argum : packetArray) {
+                        packet = argum + ",";
+
+                    }
+                    packet.substring(0, packet.length() - 1);
+                    /*
                     String commandName = arguments.elementAt(0);
                     String id = arguments.elementAt(1);
                     String location = arguments.elementAt(2);
 
                     String packet = commandName+","+id+","+location;
-
-                    carOut.println(packet+"\n");
+*/
+                    carOut.println(packet);
                     String response = carIn.readLine();
                     outC.println(response);
                     break;
@@ -349,13 +414,21 @@ public class TCPMiddlewareManager  {
                     System.out.println("Deleting all rooms at a particular location [xid=" + arguments.elementAt(1) + "]");
                     System.out.println("-Car Location: " + arguments.elementAt(2));
 
+                    String packetArray [] = (String[])arguments.toArray();
+                    String packet = null;
+                    for (String argum : packetArray) {
+                        packet = argum + ",";
+
+                    }
+                    packet.substring(0, packet.length() - 1);
+                    /*
                     String commandName = arguments.elementAt(0);
                     String id = arguments.elementAt(1);
                     String location = arguments.elementAt(2);
 
                     String packet = commandName+","+id+","+location;
-
-                    hotelOut.println(packet+"\n");
+*/
+                    hotelOut.println(packet);
                     String response = hotelIn.readLine();
                     outC.println(response);
                     break;
@@ -374,12 +447,32 @@ public class TCPMiddlewareManager  {
 
                     hotelOut.println(packet);
                     String response = hotelIn.readLine();
+                    System.out.println("Room response"+response);
+                    if (response.equals("false")){
+                        outC.println(response);
+                        break;
+                    }
                     flightOut.println(packet);
                     response = flightIn.readLine();
+                    System.out.println("Flight response"+response);
+                    if (response.equals("false")){
+                        outC.println(response);
+                        break;
+                    }
                     carOut.println(packet);
                     response = flightIn.readLine();
+                    System.out.println("Car response"+response);
+                    if (response.equals("false")){
+                        outC.println(response);
+                        break;
+                    }
                     customerOut.println(packet);
                     response = customerIn.readLine();
+                    System.out.println("Customer response"+response);
+                    if (response.equals("false")){
+                        outC.println(response);
+                        break;
+                    }
                     outC.println(response);
                     break;
                 }
@@ -389,13 +482,23 @@ public class TCPMiddlewareManager  {
                     System.out.println("Querying a flight [xid=" + arguments.elementAt(1) + "]");
                     System.out.println("-Flight Number: " + arguments.elementAt(2));
 
+                    String packetArray [] = (String[]) arguments.toArray();
+                    String packet = null;
+                    for (String argum : packetArray) {
+                        packet = argum + ",";
+
+                    }
+                    packet.substring(0, packet.length() - 1);
+                    /*
+
                     String commandName = arguments.elementAt(0);
                     String id = arguments.elementAt(1);
                     String flightNum = arguments.elementAt(2);
                     String packet = commandName+","+id+","+flightNum;
+*/
 
                     // System.out.println("Number of seats available: " + seats);
-                    flightOut.println(packet+"\n");
+                    flightOut.println(packet);
                     String response = flightIn.readLine();
                     outC.println(response);
                     break;
@@ -406,16 +509,25 @@ public class TCPMiddlewareManager  {
                     System.out.println("Querying cars location [xid=" + arguments.elementAt(1) + "]");
                     System.out.println("-Car Location: " + arguments.elementAt(2));
 
+                    String packetArray [] = (String[])arguments.toArray();
+                    String packet = null;
+                    for (String argum : packetArray) {
+                        packet = argum + ",";
+
+                    }
+                    packet.substring(0, packet.length() - 1);
+                    /*
+
                     String commandName = arguments.elementAt(0);
                     String id = arguments.elementAt(1);
                     String location = arguments.elementAt(2);
 
                     String packet = commandName+","+id+","+location;
-
-                    carOut.println(packet+"\n");
+*/
+                    carOut.println(packet);
                     String response = carIn.readLine();
                     outC.println(response);
-                    // System.out.println("Number of cars at this location: " + numCars);
+                    System.out.println("Number of cars at this location: " + response);
                     break;
                 }
                 case QueryRooms: {
@@ -424,12 +536,22 @@ public class TCPMiddlewareManager  {
                     System.out.println("Querying rooms location [xid=" + arguments.elementAt(1) + "]");
                     System.out.println("-Room Location: " + arguments.elementAt(2));
 
+                    String packetArray [] = (String[])arguments.toArray();
+                    String packet = null;
+                    for (String argum : packetArray) {
+                        packet = argum + ",";
+
+                    }
+                    packet.substring(0, packet.length() - 1);
+                    /*
+
                     String commandName = arguments.elementAt(0);
                     String id = arguments.elementAt(1);
                     String location = arguments.elementAt(2);
 
                     String packet = commandName+","+id+","+location;
-                    hotelOut.println(packet+"\n");
+                    */
+                    hotelOut.println(packet);
                     String response = hotelIn.readLine();
                     outC.println(response);
                     //System.out.println("Number of rooms at this location: " + numRoom);
@@ -444,11 +566,21 @@ public class TCPMiddlewareManager  {
                     StringBuffer stringBuff = new StringBuffer();
                     String line = null;
 
+                    String packetArray [] = (String[])arguments.toArray();
+                    String packet = null;
+                    for (String argum : packetArray) {
+                        packet = argum + ",";
+
+                    }
+                    packet.substring(0, packet.length() - 1);
+                    /*
+
 
                     String commandName = arguments.elementAt(0);
                     String id = arguments.elementAt(1);
                     String customerID = arguments.elementAt(2);
                     String packet = commandName+","+id+","+customerID;
+                    */
 
                     hotelOut.println(packet);
                     while((line = hotelIn.readLine()) != null){
@@ -483,13 +615,10 @@ public class TCPMiddlewareManager  {
                     //stringBuff.append(System.lineSeparator());
                     //line = stringBuff.toString();
                     String resp = stringBuff.toString();
-                    System.out.println("resp"+resp);
+                    System.out.println(resp);
 
-                    //customerOut.println(packet+"\n");
-                    //String responseF = customerIn.readLine();
-                    System.out.println("test"+stringBuff.toString());
+
                     outC.println(resp);
-                    //System.out.print(bill);
                     break;
                 }
                 case QueryFlightPrice: {
@@ -498,12 +627,21 @@ public class TCPMiddlewareManager  {
                     System.out.println("Querying a flight price [xid=" + arguments.elementAt(1) + "]");
                     System.out.println("-Flight Number: " + arguments.elementAt(2));
 
+                    String packetArray [] = (String[])arguments.toArray();
+                    String packet = null;
+                    for (String argum : packetArray) {
+                        packet = argum + ",";
+
+                    }
+                    packet.substring(0, packet.length() - 1);
+                    /*
+
                     String commandName = arguments.elementAt(0);
                     String id = arguments.elementAt(1);
                     String flightNum = arguments.elementAt(2);
                     String packet = commandName+","+id+","+flightNum;
-
-                    flightOut.println(packet+"\n");
+*/
+                    flightOut.println(packet);
                     String response = flightIn.readLine();
                     outC.println(response);
                     //System.out.println("Price of a seat: " + price);
@@ -515,12 +653,21 @@ public class TCPMiddlewareManager  {
                     System.out.println("Querying cars price [xid=" + arguments.elementAt(1) + "]");
                     System.out.println("-Car Location: " + arguments.elementAt(2));
 
+                    String packetArray [] = (String[])arguments.toArray();
+                    String packet = null;
+                    for (String argum : packetArray) {
+                        packet = argum + ",";
+
+                    }
+                    packet.substring(0, packet.length() - 1);
+                    /*
+
                     String commandName = arguments.elementAt(0);
                     String id = arguments.elementAt(1);
                     String location = arguments.elementAt(2);
                     String packet = commandName+","+id+","+location;
-
-                    carOut.println(packet+"\n");
+*/
+                    carOut.println(packet);
                     String response = carIn.readLine();
                     outC.println(response);
                     // System.out.println("Price of cars at this location: " + price);
@@ -532,12 +679,21 @@ public class TCPMiddlewareManager  {
                     System.out.println("Querying rooms price [xid=" + arguments.elementAt(1) + "]");
                     System.out.println("-Room Location: " + arguments.elementAt(2));
 
+                    String packetArray [] = (String[])arguments.toArray();
+                    String packet = null;
+                    for (String argum : packetArray) {
+                        packet = argum + ",";
+
+                    }
+                    packet.substring(0, packet.length() - 1);
+                    /*
+
                     String commandName = arguments.elementAt(0);
                     String id = arguments.elementAt(1);
                     String location = arguments.elementAt(2);
                     String packet = commandName+","+id+","+location;
-
-                    hotelOut.println(packet+"\n");
+*/
+                    hotelOut.println(packet);
                     String response = hotelIn.readLine();
                     outC.println(response);
                     //System.out.println("Price of rooms at this location: " + price);
@@ -550,14 +706,23 @@ public class TCPMiddlewareManager  {
                     System.out.println("-Customer ID: " + arguments.elementAt(2));
                     System.out.println("-Flight Number: " + arguments.elementAt(3));
 
+                    String packetArray [] = (String[])arguments.toArray();
+                    String packet = null;
+                    for (String argum : packetArray) {
+                        packet = argum + ",";
+
+                    }
+                    packet.substring(0, packet.length() - 1);
+                    /*
+
                     String commandName = arguments.elementAt(0);
                     String id = arguments.elementAt(1);
                     String customerID = arguments.elementAt(2);
                     String flightNum = arguments.elementAt(3);
 
                     String packet = commandName+","+id+","+customerID+","+flightNum;
-
-                    flightOut.println(packet+"\n");
+*/
+                    flightOut.println(packet);
                     String response = flightIn.readLine();
                     outC.println(response);
                     break;
@@ -569,14 +734,23 @@ public class TCPMiddlewareManager  {
                     System.out.println("-Customer ID: " + arguments.elementAt(2));
                     System.out.println("-Car Location: " + arguments.elementAt(3));
 
+                    String packetArray [] = (String[])arguments.toArray();
+                    String packet = null;
+                    for (String argum : packetArray) {
+                        packet = argum + ",";
+
+                    }
+                    packet.substring(0, packet.length() - 1);
+                    /*
+
                     String commandName = arguments.elementAt(0);
                     String id = arguments.elementAt(1);
                     String customerID = arguments.elementAt(2);
                     String location = arguments.elementAt(3);
 
                     String packet = commandName+","+id+","+customerID+","+location;
-
-                    carOut.println(packet+"\n");
+*/
+                    carOut.println(packet);
                     String response = carIn.readLine();
                     outC.println(response);
 
@@ -588,14 +762,22 @@ public class TCPMiddlewareManager  {
                     System.out.println("Reserving a room at a location [xid=" + arguments.elementAt(1) + "]");
                     System.out.println("-Customer ID: " + arguments.elementAt(2));
                     System.out.println("-Room Location: " + arguments.elementAt(3));
+                    String packetArray [] = (String[]) arguments.toArray();
+                    String packet = null;
+                    for (String argum : packetArray) {
+                        packet = argum + ",";
 
+                    }
+                    packet.substring(0, packet.length() - 1);
+                    /*
                     String commandName = arguments.elementAt(0);
                     String id = arguments.elementAt(1);
                     String customerID = arguments.elementAt(2);
                     String location = arguments.elementAt(3);
 
                     String packet = commandName+","+id+","+customerID+","+location;
-                    hotelOut.println(packet+"\n");
+                    */
+                    hotelOut.println(packet);
                     String response = hotelIn.readLine();
                     outC.println(response);
                     break;
@@ -608,36 +790,40 @@ public class TCPMiddlewareManager  {
 
                     System.out.println("Reserving an bundle [xid=" + arguments.elementAt(1) + "]");
                     System.out.println("-Customer ID: " + arguments.elementAt(2));
+
+                    String id = arguments.elementAt(1);
+                    String fCom = "ReserveFlight,";
+                    String customerID = arguments.elementAt(2);
+                    String packet = id+","+customerID+",";
+                    Boolean fSuc = true;
+
                     for (int i = 0; i < arguments.size() - 6; ++i)
                     {
                         System.out.println("-Flight Number: " + arguments.elementAt(3+i));
-                    }
-                    System.out.println("-Car Location: " + arguments.elementAt(arguments.size()-2));
-                    System.out.println("-Room Location: " + arguments.elementAt(arguments.size()-1));
-
-
-                    String id = arguments.elementAt(1);
-                    String customerID = arguments.elementAt(2);
-                    String packet = id+","+customerID+",";
-
-
-                    for (int i = 0; i < arguments.size() - 6; ++i)
-                    {
-                        flightOut.println("ReserveFlight,"+packet+arguments.elementAt(3+i));
+                        flightOut.println(fCom+packet+arguments.elementAt(3+i));
                         if((flightIn.readLine()).equals("false")) {
                             outC.println("false");
+                            fSuc = false;
                             break;
                         }
-                        //packet = packet+","+arguments.elementAt(3+i);
                     }
+                    if (fSuc == false) {
+                        break;
+                    }
+
                     String location = arguments.elementAt(arguments.size()-3);
                     String car = arguments.elementAt(arguments.size()-2);
                     String room = arguments.elementAt(arguments.size()-1);
+
+                    System.out.println("Renting a car at Location: "+location+" "+car);
+                    System.out.println("Renting a room at Location: "+location+" "+room);
+
 
                     if (car.equals("true")){
                         carOut.println("ReserveCar,"+packet+location);
                         if((carIn.readLine()).equals("false")) {
                             outC.println("false");
+                            fSuc = false;
                             break;
                         }
                     }
@@ -645,8 +831,12 @@ public class TCPMiddlewareManager  {
                         hotelOut.println("ReserveRoom,"+packet+location);
                         if((hotelIn.readLine()).equals("false")) {
                             outC.println("false");
+                            fSuc = false;
                             break;
                         }
+                    }
+                    if (fSuc == false) {
+                        break;
                     }
                     outC.println("true");
 
@@ -657,10 +847,7 @@ public class TCPMiddlewareManager  {
                     break;
                 }
                 case Quit:
-                    checkArgumentsCount(1, arguments.size());
-
-                    System.out.println("Quitting client");
-                    System.exit(0);
+                    break;
             }
         }
 

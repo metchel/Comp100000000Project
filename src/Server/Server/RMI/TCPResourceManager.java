@@ -24,7 +24,7 @@ public class TCPResourceManager extends ResourceManager {
             server = new ServerSocket(serverPort);
             try {
                 while (true) {
-                    System.out.println("hey");
+                    System.out.println("Server is running and is accepting new connections.");
                     new ActiveConnection(server.accept()).start();
                 }
             } finally {
@@ -449,6 +449,8 @@ public class TCPResourceManager extends ResourceManager {
                     break;
                 }
                 case Bundle: {
+                    System.out.println("Shouldnt be here");
+                    /*
                     if (arguments.size() < 7) {
                         System.err.println((char)27 + "[31;1mCommand exception: " + (char)27 + "[0mBundle command expects at least 7 arguments. Location \"help\" or \"help,<CommandName>\"");
                         break;
@@ -466,10 +468,13 @@ public class TCPResourceManager extends ResourceManager {
                     int id = toInt(arguments.elementAt(1));
                     int customerID = toInt(arguments.elementAt(2));
                     Vector<String> flightNumbers = new Vector<String>();
+
                     for (int i = 0; i < arguments.size() - 6; ++i)
                     {
                         flightNumbers.addElement(arguments.elementAt(3+i));
                     }
+
+
                     String location = arguments.elementAt(arguments.size()-3);
                     boolean car = toBoolean(arguments.elementAt(arguments.size()-2));
                     boolean room = toBoolean(arguments.elementAt(arguments.size()-1));
@@ -481,7 +486,9 @@ public class TCPResourceManager extends ResourceManager {
                         System.out.println("Bundle could not be reserved");
                         out.println("false");
                     }
+                    */
                     break;
+
                 }
                 case Quit:
                     checkArgumentsCount(1, arguments.size());
