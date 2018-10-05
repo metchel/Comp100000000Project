@@ -31,6 +31,7 @@ public abstract class ClientAltTest
 
         while (true)
         {
+            runTests();
             /*
             // Read the next command
             String command = "";
@@ -130,17 +131,20 @@ public abstract class ClientAltTest
 
         }
         */
-            final Map<Command, String> RESULTS = new Map<>();
+        }
+    }
 
-            try {
-                RESULTS.put(Command.AddCustomerID, testAddCustomerId());
-            } catch(Exception e) {
-                e.printStackTrace();
-            }
+    public void runTests() {
+        final Map<Command, String> RESULTS = new Map<>();
 
-            for (String result: RESULTS.entrySet()) {
-                System.out.println(result);
-            }
+        try {
+            RESULTS.put(Command.AddCustomerID, testAddCustomerId());
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+
+        for (String result: RESULTS.entrySet()) {
+            System.out.println(result);
         }
     }
 
