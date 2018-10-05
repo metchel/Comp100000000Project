@@ -33,7 +33,6 @@ public abstract class ClientAltTest
         {
             runTests();
             /*
-            // Read the next command
             String command = "";
             Vector<String> arguments = new Vector<String>();
             Vector<String> argumentsTwo = new Vector<String>();

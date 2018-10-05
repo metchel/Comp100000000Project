@@ -15,7 +15,7 @@ import java.net.Socket;
 
 public class TCPResourceManager extends ResourceManager {
     private static String serverName = "Server";
-    private static int serverPort = 1630;
+    private static int serverPort = 1632;
     static ServerSocket server;
 
 
