@@ -132,7 +132,11 @@ public abstract class ClientAltTest
         */
             final Map<Command, String> RESULTS = new Map<>();
 
-            RESULTS.put(Command.AddCustomerID, testAddCustomerId());
+            try {
+                RESULTS.put(Command.AddCustomerID, testAddCustomerId());
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
 
             for (String result: RESULTS.entrySet()) {
                 System.out.println(result);
