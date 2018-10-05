@@ -57,7 +57,7 @@ public class Customer extends RMItem
 		for (String key : m_reservations.keySet())
 		{
 			ReservedItem item = (ReservedItem) m_reservations.get(key);
-			s += + item.getCount() + " " + item.getReservableItemKey() + " $" + item.getPrice() + "\n";
+			s += + item.getCount() + " " + item.getReservableItemKey() + " $" + item.getPrice() + ",\n";
 		}
 		return s;
 	}
