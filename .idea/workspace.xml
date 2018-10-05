@@ -4,7 +4,11 @@
     <bookmark url="file://$PROJECT_DIR$/src/Client/Client/ClientAlt.java" line="58" mnemonic="8" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fac91074-0f2a-4523-b9c7-2fbb72ff4dbe" name="Default" comment="" />
+    <list default="true" id="fac91074-0f2a-4523-b9c7-2fbb72ff4dbe" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Server/Server/Middleware/TCPMiddlewareManager.java" afterPath="$PROJECT_DIR$/src/Server/Server/Middleware/TCPMiddlewareManager.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Server/Server/RMI/TCPResourceManager.java" afterPath="$PROJECT_DIR$/src/Server/Server/RMI/TCPResourceManager.java" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -38,11 +42,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TCPMiddlewareManager.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="TCPMiddlewareManager.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Server/Server/Middleware/TCPMiddlewareManager.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="204">
-              <caret line="12" column="41" lean-forward="false" selection-start-line="12" selection-start-column="41" selection-end-line="12" selection-end-column="41" />
+            <state relative-caret-position="168">
+              <caret line="14" column="40" lean-forward="false" selection-start-line="14" selection-start-column="40" selection-end-line="14" selection-end-column="40" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -50,7 +54,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TCPResourceManager.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="TCPResourceManager.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Server/Server/RMI/TCPResourceManager.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="272">
@@ -200,9 +204,9 @@
         <option value="$PROJECT_DIR$/src/Client/Client/TCPClient.java" />
         <option value="$PROJECT_DIR$/src/Client/Client/ClientAlt.java" />
         <option value="$PROJECT_DIR$/src/Server/Server/Common/ResourceManager.java" />
-        <option value="$PROJECT_DIR$/src/Server/Server/RMI/TCPResourceManager.java" />
         <option value="$PROJECT_DIR$/src/Server/run_tcp_servers.sh" />
         <option value="$PROJECT_DIR$/src/Server/Server/Middleware/TCPMiddlewareManager.java" />
+        <option value="$PROJECT_DIR$/src/Server/Server/RMI/TCPResourceManager.java" />
       </list>
     </option>
   </component>
@@ -452,12 +456,12 @@
       <workItem from="1538584324332" duration="4101000" />
       <workItem from="1538589415816" duration="173000" />
       <workItem from="1538589780759" duration="14483000" />
-      <workItem from="1538607197901" duration="8210000" />
+      <workItem from="1538607197901" duration="8635000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="109314000" />
+    <option name="totallyTimeSpent" value="109739000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1456" height="1056" extended-state="6" />
@@ -834,16 +838,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Server/Server/RMI/TCPResourceManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="16" column="40" lean-forward="false" selection-start-line="16" selection-start-column="40" selection-end-line="16" selection-end-column="40" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Server/run_tcp_servers.sh">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="34">
@@ -854,8 +848,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Server/Server/Middleware/TCPMiddlewareManager.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="12" column="41" lean-forward="false" selection-start-line="12" selection-start-column="41" selection-end-line="12" selection-end-column="41" />
+        <state relative-caret-position="168">
+          <caret line="14" column="40" lean-forward="false" selection-start-line="14" selection-start-column="40" selection-end-line="14" selection-end-column="40" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Server/Server/RMI/TCPResourceManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="16" column="40" lean-forward="false" selection-start-line="16" selection-start-column="40" selection-end-line="16" selection-end-column="40" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
