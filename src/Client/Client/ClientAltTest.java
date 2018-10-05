@@ -45,7 +45,7 @@ public abstract class ClientAltTest
 
             System.out.print((char)27 + "[32;1m\n>] " + (char)27 + "[0m");
                 //command = stdin.readLine().trim();
-            
+
             Vector<String> test_oneresults = new Vector<String>();
                 for (String[] commands : testone_commands){
                     for (String arg : commands){
