@@ -24,8 +24,8 @@ public class TCPResourceManager extends ResourceManager {
             server = new ServerSocket(serverPort);
             try {
                 while (true) {
-                    System.out.println("Server is running and is accepting new connections.");
                     new ActiveConnection(server.accept()).start();
+                    System.out.println("Server is running and is accepting new connections.");
                 }
             } finally {
                 server.close();

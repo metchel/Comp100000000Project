@@ -182,7 +182,7 @@ public class TCPMiddlewareManager  {
                     System.out.println("-Flight Seats: " + arguments.elementAt(3));
                     System.out.println("-Flight Price: " + arguments.elementAt(4));
 
-                    String packetArray [] = (String[])arguments.toArray();
+                    String packetArray [] = arguments.toArray(new String[arguments.size()]);
                     String packet = null;
                     for (String argum : packetArray) {
                         packet = argum + ",";
@@ -211,7 +211,7 @@ public class TCPMiddlewareManager  {
                     System.out.println("-Number of Cars: " + arguments.elementAt(3));
                     System.out.println("-Car Price: " + arguments.elementAt(4));
 
-                    String packetArray [] = (String[])arguments.toArray();
+                    String packetArray [] = arguments.toArray(new String[arguments.size()]);
                     String packet = null;
                     for (String argum : packetArray) {
                         packet = argum + ",";
@@ -240,7 +240,7 @@ public class TCPMiddlewareManager  {
                     System.out.println("-Number of Rooms: " + arguments.elementAt(3));
                     System.out.println("-Room Price: " + arguments.elementAt(4));
 
-                    String packetArray [] = (String[])arguments.toArray();
+                    String packetArray [] = arguments.toArray(new String[arguments.size()]);
                     String packet = null;
                     for (String argum : packetArray) {
                         packet = argum + ",";
@@ -363,7 +363,7 @@ public class TCPMiddlewareManager  {
                     System.out.println("Deleting a flight [xid=" + arguments.elementAt(1) + "]");
                     System.out.println("-Flight Number: " + arguments.elementAt(2));
 
-                    String packetArray [] = (String[])arguments.toArray();
+                    String packetArray [] = arguments.toArray(new String[arguments.size()]);
                     String packet = null;
                     for (String argum : packetArray) {
                         packet = argum + ",";
@@ -389,7 +389,7 @@ public class TCPMiddlewareManager  {
                     System.out.println("Deleting all cars at a particular location [xid=" + arguments.elementAt(1) + "]");
                     System.out.println("-Car Location: " + arguments.elementAt(2));
 
-                    String packetArray [] = (String[])arguments.toArray();
+                    String packetArray [] = arguments.toArray(new String[arguments.size()]);
                     String packet = null;
                     for (String argum : packetArray) {
                         packet = argum + ",";
@@ -414,7 +414,7 @@ public class TCPMiddlewareManager  {
                     System.out.println("Deleting all rooms at a particular location [xid=" + arguments.elementAt(1) + "]");
                     System.out.println("-Car Location: " + arguments.elementAt(2));
 
-                    String packetArray [] = (String[])arguments.toArray();
+                    String packetArray [] = arguments.toArray(new String[arguments.size()]);
                     String packet = null;
                     for (String argum : packetArray) {
                         packet = argum + ",";
@@ -482,7 +482,7 @@ public class TCPMiddlewareManager  {
                     System.out.println("Querying a flight [xid=" + arguments.elementAt(1) + "]");
                     System.out.println("-Flight Number: " + arguments.elementAt(2));
 
-                    String packetArray [] = (String[]) arguments.toArray();
+                    String packetArray [] = arguments.toArray(new String[arguments.size()]);
                     String packet = null;
                     for (String argum : packetArray) {
                         packet = argum + ",";
@@ -509,7 +509,7 @@ public class TCPMiddlewareManager  {
                     System.out.println("Querying cars location [xid=" + arguments.elementAt(1) + "]");
                     System.out.println("-Car Location: " + arguments.elementAt(2));
 
-                    String packetArray [] = (String[])arguments.toArray();
+                    String packetArray [] = arguments.toArray(new String[arguments.size()]);
                     String packet = null;
                     for (String argum : packetArray) {
                         packet = argum + ",";
@@ -536,7 +536,7 @@ public class TCPMiddlewareManager  {
                     System.out.println("Querying rooms location [xid=" + arguments.elementAt(1) + "]");
                     System.out.println("-Room Location: " + arguments.elementAt(2));
 
-                    String packetArray [] = (String[])arguments.toArray();
+                    String packetArray [] = arguments.toArray(new String[arguments.size()]);
                     String packet = null;
                     for (String argum : packetArray) {
                         packet = argum + ",";
@@ -566,7 +566,7 @@ public class TCPMiddlewareManager  {
                     StringBuffer stringBuff = new StringBuffer();
                     String line = null;
 
-                    String packetArray [] = (String[])arguments.toArray();
+                    String packetArray [] = arguments.toArray(new String[arguments.size()]);
                     String packet = null;
                     for (String argum : packetArray) {
                         packet = argum + ",";
@@ -627,7 +627,7 @@ public class TCPMiddlewareManager  {
                     System.out.println("Querying a flight price [xid=" + arguments.elementAt(1) + "]");
                     System.out.println("-Flight Number: " + arguments.elementAt(2));
 
-                    String packetArray [] = (String[])arguments.toArray();
+                    String packetArray [] = arguments.toArray(new String[arguments.size()]);
                     String packet = null;
                     for (String argum : packetArray) {
                         packet = argum + ",";
@@ -653,7 +653,7 @@ public class TCPMiddlewareManager  {
                     System.out.println("Querying cars price [xid=" + arguments.elementAt(1) + "]");
                     System.out.println("-Car Location: " + arguments.elementAt(2));
 
-                    String packetArray [] = (String[])arguments.toArray();
+                    String packetArray [] = arguments.toArray(new String[arguments.size()]);
                     String packet = null;
                     for (String argum : packetArray) {
                         packet = argum + ",";
@@ -679,7 +679,7 @@ public class TCPMiddlewareManager  {
                     System.out.println("Querying rooms price [xid=" + arguments.elementAt(1) + "]");
                     System.out.println("-Room Location: " + arguments.elementAt(2));
 
-                    String packetArray [] = (String[])arguments.toArray();
+                    String packetArray [] = arguments.toArray(new String[arguments.size()]);
                     String packet = null;
                     for (String argum : packetArray) {
                         packet = argum + ",";
@@ -706,7 +706,7 @@ public class TCPMiddlewareManager  {
                     System.out.println("-Customer ID: " + arguments.elementAt(2));
                     System.out.println("-Flight Number: " + arguments.elementAt(3));
 
-                    String packetArray [] = (String[])arguments.toArray();
+                    String packetArray [] = arguments.toArray(new String[arguments.size()]);
                     String packet = null;
                     for (String argum : packetArray) {
                         packet = argum + ",";
@@ -734,7 +734,7 @@ public class TCPMiddlewareManager  {
                     System.out.println("-Customer ID: " + arguments.elementAt(2));
                     System.out.println("-Car Location: " + arguments.elementAt(3));
 
-                    String packetArray [] = (String[])arguments.toArray();
+                    String packetArray [] = arguments.toArray(new String[arguments.size()]);
                     String packet = null;
                     for (String argum : packetArray) {
                         packet = argum + ",";
@@ -762,7 +762,7 @@ public class TCPMiddlewareManager  {
                     System.out.println("Reserving a room at a location [xid=" + arguments.elementAt(1) + "]");
                     System.out.println("-Customer ID: " + arguments.elementAt(2));
                     System.out.println("-Room Location: " + arguments.elementAt(3));
-                    String packetArray [] = (String[]) arguments.toArray();
+                    String packetArray [] = arguments.toArray(new String[arguments.size()]);
                     String packet = null;
                     for (String argum : packetArray) {
                         packet = argum + ",";
