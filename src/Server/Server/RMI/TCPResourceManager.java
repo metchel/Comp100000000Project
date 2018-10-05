@@ -14,7 +14,7 @@ import java.net.Socket;
 
 public class TCPResourceManager extends ResourceManager {
     private static String serverName = "Server";
-    private static int serverPort = 1606;
+    private static int serverPort = 1607;
     static ServerSocket server;
 
     //private static String s_rmiPrefix = "group30";
