@@ -69,6 +69,9 @@ public abstract class ClientAltTest
                     }
                 }
             }
+            catch (IOException io) {
+                System.exit(1);
+            }
             if (test_oneresults.get(5) != ("Bill for customer 69,\n" +
                 "1 room-mass $342,\n" +
                 "1 flight-999 $123,\n" +
@@ -96,6 +99,9 @@ public abstract class ClientAltTest
                     }
                 }
             }
+            catch (IOException io) {
+                System.exit(1);
+            }
             if (test_tworesults.get(0) != "499"){
                 System.out.println("Did not pass test two");
             }
@@ -119,23 +125,16 @@ public abstract class ClientAltTest
                     }
                 }
             }
+            catch (IOException io) {
+                System.exit(1);
+            }
             if (test_threeresults.get(1) != "false"){
                 System.out.println("Did not pass test three");
             }
             else {
                 System.out.println("Passed test three.")
             }
-
-
-
-            catch (IllegalArgumentException e) {
-                System.err.println((char)27 + "[31;1mCommand exception: " + (char)27 + "[0m" + e.getLocalizedMessage());
-            }
-
-            catch (Exception e) {
-                System.err.println((char)27 + "[31;1mCommand exception: " + (char)27 + "[0mUncaught exception");
-                e.printStackTrace();
-            }
+            
         }
     }
 
