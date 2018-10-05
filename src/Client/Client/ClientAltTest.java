@@ -51,13 +51,13 @@ public abstract class ClientAltTest
                     for (String arg : commands){
                         Vector<String> temp = new Vector<String>();
                         temp.add(arg);
-                        Command cmd = Command.fromString((String)temp.elementAt(0));
-                        try {
-                           test_oneresults.add(execute(cmd, temp));
-                        }
-                        catch(Exception e){
-                            e.printStackTrace();
-                        }
+                    }
+                    Command cmd = Command.fromString((String)temp.elementAt(0));
+                    try {
+                        test_oneresults.add(execute(cmd, temp));
+                    }
+                    catch(Exception e){
+                        e.printStackTrace();
                     }
                 }
 
@@ -79,12 +79,12 @@ public abstract class ClientAltTest
                     for (String arg : commands) {
                         Vector<String> temp = new Vector<String>();
                         temp.add(arg);
-                        Command cmd = Command.fromString((String) temp.elementAt(0));
-                        try {
-                            test_tworesults.add(execute(cmd, temp));
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                    }
+                    Command cmd = Command.fromString((String) temp.elementAt(0));
+                    try {
+                        test_tworesults.add(execute(cmd, temp));
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
             if (test_tworesults.get(0) != "499"){
@@ -100,13 +100,14 @@ public abstract class ClientAltTest
                     for (String arg : commands){
                         Vector<String> temp = new Vector<String>();
                         temp.add(arg);
-                        Command cmd = Command.fromString((String)temp.elementAt(0));
-                        try {
-                            test_threeresults.add(execute(cmd, temp));
-                        }
-                        catch(Exception e){
-                            e.printStackTrace();
-                        }
+
+                    }
+                    Command cmd = Command.fromString((String)temp.elementAt(0));
+                    try {
+                        test_threeresults.add(execute(cmd, temp));
+                    }
+                    catch(Exception e){
+                        e.printStackTrace();
                     }
                 }
 
