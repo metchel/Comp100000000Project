@@ -12,7 +12,7 @@ public class TCPMiddlewareManager  {
 
     private static String[] serverNames = new String[4];
     private static String[] rmNames = new String[]{"Flights","Cars","Rooms","Customers"};
-    private static int serverPort = 1605;
+    private static int serverPort = 1606;
     Socket carRM;
     Socket flightRM;
     Socket hotelRM;
@@ -615,7 +615,7 @@ public class TCPMiddlewareManager  {
                     //stringBuff.append(System.lineSeparator());
                     //line = stringBuff.toString();
                     String resp = stringBuff.toString();
-                    System.out.println(resp);
+                   // System.out.println(resp);
 
 
                     outC.println(resp);
