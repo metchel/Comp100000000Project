@@ -31,11 +31,12 @@ public abstract class ClientAltTest
 
         while (true)
         {
+            /**
             // Read the next command
             String command = "";
             Vector<String> arguments = new Vector<String>();
             Vector<String> argumentsTwo = new Vector<String>();
-            String[][] testone_commands = {{"AddCustomerID","10","111"},{"AddFlight","10","737","1000","499"},
+            String[][] testone_commands = {{"AddCustomerID, 10, 111"},{"AddFlight","10","737","1000","499"},
                     {"AddRooms","10","Montreal","500","99"},{"AddCars","10","Montreal","500","49"},{"Bundle","10","111","737","Montreal","true","true"},
                     {"QueryCustomer","10","111"}};
 
@@ -56,6 +57,7 @@ public abstract class ClientAltTest
                     }
                     Command cmd = Command.fromString((String)t1.elementAt(0));
                     try {
+                        t1.remove(0);
                         test_oneresults.add(execute(cmd, t1));
                     }
                     catch(Exception e){
@@ -87,6 +89,7 @@ public abstract class ClientAltTest
                     }
                     Command cmd = Command.fromString((String) t2.elementAt(0));
                     try {
+                        t2.remove(0);
                         test_tworesults.add(execute(cmd, t2));
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -110,6 +113,7 @@ public abstract class ClientAltTest
                     }
                     Command cmd = Command.fromString((String)t3.elementAt(0));
                     try {
+                        t3.remove(0);
                         test_threeresults.add(execute(cmd, t3));
                     }
                     catch(Exception e){
@@ -125,6 +129,29 @@ public abstract class ClientAltTest
             }
 
         }
+        */
+            final Map<Command, String> RESULTS = new Map<>();
+
+            RESULTS.put(Command.AddCustomerID, testAddCustomerId());
+
+            for (String result: RESULTS.entrySet()) {
+                System.out.println(result);
+            }
+        }
+    }
+
+    public String testAddCustomerId() {
+        String[] testArgs = {"AddCustomer", "10", "111"};
+        Vector<String> testVector = new Vector<String>();
+
+        for (String arg: testArgs) {
+            testVector.add(arg);
+        }
+
+        Command cmd = testVector.get(0);
+        testVector.remove(0);
+
+        return execute(cmd, testVector);
     }
 
     public String execute(Command cmd, Vector<String> arguments) throws IOException, NumberFormatException
