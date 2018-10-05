@@ -23,6 +23,7 @@ public class TCPResourceManager extends ResourceManager {
         try {
             server = new ServerSocket(serverPort);
             try {
+                System.out.println("Server is running and is looking for its first connection.");
                 while (true) {
                     new ActiveConnection(server.accept()).start();
                     System.out.println("Server is running and is accepting new connections.");
@@ -117,14 +118,6 @@ public class TCPResourceManager extends ResourceManager {
             {
                 case Help:
                 {
-                /*if (arguments.size() == 1) {
-                    System.out.println(Command.description());
-                } else if (arguments.size() == 2) {
-                    Command l_cmd = Command.fromString((String)arguments.elementAt(1));
-                    System.out.println(l_cmd.toString());
-                } else {
-                    System.err.println((char)27 + "[31;1mCommand exception: " + (char)27 + "[0mImproper use of help command. Location \"help\" or \"help,<CommandName>\"");
-                }*/
                     break;
                 }
                 case AddFlight: {
@@ -199,18 +192,8 @@ public class TCPResourceManager extends ResourceManager {
                     System.out.println("Adding a new customer [xid=" + arguments.elementAt(1) + "]");
 
                     int id = toInt(arguments.elementAt(1));
-                   /* int customerID = Integer.parseInt(String.valueOf(id) +
-                            String.valueOf(Calendar.getInstance().get(Calendar.MILLISECOND)) +
-                            String.valueOf(Math.round(Math.random() * 100 + 1)));*/
 
                     int customer = rm.newCustomer(id);
-                    /*if (rm.newCustomer(id, customerID)) {
-                        System.out.println("Add customer ID: " + customerID);
-                        out.println("true");
-                    } else {
-                        System.out.println("Customer could not be added");
-                        out.println("false");
-                    }*/
 
                     System.out.println("Add customer ID: " + customer);
                     out.println("true");
@@ -466,43 +449,6 @@ public class TCPResourceManager extends ResourceManager {
                 }
                 case Bundle: {
                     System.out.println("Shouldnt be here");
-                    /*
-                    if (arguments.size() < 7) {
-                        System.err.println((char)27 + "[31;1mCommand exception: " + (char)27 + "[0mBundle command expects at least 7 arguments. Location \"help\" or \"help,<CommandName>\"");
-                        break;
-                    }
-
-                    System.out.println("Reserving an bundle [xid=" + arguments.elementAt(1) + "]");
-                    System.out.println("-Customer ID: " + arguments.elementAt(2));
-                    for (int i = 0; i < arguments.size() - 6; ++i)
-                    {
-                        System.out.println("-Flight Number: " + arguments.elementAt(3+i));
-                    }
-                    System.out.println("-Car Location: " + arguments.elementAt(arguments.size()-2));
-                    System.out.println("-Room Location: " + arguments.elementAt(arguments.size()-1));
-
-                    int id = toInt(arguments.elementAt(1));
-                    int customerID = toInt(arguments.elementAt(2));
-                    Vector<String> flightNumbers = new Vector<String>();
-
-                    for (int i = 0; i < arguments.size() - 6; ++i)
-                    {
-                        flightNumbers.addElement(arguments.elementAt(3+i));
-                    }
-
-
-                    String location = arguments.elementAt(arguments.size()-3);
-                    boolean car = toBoolean(arguments.elementAt(arguments.size()-2));
-                    boolean room = toBoolean(arguments.elementAt(arguments.size()-1));
-
-                    if (rm.bundle(id, customerID, flightNumbers, location, car, room)) {
-                        System.out.println("Bundle Reserved");
-                        out.println("true");
-                    } else {
-                        System.out.println("Bundle could not be reserved");
-                        out.println("false");
-                    }
-                    */
                     break;
 
                 }

@@ -196,14 +196,7 @@ public class TCPMiddlewareManager  {
                     }
                     packet.substring(0, packet.length() - 1);
 
-                   /* String commandName = arguments.elementAt(0);
-                    String id = arguments.elementAt(1);
-                    String flightNum = arguments.elementAt(2);
-                    String flightSeats = arguments.elementAt(3);
-                    String flightPrice = arguments.elementAt(4);
 
-                    String packet = commandName+","+id+","+flightNum+","+flightSeats+","+flightPrice;
-                    */
                     flightOut.println(packet);
                     String response = flightIn.readLine();
                     outC.println(response);
@@ -224,15 +217,7 @@ public class TCPMiddlewareManager  {
 
                     }
                     packet.substring(0, packet.length() - 1);
-/*
-                    String commandName = arguments.elementAt(0);
-                    String id = arguments.elementAt(1);
-                    String location = arguments.elementAt(2);
-                    String numCars = arguments.elementAt(3);
-                    String price = arguments.elementAt(4);
 
-                    String packet = commandName+","+id+","+location+","+numCars+","+price;
-                    */
                     carOut.println(packet);
                     String response = carIn.readLine();
                     outC.println(response);
@@ -252,15 +237,7 @@ public class TCPMiddlewareManager  {
                         packet = packet + argum + ",";
                     }
                     packet.substring(0, packet.length() - 1);
-                    /*
-                    String commandName = arguments.elementAt(0);
-                    String id = arguments.elementAt(1);
-                    String location = arguments.elementAt(2);
-                    String numRooms = arguments.elementAt(3);
-                    String price = arguments.elementAt(4);
 
-                    String packet = commandName+","+id+","+location+","+numRooms+","+price;
-                    */
                     hotelOut.println(packet);
                     String response = hotelIn.readLine();
                     outC.println(response);
@@ -312,7 +289,6 @@ public class TCPMiddlewareManager  {
                     }
 
                     outC.println(response);
-                    //System.out.println("Add customer ID: " + customer);
                     break;
                 }
                 case AddCustomerID: {
@@ -376,14 +352,7 @@ public class TCPMiddlewareManager  {
 
                     }
                     packet.substring(0, packet.length() - 1);
-                    /*
 
-                    String commandName = arguments.elementAt(0);
-                    String id = arguments.elementAt(1);
-                    String flightNum = arguments.elementAt(2);
-
-                    String packet = commandName+","+id+","+flightNum;
-*/
                     flightOut.println(packet);
                     String response = flightIn.readLine();
                     outC.println(response);
@@ -402,13 +371,7 @@ public class TCPMiddlewareManager  {
 
                     }
                     packet.substring(0, packet.length() - 1);
-                    /*
-                    String commandName = arguments.elementAt(0);
-                    String id = arguments.elementAt(1);
-                    String location = arguments.elementAt(2);
 
-                    String packet = commandName+","+id+","+location;
-*/
                     carOut.println(packet);
                     String response = carIn.readLine();
                     outC.println(response);
@@ -427,13 +390,7 @@ public class TCPMiddlewareManager  {
 
                     }
                     packet.substring(0, packet.length() - 1);
-                    /*
-                    String commandName = arguments.elementAt(0);
-                    String id = arguments.elementAt(1);
-                    String location = arguments.elementAt(2);
 
-                    String packet = commandName+","+id+","+location;
-*/
                     hotelOut.println(packet);
                     String response = hotelIn.readLine();
                     outC.println(response);
@@ -495,15 +452,7 @@ public class TCPMiddlewareManager  {
 
                     }
                     packet.substring(0, packet.length() - 1);
-                    /*
 
-                    String commandName = arguments.elementAt(0);
-                    String id = arguments.elementAt(1);
-                    String flightNum = arguments.elementAt(2);
-                    String packet = commandName+","+id+","+flightNum;
-*/
-
-                    // System.out.println("Number of seats available: " + seats);
                     flightOut.println(packet);
                     String response = flightIn.readLine();
                     outC.println(response);
@@ -522,14 +471,7 @@ public class TCPMiddlewareManager  {
 
                     }
                     packet.substring(0, packet.length() - 1);
-                    /*
 
-                    String commandName = arguments.elementAt(0);
-                    String id = arguments.elementAt(1);
-                    String location = arguments.elementAt(2);
-
-                    String packet = commandName+","+id+","+location;
-*/
                     carOut.println(packet);
                     String response = carIn.readLine();
                     outC.println(response);
@@ -549,14 +491,7 @@ public class TCPMiddlewareManager  {
 
                     }
                     packet.substring(0, packet.length() - 1);
-                    /*
 
-                    String commandName = arguments.elementAt(0);
-                    String id = arguments.elementAt(1);
-                    String location = arguments.elementAt(2);
-
-                    String packet = commandName+","+id+","+location;
-                    */
                     hotelOut.println(packet);
                     String response = hotelIn.readLine();
                     outC.println(response);
@@ -579,14 +514,6 @@ public class TCPMiddlewareManager  {
 
                     }
                     packet.substring(0, packet.length() - 1);
-                    /*
-
-
-                    String commandName = arguments.elementAt(0);
-                    String id = arguments.elementAt(1);
-                    String customerID = arguments.elementAt(2);
-                    String packet = commandName+","+id+","+customerID;
-                    */
 
                     hotelOut.println(packet);
                     while((line = hotelIn.readLine()) != null){
@@ -596,9 +523,7 @@ public class TCPMiddlewareManager  {
                             break;
                         }
                     }
-                    //stringBuff.append(System.lineSeparator());
-                    //String respH = stringBuff.toString();
-                    //System.out.println("respH"+respH);
+
 
                     flightOut.println(packet);
                     while((line = flightIn.readLine()) != null){
@@ -607,9 +532,6 @@ public class TCPMiddlewareManager  {
                             break;
                         }
                     }
-                    //stringBuff.append(System.lineSeparator());
-                    //String respF = stringBuff.toString();
-                    //System.out.println("respF"+respF);
 
                     carOut.println(packet);
                     while((line = carIn.readLine()) != null){
@@ -618,10 +540,8 @@ public class TCPMiddlewareManager  {
                             break;
                         }
                     }
-                    //stringBuff.append(System.lineSeparator());
-                    //line = stringBuff.toString();
+
                     String resp = stringBuff.toString();
-                   // System.out.println(resp);
 
 
                     outC.println(resp);
@@ -640,17 +560,11 @@ public class TCPMiddlewareManager  {
 
                     }
                     packet.substring(0, packet.length() - 1);
-                    /*
 
-                    String commandName = arguments.elementAt(0);
-                    String id = arguments.elementAt(1);
-                    String flightNum = arguments.elementAt(2);
-                    String packet = commandName+","+id+","+flightNum;
-*/
                     flightOut.println(packet);
                     String response = flightIn.readLine();
                     outC.println(response);
-                    //System.out.println("Price of a seat: " + price);
+
                     break;
                 }
                 case QueryCarsPrice: {
@@ -665,17 +579,11 @@ public class TCPMiddlewareManager  {
                         packet = packet + argum + ",";
                     }
                     packet.substring(0, packet.length() - 1);
-                    /*
 
-                    String commandName = arguments.elementAt(0);
-                    String id = arguments.elementAt(1);
-                    String location = arguments.elementAt(2);
-                    String packet = commandName+","+id+","+location;
-*/
                     carOut.println(packet);
                     String response = carIn.readLine();
                     outC.println(response);
-                    // System.out.println("Price of cars at this location: " + price);
+
                     break;
                 }
                 case QueryRoomsPrice: {
@@ -691,17 +599,11 @@ public class TCPMiddlewareManager  {
 
                     }
                     packet.substring(0, packet.length() - 1);
-                    /*
 
-                    String commandName = arguments.elementAt(0);
-                    String id = arguments.elementAt(1);
-                    String location = arguments.elementAt(2);
-                    String packet = commandName+","+id+","+location;
-*/
                     hotelOut.println(packet);
                     String response = hotelIn.readLine();
                     outC.println(response);
-                    //System.out.println("Price of rooms at this location: " + price);
+
                     break;
                 }
                 case ReserveFlight: {
@@ -718,15 +620,7 @@ public class TCPMiddlewareManager  {
 
                     }
                     packet.substring(0, packet.length() - 1);
-                    /*
 
-                    String commandName = arguments.elementAt(0);
-                    String id = arguments.elementAt(1);
-                    String customerID = arguments.elementAt(2);
-                    String flightNum = arguments.elementAt(3);
-
-                    String packet = commandName+","+id+","+customerID+","+flightNum;
-*/
                     flightOut.println(packet);
                     String response = flightIn.readLine();
                     outC.println(response);
@@ -746,15 +640,7 @@ public class TCPMiddlewareManager  {
 
                     }
                     packet.substring(0, packet.length() - 1);
-                    /*
 
-                    String commandName = arguments.elementAt(0);
-                    String id = arguments.elementAt(1);
-                    String customerID = arguments.elementAt(2);
-                    String location = arguments.elementAt(3);
-
-                    String packet = commandName+","+id+","+customerID+","+location;
-*/
                     carOut.println(packet);
                     String response = carIn.readLine();
                     outC.println(response);
@@ -774,14 +660,7 @@ public class TCPMiddlewareManager  {
 
                     }
                     packet.substring(0, packet.length() - 1);
-                    /*
-                    String commandName = arguments.elementAt(0);
-                    String id = arguments.elementAt(1);
-                    String customerID = arguments.elementAt(2);
-                    String location = arguments.elementAt(3);
 
-                    String packet = commandName+","+id+","+customerID+","+location;
-                    */
                     hotelOut.println(packet);
                     String response = hotelIn.readLine();
                     outC.println(response);
@@ -845,10 +724,6 @@ public class TCPMiddlewareManager  {
                     }
                     outC.println("true");
 
-                    //packet = packet + location + car + room;
-                   // customerOut.println(packet+"\n");
-                    //String response = customerIn.readLine();
-                   // System.out.println(response);
                     break;
                 }
                 case Quit:

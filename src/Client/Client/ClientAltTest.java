@@ -7,14 +7,14 @@ import java.io.*;
 import java.net.*;
 
 
-public abstract class ClientAlt
+public abstract class ClientAltTest
 {
     //IResourceManager m_resourceManager = null;
     Socket server = null;
     BufferedReader in;
     PrintWriter out;
 
-    public ClientAlt()
+    public ClientAltTest()
     {
         super();
     }
@@ -27,16 +27,25 @@ public abstract class ClientAlt
         System.out.println();
         System.out.println("Location \"help\" for list of supported commands");
 
-        BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
+        //BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
 
         while (true)
         {
             // Read the next command
             String command = "";
             Vector<String> arguments = new Vector<String>();
+            Vector<String> argumentsTwo = new Vector<String>();
+            String[][] testone_commands = {{"AddCustomerID","10","111"},{"AddFlight","10","737","1000","499"},
+                    {"AddRooms","10","Montreal","500","99"},{"AddCars","10","Montreal","500","49"},{"Bundle","10","111","737","Montreal","true","true"},
+                    {"QueryCustomer","10","111"}};
+
+            String[][] testtwo_commands = {{"QueryRooms","10","Montreal"}};
+
+            String[][] testthree_commands = {{"DeleteFlight","10","737"},{"Bundle","10","111","737","Montreal","false","false"}};
+
             try {
                 System.out.print((char)27 + "[32;1m\n>] " + (char)27 + "[0m");
-                command = stdin.readLine().trim();
+                //command = stdin.readLine().trim();
             }
             catch (IOException io) {
                 System.err.println((char)27 + "[31;1mClient exception: " + (char)27 + "[0m" + io.getLocalizedMessage());
@@ -44,17 +53,81 @@ public abstract class ClientAlt
                 System.exit(1);
             }
 
+            Vector<String> test_oneresults = new Vector<String>();
             try {
-                arguments = parse(command);
-                Command cmd = Command.fromString((String)arguments.elementAt(0));
-                try {
-                    execute(cmd, arguments);
+                for (String[] command : testone_commands){
+                    for (String arg : command){
+                        Vector<String> temp = new Vector<String>();
+                        temp.add(arg);
+                        Command cmd = Command.fromString((String)command.elementAt(0));
+                        try {
+                           test_oneresults.add(execute(cmd, temp));
+                        }
+                        catch(Exception e){
+                            e.printStackTrace();
+                        }
+                    }
                 }
-                catch(Exception e){
-                    e.printStackTrace();
-                }
-
             }
+            if (test_oneresults.get(5) != ("Bill for customer 69,\n" +
+                "1 room-mass $342,\n" +
+                "1 flight-999 $123,\n" +
+                "1 car-mass $123,")){
+                System.out.println("Did not pass test one");
+            }
+            else {
+                System.out.println("Passed test one.")
+            }
+
+
+            Vector<String> test_tworesults = new Vector<String>();
+            try {
+                for (String[] command : testtwo_commands){
+                    for (String arg : command){
+                        Vector<String> temp = new Vector<String>();
+                        temp.add(arg);
+                        Command cmd = Command.fromString((String)command.elementAt(0));
+                        try {
+                            test_tworesults.add(execute(cmd, temp));
+                        }
+                        catch(Exception e){
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+            if (test_tworesults.get(0) != "499"){
+                System.out.println("Did not pass test two");
+            }
+            else {
+                System.out.println("Passed test two.")
+            }
+
+            Vector<String> test_threeresults = new Vector<String>();
+            try {
+                for (String[] command : testthree_commands){
+                    for (String arg : command){
+                        Vector<String> temp = new Vector<String>();
+                        temp.add(arg);
+                        Command cmd = Command.fromString((String)command.elementAt(0));
+                        try {
+                            test_threeresults.add(execute(cmd, temp));
+                        }
+                        catch(Exception e){
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+            if (test_threeresults.get(1) != "false"){
+                System.out.println("Did not pass test three");
+            }
+            else {
+                System.out.println("Passed test three.")
+            }
+
+
+
             catch (IllegalArgumentException e) {
                 System.err.println((char)27 + "[31;1mCommand exception: " + (char)27 + "[0m" + e.getLocalizedMessage());
             }
@@ -66,7 +139,7 @@ public abstract class ClientAlt
         }
     }
 
-    public void execute(Command cmd, Vector<String> arguments) throws IOException, NumberFormatException
+    public String execute(Command cmd, Vector<String> arguments) throws IOException, NumberFormatException
     {
         switch (cmd)
         {
@@ -99,12 +172,7 @@ public abstract class ClientAlt
                 String packet = commandName+","+id+","+flightNum+","+flightSeats+","+flightPrice;
                 out.println(packet+"\n");
                 String response = in.readLine();
-                //System.out.println(response);
-                if (response.equals("true")){
-                    System.out.println("Flight added");
-                }else{
-                    System.out.println("Flight could not be added");
-                }
+                return response;
 
                 break;
             }
@@ -125,12 +193,7 @@ public abstract class ClientAlt
                 String packet = commandName+","+id+","+location+","+numCars+","+price;
                 out.println(packet+"\n");
                 String response = in.readLine();
-                //System.out.println(response);
-                if (response.equals("true")){
-                    System.out.println("Cars added");
-                }else{
-                    System.out.println("Cars could not be added");
-                }
+                return response;
                 break;
             }
             case AddRooms: {
@@ -150,12 +213,7 @@ public abstract class ClientAlt
                 String packet = commandName+","+id+","+location+","+numRooms+","+price;
                 out.println(packet+"\n");
                 String response = in.readLine();
-                //System.out.println(response);
-                if (response.equals("true")){
-                    System.out.println("Rooms added");
-                }else{
-                    System.out.println("Rooms could not be added");
-                }
+                return response;
                 break;
             }
             case AddCustomer: {
@@ -170,7 +228,7 @@ public abstract class ClientAlt
                 out.println(packet+"\n");
                 String response = in.readLine();
                 //System.out.println(response);
-                System.out.println("Add customer ID: " + id);
+                return response;
                 break;
             }
             case AddCustomerID: {
@@ -187,11 +245,7 @@ public abstract class ClientAlt
                 out.println(packet+"\n");
                 String response = in.readLine();
                 //System.out.println(response);
-                if (response.equals("true")){
-                    System.out.println("Add customer ID: " + customerID);
-                }else{
-                    System.out.println("Customer could not be added");
-                }
+                return response;
 
                 break;
             }
@@ -209,11 +263,7 @@ public abstract class ClientAlt
                 out.println(packet+"\n");
                 String response = in.readLine();
                 //System.out.println(response);
-                if (response.equals("true")){
-                    System.out.println("Flight Deleted");
-                }else{
-                    System.out.println("Flight could not be deleted");
-                }
+                return response;
                 break;
             }
             case DeleteCars: {
@@ -230,11 +280,7 @@ public abstract class ClientAlt
                 out.println(packet+"\n");
                 String response = in.readLine();
                 //System.out.println(response);
-                if (response.equals("true")){
-                    System.out.println("Cars Deleted");
-                }else{
-                    System.out.println("Cars could not be deleted");
-                }
+                return response;
                 break;
             }
             case DeleteRooms: {
@@ -251,11 +297,7 @@ public abstract class ClientAlt
                 out.println(packet+"\n");
                 String response = in.readLine();
                 //System.out.println(response);
-                if (response.equals("true")){
-                    System.out.println("Rooms Deleted");
-                }else{
-                    System.out.println("Rooms could not be deleted");
-                }
+                return response;
                 break;
             }
             case DeleteCustomer: {
@@ -272,11 +314,7 @@ public abstract class ClientAlt
                 out.println(packet+"\n");
                 String response = in.readLine();
                 //System.out.println(response);
-                if (response.equals("true")){
-                    System.out.println("Customer Deleted");
-                }else{
-                    System.out.println("Customer could not be deleted");
-                }
+                return response;
                 break;
             }
             case QueryFlight: {
@@ -295,7 +333,7 @@ public abstract class ClientAlt
                 String response = in.readLine();
                 System.out.println("Number of seats available: "+response);
                 //System.out.println(response);
-                break;
+                return response;
             }
             case QueryCars: {
                 checkArgumentsCount(3, arguments.size());
@@ -313,7 +351,7 @@ public abstract class ClientAlt
                 //System.out.println(response);
                 System.out.println("Number of cars at this location: "+response);
                // System.out.println("Number of cars at this location: " + numCars);
-                break;
+                return response;
             }
             case QueryRooms: {
                 checkArgumentsCount(3, arguments.size());
@@ -331,7 +369,7 @@ public abstract class ClientAlt
                 //System.out.println(response);
                 System.out.println("Number of rooms at this location: "+response);
                 //System.out.println("Number of rooms at this location: " + numRoom);
-                break;
+                return response;
             }
             case QueryCustomer: {
                 checkArgumentsCount(3, arguments.size());
@@ -349,7 +387,7 @@ public abstract class ClientAlt
                 String test = response.replaceAll(keyword,"\n");
                 System.out.println(keyword+","+test);
                 //System.out.print(bill);
-                break;
+                return response;
             }
             case QueryFlightPrice: {
                 checkArgumentsCount(3, arguments.size());
@@ -365,7 +403,7 @@ public abstract class ClientAlt
                 String response = in.readLine();
                 //System.out.println(response);
                 System.out.println("Price of a seat: " + response);
-                break;
+                return response;
             }
             case QueryCarsPrice: {
                 checkArgumentsCount(3, arguments.size());
@@ -381,7 +419,7 @@ public abstract class ClientAlt
                 String response = in.readLine();
                 //System.out.println(response);
                 System.out.println("Price of cars at this location: " + response);
-                break;
+                return response;
             }
             case QueryRoomsPrice: {
                 checkArgumentsCount(3, arguments.size());
@@ -397,7 +435,7 @@ public abstract class ClientAlt
                 String response = in.readLine();
                 //System.out.println(response);
                 System.out.println("Price of rooms at this location: " + response);
-                break;
+                return response;
             }
             case ReserveFlight: {
                 checkArgumentsCount(4, arguments.size());
@@ -415,12 +453,7 @@ public abstract class ClientAlt
                 out.println(packet+"\n");
                 String response = in.readLine();
                 //System.out.println(response);
-                if (response.equals("true")){
-                    System.out.println("Flight Reserved");
-                }else{
-                    System.out.println("Flight could not be reserved");
-                }
-                break;
+                return response;
             }
             case ReserveCar: {
                 checkArgumentsCount(4, arguments.size());
@@ -437,13 +470,7 @@ public abstract class ClientAlt
                 String packet = commandName+","+id+","+customerID+","+location;
                 out.println(packet+"\n");
                 String response = in.readLine();
-                //System.out.println(response);
-                if (response.equals("true")){
-                    System.out.println("Car Reserved");
-                }else{
-                    System.out.println("Car could not be reserved");
-                }
-                break;
+                return response;
             }
             case ReserveRoom: {
                 checkArgumentsCount(4, arguments.size());
@@ -460,13 +487,7 @@ public abstract class ClientAlt
                 String packet = commandName+","+id+","+customerID+","+location;
                 out.println(packet+"\n");
                 String response = in.readLine();
-                //System.out.println(response);
-                if (response.equals("true")){
-                    System.out.println("Room Reserved");
-                }else{
-                    System.out.println("Room could not be reserved");
-                }
-                break;
+                return response;
             }
             case Bundle: {
                 if (arguments.size() < 7) {
@@ -500,13 +521,7 @@ public abstract class ClientAlt
                 packet = packet+","+location+","+car+","+room;
                 out.println(packet+"\n");
                 String response = in.readLine();
-                //System.out.println(response);
-                if (response.equals("true")){
-                    System.out.println("Bundle Reserved");
-                }else{
-                    System.out.println("Bundle could not be reserved");
-                }
-                break;
+                return response;
             }
             case Quit:
                 checkArgumentsCount(1, arguments.size());
