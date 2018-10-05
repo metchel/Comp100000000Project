@@ -12,7 +12,7 @@ public class TCPMiddlewareManager  {
 
     private static String[] serverNames = new String[4];
     private static String[] rmNames = new String[]{"Flights","Cars","Rooms","Customers"};
-    private static int serverPort = 1607;
+    private static int serverPort = 1608;
     Socket carRM;
     Socket flightRM;
     Socket hotelRM;
@@ -161,7 +161,11 @@ public class TCPMiddlewareManager  {
                     server.close();
                 } catch (IOException e) {
                     System.out.println("Couldn't close a socket");
-                    server.close();
+                    try {
+                        server.close();
+                    }catch (IOException f) {
+                        System.out.println("still Couldn't close a socket");
+                    }
 
                 }
                 System.out.println("Connection with client closed");
