@@ -12,7 +12,7 @@ public class TCPMiddlewareManager  {
 
     private static String[] serverNames = new String[4];
     private static String[] rmNames = new String[]{"Flights","Cars","Rooms","Customers"};
-    private static int serverPort = 1232;
+    private static int serverPort = 1233;
     Socket carRM;
     Socket flightRM;
     Socket hotelRM;
@@ -185,7 +185,7 @@ public class TCPMiddlewareManager  {
                     String packetArray [] = arguments.toArray(new String[arguments.size()]);
                     String packet = null;
                     for (String argum : packetArray) {
-                        packet = argum + ",";
+                        packet = packet + argum + ",";
 
                     }
                     packet.substring(0, packet.length() - 1);
@@ -214,7 +214,7 @@ public class TCPMiddlewareManager  {
                     String packetArray [] = arguments.toArray(new String[arguments.size()]);
                     String packet = null;
                     for (String argum : packetArray) {
-                        packet = argum + ",";
+                        packet = packet + argum + ",";
 
                     }
                     packet.substring(0, packet.length() - 1);
@@ -243,7 +243,7 @@ public class TCPMiddlewareManager  {
                     String packetArray [] = arguments.toArray(new String[arguments.size()]);
                     String packet = null;
                     for (String argum : packetArray) {
-                        packet = argum + ",";
+                        packet = packet + argum + ",";
                     }
                     packet.substring(0, packet.length() - 1);
                     /*
@@ -366,7 +366,7 @@ public class TCPMiddlewareManager  {
                     String packetArray [] = arguments.toArray(new String[arguments.size()]);
                     String packet = null;
                     for (String argum : packetArray) {
-                        packet = argum + ",";
+                        packet = packet + argum + ",";
 
                     }
                     packet.substring(0, packet.length() - 1);
@@ -392,7 +392,7 @@ public class TCPMiddlewareManager  {
                     String packetArray [] = arguments.toArray(new String[arguments.size()]);
                     String packet = null;
                     for (String argum : packetArray) {
-                        packet = argum + ",";
+                        packet = packet + argum + ",";
 
                     }
                     packet.substring(0, packet.length() - 1);
@@ -417,7 +417,7 @@ public class TCPMiddlewareManager  {
                     String packetArray [] = arguments.toArray(new String[arguments.size()]);
                     String packet = null;
                     for (String argum : packetArray) {
-                        packet = argum + ",";
+                        packet = packet + argum + ",";
 
                     }
                     packet.substring(0, packet.length() - 1);
@@ -485,7 +485,7 @@ public class TCPMiddlewareManager  {
                     String packetArray [] = arguments.toArray(new String[arguments.size()]);
                     String packet = null;
                     for (String argum : packetArray) {
-                        packet = argum + ",";
+                        packet = packet + argum + ",";
 
                     }
                     packet.substring(0, packet.length() - 1);
@@ -512,7 +512,7 @@ public class TCPMiddlewareManager  {
                     String packetArray [] = arguments.toArray(new String[arguments.size()]);
                     String packet = null;
                     for (String argum : packetArray) {
-                        packet = argum + ",";
+                        packet = packet + argum + ",";
 
                     }
                     packet.substring(0, packet.length() - 1);
@@ -539,7 +539,7 @@ public class TCPMiddlewareManager  {
                     String packetArray [] = arguments.toArray(new String[arguments.size()]);
                     String packet = null;
                     for (String argum : packetArray) {
-                        packet = argum + ",";
+                        packet = packet + argum + ",";
 
                     }
                     packet.substring(0, packet.length() - 1);
@@ -569,7 +569,7 @@ public class TCPMiddlewareManager  {
                     String packetArray [] = arguments.toArray(new String[arguments.size()]);
                     String packet = null;
                     for (String argum : packetArray) {
-                        packet = argum + ",";
+                        packet = packet + argum + ",";
 
                     }
                     packet.substring(0, packet.length() - 1);
@@ -630,7 +630,7 @@ public class TCPMiddlewareManager  {
                     String packetArray [] = arguments.toArray(new String[arguments.size()]);
                     String packet = null;
                     for (String argum : packetArray) {
-                        packet = argum + ",";
+                        packet = packet + argum + ",";
 
                     }
                     packet.substring(0, packet.length() - 1);
@@ -656,8 +656,7 @@ public class TCPMiddlewareManager  {
                     String packetArray [] = arguments.toArray(new String[arguments.size()]);
                     String packet = null;
                     for (String argum : packetArray) {
-                        packet = argum + ",";
-
+                        packet = packet + argum + ",";
                     }
                     packet.substring(0, packet.length() - 1);
                     /*
@@ -682,7 +681,7 @@ public class TCPMiddlewareManager  {
                     String packetArray [] = arguments.toArray(new String[arguments.size()]);
                     String packet = null;
                     for (String argum : packetArray) {
-                        packet = argum + ",";
+                        packet = packet + argum + ",";
 
                     }
                     packet.substring(0, packet.length() - 1);
@@ -709,7 +708,7 @@ public class TCPMiddlewareManager  {
                     String packetArray [] = arguments.toArray(new String[arguments.size()]);
                     String packet = null;
                     for (String argum : packetArray) {
-                        packet = argum + ",";
+                        packet = packet + argum + ",";
 
                     }
                     packet.substring(0, packet.length() - 1);
@@ -737,7 +736,7 @@ public class TCPMiddlewareManager  {
                     String packetArray [] = arguments.toArray(new String[arguments.size()]);
                     String packet = null;
                     for (String argum : packetArray) {
-                        packet = argum + ",";
+                        packet = packet + argum + ",";
 
                     }
                     packet.substring(0, packet.length() - 1);
@@ -765,7 +764,7 @@ public class TCPMiddlewareManager  {
                     String packetArray [] = arguments.toArray(new String[arguments.size()]);
                     String packet = null;
                     for (String argum : packetArray) {
-                        packet = argum + ",";
+                        packet = packet + argum + ",";
 
                     }
                     packet.substring(0, packet.length() - 1);
