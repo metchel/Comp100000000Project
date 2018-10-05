@@ -12,7 +12,7 @@ public class TCPMiddlewareManager  {
 
     private static String[] serverNames = new String[4];
     private static String[] rmNames = new String[]{"Flights","Cars","Rooms","Customers"};
-    private static int serverPort = 1233;
+    private static int serverPort = 1601;
     Socket carRM;
     Socket flightRM;
     Socket hotelRM;
