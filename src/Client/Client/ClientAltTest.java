@@ -47,15 +47,16 @@ public abstract class ClientAltTest
                 //command = stdin.readLine().trim();
 
             Vector<String> test_oneresults = new Vector<String>();
+            Vector<String> t1 = new Vector<String>();
                 for (String[] commands : testone_commands){
-                    Vector<String> temp = new Vector<String>();
+                    
                     for (String arg : commands){
 
-                        temp.add(arg);
+                        t1.add(arg);
                     }
-                    Command cmd = Command.fromString((String)temp.elementAt(0));
+                    Command cmd = Command.fromString((String)t1.elementAt(0));
                     try {
-                        test_oneresults.add(execute(cmd, temp));
+                        test_oneresults.add(execute(cmd, t1));
                     }
                     catch(Exception e){
                         e.printStackTrace();
@@ -75,16 +76,18 @@ public abstract class ClientAltTest
 
 
             Vector<String> test_tworesults = new Vector<String>();
+            Vector<String> t2 = new Vector<String>();
+
 
                 for (String[] commands : testtwo_commands) {
-                    Vector<String> temp = new Vector<String>();
+
                     for (String arg : commands) {
 
-                        temp.add(arg);
+                        t2.add(arg);
                     }
-                    Command cmd = Command.fromString((String) temp.elementAt(0));
+                    Command cmd = Command.fromString((String) t2.elementAt(0));
                     try {
-                        test_tworesults.add(execute(cmd, temp));
+                        test_tworesults.add(execute(cmd, t2));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -97,17 +100,18 @@ public abstract class ClientAltTest
             }
 
             Vector<String> test_threeresults = new Vector<String>();
+            Vector<String> t3 = new Vector<String>();
 
                 for (String[] commands : testthree_commands){
-                    Vector<String> temp = new Vector<String>();
+
                     for (String arg : commands){
 
-                        temp.add(arg);
+                        t3.add(arg);
 
                     }
-                    Command cmd = Command.fromString((String)temp.elementAt(0));
+                    Command cmd = Command.fromString((String)t3.elementAt(0));
                     try {
-                        test_threeresults.add(execute(cmd, temp));
+                        test_threeresults.add(execute(cmd, t3));
                     }
                     catch(Exception e){
                         e.printStackTrace();
