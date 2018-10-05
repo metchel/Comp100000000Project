@@ -15,10 +15,9 @@ import java.net.Socket;
 
 public class TCPResourceManager extends ResourceManager {
     private static String serverName = "Server";
-    private static int serverPort = 1611;
+    private static int serverPort = 1616;
     static ServerSocket server;
 
-    //private static String s_rmiPrefix = "group30";
 
     public static void main(String args[]) {
         try {
@@ -77,8 +76,11 @@ public class TCPResourceManager extends ResourceManager {
                 Vector<String> arguments = new Vector<String>();
                 while(true){
                     String input = in.readLine();
-                    if (input == null || input.equals(".") || input.equals("")) {
+                    if (input.equals(".") || input.equals("")) {
                         continue;
+                    }
+                    if (input == null) {
+                        break;
                     }
                     System.out.println("Server recieved: "+input);
                     arguments = parse(input);
