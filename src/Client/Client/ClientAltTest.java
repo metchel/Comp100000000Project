@@ -48,8 +48,8 @@ public abstract class ClientAltTest
 
             Vector<String> test_oneresults = new Vector<String>();
             Vector<String> t1 = new Vector<String>();
-                for (String[] commands : testone_commands[][]){
-
+                for (int i = 0; i < testone_commands.length; i++){
+                    commands = testone_commands[i];
                     for (String arg : commands){
 
                         t1.add(arg);
@@ -79,8 +79,8 @@ public abstract class ClientAltTest
             Vector<String> t2 = new Vector<String>();
 
 
-                for (String[] commands : testtwo_commands[][]) {
-
+            for (int i = 0; i < testone_commands.length; i++){
+                    commands = testtwo_commands[i];
                     for (String arg : commands) {
 
                         t2.add(arg);
@@ -101,9 +101,8 @@ public abstract class ClientAltTest
 
             Vector<String> test_threeresults = new Vector<String>();
             Vector<String> t3 = new Vector<String>();
-
-                for (String[] commands : testthree_commands[][]){
-
+            for (int i = 0; i < testthree_commands.length; i++){
+                commands = testthree_commands[i];
                     for (String arg : commands){
 
                         t3.add(arg);

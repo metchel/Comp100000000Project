@@ -5,6 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fac91074-0f2a-4523-b9c7-2fbb72ff4dbe" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Client/Client/ClientAltTest.java" afterPath="$PROJECT_DIR$/src/Client/Client/ClientAltTest.java" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -65,8 +66,8 @@
       <file leaf-file-name="ClientAltTest.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Client/Client/ClientAltTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="130">
-              <caret line="50" column="61" lean-forward="false" selection-start-line="50" selection-start-column="61" selection-end-line="50" selection-end-column="61" />
+            <state relative-caret-position="646">
+              <caret line="104" column="36" lean-forward="false" selection-start-line="104" selection-start-column="36" selection-end-line="104" selection-end-column="36" />
               <folding />
             </state>
           </provider>
@@ -453,12 +454,12 @@
       <workItem from="1538584324332" duration="4101000" />
       <workItem from="1538589415816" duration="173000" />
       <workItem from="1538589780759" duration="14483000" />
-      <workItem from="1538607197901" duration="17523000" />
+      <workItem from="1538607197901" duration="17715000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="118627000" />
+    <option name="totallyTimeSpent" value="118819000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1456" height="1056" extended-state="6" />
@@ -896,8 +897,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Client/Client/ClientAltTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="130">
-          <caret line="50" column="61" lean-forward="false" selection-start-line="50" selection-start-column="61" selection-end-line="50" selection-end-column="61" />
+        <state relative-caret-position="646">
+          <caret line="104" column="36" lean-forward="false" selection-start-line="104" selection-start-column="36" selection-end-line="104" selection-end-column="36" />
           <folding />
         </state>
       </provider>
