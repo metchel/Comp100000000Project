@@ -43,23 +43,15 @@ public abstract class ClientAltTest
 
             String[][] testthree_commands = {{"DeleteFlight","10","737"},{"Bundle","10","111","737","Montreal","false","false"}};
 
-            try {
-                System.out.print((char)27 + "[32;1m\n>] " + (char)27 + "[0m");
+            System.out.print((char)27 + "[32;1m\n>] " + (char)27 + "[0m");
                 //command = stdin.readLine().trim();
-            }
-            catch (IOException io) {
-                System.err.println((char)27 + "[31;1mClient exception: " + (char)27 + "[0m" + io.getLocalizedMessage());
-                io.printStackTrace();
-                System.exit(1);
-            }
-
+            
             Vector<String> test_oneresults = new Vector<String>();
-            try {
-                for (String[] command : testone_commands){
-                    for (String arg : command){
+                for (String[] commands : testone_commands){
+                    for (String arg : commands){
                         Vector<String> temp = new Vector<String>();
                         temp.add(arg);
-                        Command cmd = Command.fromString((String)command.elementAt(0));
+                        Command cmd = Command.fromString((String)temp.elementAt(0));
                         try {
                            test_oneresults.add(execute(cmd, temp));
                         }
@@ -68,10 +60,8 @@ public abstract class ClientAltTest
                         }
                     }
                 }
-            }
-            catch (IOException io) {
-                System.exit(1);
-            }
+
+
             if (test_oneresults.get(5) != ("Bill for customer 69,\n" +
                 "1 room-mass $342,\n" +
                 "1 flight-999 $123,\n" +
@@ -79,43 +69,38 @@ public abstract class ClientAltTest
                 System.out.println("Did not pass test one");
             }
             else {
-                System.out.println("Passed test one.")
+                System.out.println("Passed test one.");
             }
 
 
             Vector<String> test_tworesults = new Vector<String>();
-            try {
-                for (String[] command : testtwo_commands){
-                    for (String arg : command){
+
+                for (String[] commands : testtwo_commands) {
+                    for (String arg : commands) {
                         Vector<String> temp = new Vector<String>();
                         temp.add(arg);
-                        Command cmd = Command.fromString((String)command.elementAt(0));
+                        Command cmd = Command.fromString((String) temp.elementAt(0));
                         try {
                             test_tworesults.add(execute(cmd, temp));
-                        }
-                        catch(Exception e){
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
                 }
-            }
-            catch (IOException io) {
-                System.exit(1);
-            }
             if (test_tworesults.get(0) != "499"){
                 System.out.println("Did not pass test two");
             }
             else {
-                System.out.println("Passed test two.")
+                System.out.println("Passed test two.");
             }
 
             Vector<String> test_threeresults = new Vector<String>();
-            try {
-                for (String[] command : testthree_commands){
-                    for (String arg : command){
+
+                for (String[] commands : testthree_commands){
+                    for (String arg : commands){
                         Vector<String> temp = new Vector<String>();
                         temp.add(arg);
-                        Command cmd = Command.fromString((String)command.elementAt(0));
+                        Command cmd = Command.fromString((String)temp.elementAt(0));
                         try {
                             test_threeresults.add(execute(cmd, temp));
                         }
@@ -124,17 +109,14 @@ public abstract class ClientAltTest
                         }
                     }
                 }
-            }
-            catch (IOException io) {
-                System.exit(1);
-            }
+
             if (test_threeresults.get(1) != "false"){
                 System.out.println("Did not pass test three");
             }
             else {
-                System.out.println("Passed test three.")
+                System.out.println("Passed test three.");
             }
-            
+
         }
     }
 
@@ -173,7 +155,7 @@ public abstract class ClientAltTest
                 String response = in.readLine();
                 return response;
 
-                break;
+
             }
             case AddCars: {
                 checkArgumentsCount(5, arguments.size());
@@ -193,7 +175,7 @@ public abstract class ClientAltTest
                 out.println(packet+"\n");
                 String response = in.readLine();
                 return response;
-                break;
+
             }
             case AddRooms: {
                 checkArgumentsCount(5, arguments.size());
@@ -213,7 +195,7 @@ public abstract class ClientAltTest
                 out.println(packet+"\n");
                 String response = in.readLine();
                 return response;
-                break;
+
             }
             case AddCustomer: {
                 checkArgumentsCount(2, arguments.size());
@@ -228,7 +210,7 @@ public abstract class ClientAltTest
                 String response = in.readLine();
                 //System.out.println(response);
                 return response;
-                break;
+
             }
             case AddCustomerID: {
                 checkArgumentsCount(3, arguments.size());
@@ -246,7 +228,6 @@ public abstract class ClientAltTest
                 //System.out.println(response);
                 return response;
 
-                break;
             }
             case DeleteFlight: {
                 checkArgumentsCount(3, arguments.size());
@@ -263,7 +244,7 @@ public abstract class ClientAltTest
                 String response = in.readLine();
                 //System.out.println(response);
                 return response;
-                break;
+
             }
             case DeleteCars: {
                 checkArgumentsCount(3, arguments.size());
@@ -280,7 +261,7 @@ public abstract class ClientAltTest
                 String response = in.readLine();
                 //System.out.println(response);
                 return response;
-                break;
+
             }
             case DeleteRooms: {
                 checkArgumentsCount(3, arguments.size());
@@ -297,7 +278,7 @@ public abstract class ClientAltTest
                 String response = in.readLine();
                 //System.out.println(response);
                 return response;
-                break;
+
             }
             case DeleteCustomer: {
                 checkArgumentsCount(3, arguments.size());
@@ -314,7 +295,7 @@ public abstract class ClientAltTest
                 String response = in.readLine();
                 //System.out.println(response);
                 return response;
-                break;
+
             }
             case QueryFlight: {
                 checkArgumentsCount(3, arguments.size());
@@ -528,6 +509,7 @@ public abstract class ClientAltTest
                 System.out.println("Quitting client");
                 System.exit(0);
         }
+        return "";
     }
 
     public static Vector<String> parse(String command)
