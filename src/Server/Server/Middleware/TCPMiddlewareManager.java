@@ -12,7 +12,7 @@ public class TCPMiddlewareManager  {
 
     private static String[] serverNames = new String[4];
     private static String[] rmNames = new String[]{"Flights","Cars","Rooms","Customers"};
-    private static int serverPort = 1608;
+    private static int serverPort = 1611;
     Socket carRM;
     Socket flightRM;
     Socket hotelRM;
@@ -45,7 +45,7 @@ public class TCPMiddlewareManager  {
             TCPMiddlewareManager mwm = new TCPMiddlewareManager();
             mwm.connectToRMs();
         }
-        catch (Exception e) {
+        catch (IOException e) {
             e.printStackTrace();
             System.exit(1);
         }

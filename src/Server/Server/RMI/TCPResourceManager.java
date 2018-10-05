@@ -3,6 +3,7 @@ package Server.RMI;
 import Server.Interface.*;
 import Server.Common.*;
 import java.rmi.RemoteException;
+import java.net.*;
 import java.util.*;
 
 import java.io.BufferedReader;
@@ -14,7 +15,7 @@ import java.net.Socket;
 
 public class TCPResourceManager extends ResourceManager {
     private static String serverName = "Server";
-    private static int serverPort = 1608;
+    private static int serverPort = 1611;
     static ServerSocket server;
 
     //private static String s_rmiPrefix = "group30";
@@ -35,7 +36,7 @@ public class TCPResourceManager extends ResourceManager {
                     server.close();
                 }
             }
-        } catch (Exception e){
+        } catch (IOException e){
             e.printStackTrace();
         }
     }
