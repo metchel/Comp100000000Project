@@ -28,7 +28,12 @@ public class TCPResourceManager extends ResourceManager {
                     System.out.println("Server is running and is accepting new connections.");
                 }
             } finally {
-                server.close();
+                try {
+                    server.close();
+                }
+                catch (IOException e) {
+                    server.close();
+                }
             }
         } catch (Exception e){
             e.printStackTrace();
@@ -89,6 +94,13 @@ public class TCPResourceManager extends ResourceManager {
                     server.close();
                 } catch (IOException e) {
                     System.out.println("Couldn't close a socket");
+                    try{
+                        clientSocket.close();
+                        server.close();
+                    }
+                    catch (IOException f) {
+                        System.out.println("Still couldn't close a socket");
+                    }
                 }
                 System.out.println("Connection with client closed");
             }

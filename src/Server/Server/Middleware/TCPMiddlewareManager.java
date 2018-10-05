@@ -161,6 +161,8 @@ public class TCPMiddlewareManager  {
                     server.close();
                 } catch (IOException e) {
                     System.out.println("Couldn't close a socket");
+                    server.close();
+
                 }
                 System.out.println("Connection with client closed");
             }
