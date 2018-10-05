@@ -31,7 +31,7 @@ public abstract class ClientAltTest
 
         while (true)
         {
-            runTests();
+           // runTests();
             /*
             String command = "";
             Vector<String> arguments = new Vector<String>();
@@ -132,7 +132,7 @@ public abstract class ClientAltTest
         */
         }
     }
-
+/*
     public void runTests() {
         final Map<Command, String> RESULTS = new Map<>();
 
@@ -160,7 +160,7 @@ public abstract class ClientAltTest
 
         return execute(cmd, testVector);
     }
-
+*/
     public String execute(Command cmd, Vector<String> arguments) throws IOException, NumberFormatException
     {
         switch (cmd)
