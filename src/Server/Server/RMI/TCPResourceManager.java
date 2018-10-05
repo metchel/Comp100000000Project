@@ -82,6 +82,7 @@ public class TCPResourceManager extends ResourceManager {
                     if (input == null) {
                         break;
                     }
+
                     System.out.println("Server recieved: "+input);
                     arguments = parse(input);
                     Command cmd = Command.fromString((String)arguments.elementAt(0));

@@ -351,7 +351,7 @@ public abstract class ClientAlt
                 out.println(packet+"\n");
                 String response = in.readLine();
                 String keyword = "Bill for customer "+customerID;
-                String test = response.replaceAll(keyword,",\n");
+                String test = response.replaceAll(keyword,"\n");
                 System.out.println(keyword+","+test);
                 //System.out.print(bill);
                 break;
