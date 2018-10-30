@@ -1,1 +1,1 @@
-java -Djava.security.policy=java.policy -Djava.rmi.server.codebase=file:"$(pwd)/" Server.RMI.TCPResourceManager
+java -Djava.security.policy=java.policy Server.TCP.TCPServer

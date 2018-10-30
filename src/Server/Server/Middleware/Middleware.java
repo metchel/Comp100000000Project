@@ -1,114 +1,150 @@
 package Server.Middleware;
 
-import Server.Interface.*;
-import java.util.*;
-import java.rmi.RemoteException;
-import java.io.*;
+import Server.Common.Trace;
+import Server.Common.ResourceManager;
+import Server.Sockets.ClientWorker;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.net.ServerSocket;
+import java.net.UnknownHostException;
 
-public abstract class Middleware implements IResourceManager {
+public class Middleware {
+    private InetAddress inetAddress;
+    private int port;
+    private ResourceManagerServer customerServer;
+    private Socket customerClient;
+    private ArrayList<ResourceManagerServer> itemServers;
+    private ArrayList<Socket> itemClients;
+    private static ServerSocket serverSocket;
+    final static String CUSTOMER = "CUSTOMER";
+    final static String FLIGHT = "FLIGHT";
+    final static String CAR = "CAR";
+    final static String ROOM = "ROOM";
 
-    static IResourceManager flight_resourceManager = null;
-    static IResourceManager car_resourceManager = null;
-    static IResourceManager hotel_resourceManager = null;
-    static IResourceManager customer_resourceManager = null;
-    protected String m_name = "";
-
-    public Middleware(String p_name) {
-        m_name = p_name;
-    }
-
-    /* IMiddleware implements Runnable, must implement that here
-    public void run() {
-
-    }*/
-
-    public boolean addFlight(int xid, int flightNum, int flightSeats, int flightPrice) throws RemoteException {
-      return (flight_resourceManager.addFlight(xid, flightNum, flightSeats, flightPrice));
-    }
-    public boolean addCars(int xid, String location, int numCars, int price) throws RemoteException {
-        return (car_resourceManager.addCars(xid, location, numCars, price));
-    }
-    public boolean addRooms(int xid, String location, int count, int price) throws RemoteException {
-        return (hotel_resourceManager.addRooms(xid, location, count, price));
-    }
-    public int newCustomer(int xid) throws RemoteException {
-        return (customer_resourceManager.newCustomer(xid));
-    }
-    public boolean newCustomer(int xid, int cid) throws RemoteException {
-        flight_resourceManager.newCustomer(xid, cid);
-        hotel_resourceManager.newCustomer(xid,cid);
-        car_resourceManager.newCustomer(xid,cid);
-        return (customer_resourceManager.newCustomer(xid, cid));
-    }
-    public boolean deleteFlight(int xid, int flightNum) throws RemoteException {
-        return (flight_resourceManager.deleteFlight(xid, flightNum));
-    }
-    public boolean deleteCars(int xid, String location) throws RemoteException {
-        return (car_resourceManager.deleteCars(xid, location));
-    }
-    public boolean deleteRooms(int xid, String location) throws RemoteException {
-        return (hotel_resourceManager.deleteRooms(xid, location));
-    }
-    public boolean deleteCustomer(int xid, int cid) throws RemoteException {
-        flight_resourceManager.deleteCustomer(xid, cid);
-        hotel_resourceManager.deleteCustomer(xid,cid);
-        car_resourceManager.deleteCustomer(xid,cid);
-        return (customer_resourceManager.deleteCustomer(xid, cid));
-    }
-    public int queryFlight(int xid, int flightNumber) throws RemoteException {
-        return (flight_resourceManager.queryFlight(xid, flightNumber));
-    }
-    public int queryCars(int xid, String location) throws RemoteException {
-        return (car_resourceManager.queryCars(xid, location));
-    }
-    public int queryRooms(int xid, String location) throws RemoteException {
-        return (hotel_resourceManager.queryRooms(xid, location));
-    }
-    public String queryCustomerInfo(int xid, int cid) throws RemoteException {
-        String carBill = car_resourceManager.queryCustomerInfo(xid,cid);
-        String hotelBill = (hotel_resourceManager.queryCustomerInfo(xid,cid).substring(21));
-        String flightBill = (flight_resourceManager.queryCustomerInfo(xid,cid).substring(21));
-        return (carBill+hotelBill+flightBill);
-    }
-    public int queryFlightPrice(int xid, int flightNumber) throws RemoteException{
-        return (flight_resourceManager.queryFlightPrice(xid, flightNumber));
-    }
-    public int queryCarsPrice(int xid, String location) throws RemoteException{
-        return (car_resourceManager.queryCarsPrice(xid, location));
-    }
-    public int queryRoomsPrice(int xid, String location) throws RemoteException{
-        return (hotel_resourceManager.queryRoomsPrice(xid, location));
-    }
-    public boolean reserveFlight(int xid, int cid, int flightNumber) throws RemoteException {
-        return ( (flight_resourceManager.reserveFlight(xid, cid, flightNumber)) );
-    }
-    public boolean reserveCar(int xid, int cid, String location) throws RemoteException {
-        return ( (car_resourceManager.reserveCar(xid, cid, location))  );
-    }
-    public boolean reserveRoom(int xid, int cid, String location) throws RemoteException {
-        return ( (hotel_resourceManager.reserveRoom(xid, cid, location))  );
-    }
-    //TODO:This needs better error checking to make sure it went through-has correct return value
-    public boolean bundle(int xid, int cid, Vector<String> flightNumbers, String location, boolean car, boolean room) throws RemoteException {
-        boolean status = true;
-        for(String flightNumber : flightNumbers){
-            int fn = Integer.parseInt(flightNumber);
-            status = reserveFlight(xid, cid, fn);
+    private Middleware() {}
+    public static void main(String[] args) {
+        if (args.length != 10) {
+            System.out.println("Middleware::main not enough arguments.");
+            System.exit(-1);
         }
-        if(car){
-            status = reserveCar(xid, cid, location);
+
+        /**
+         * Middleware host and port
+         */
+        String inetMiddleware = args[0];
+        int portMiddleware = Integer.parseInt(args[1]);
+
+        /**
+         * Customer server host and port
+         */
+        String inetCustomer = args[2];
+        int portCustomer = Integer.parseInt(args[3]);
+
+        /**
+         * Item servers hosts and ports
+         */
+        String inetFlights = args[4];
+        int portFlights = Integer.parseInt(args[5]);
+        String inetCars = args[6];
+        int portCars = Integer.parseInt(args[7]);
+        String inetRooms = args[8];
+        int portRooms = Integer.parseInt(args[9]);
+        
+        try {
+            ResourceManagerServer customerServer = new ResourceManagerServer(InetAddress.getByName(inetCustomer), portCustomer, CUSTOMER);
+            ResourceManagerServer flightServer = new ResourceManagerServer(InetAddress.getByName(inetFlights), portFlights, FLIGHT);
+            ResourceManagerServer carServer = new ResourceManagerServer(InetAddress.getByName(inetCars), portCars, CAR);
+            ResourceManagerServer roomServer = new ResourceManagerServer(InetAddress.getByName(inetRooms), portRooms, ROOM);
+
+            Builder builder = new Builder();
+            Middleware middleware = builder
+                .atInetAddress(InetAddress.getByName(inetMiddleware))
+                .atPort(portMiddleware)
+                .withCustomerServer(customerServer)
+                .withItemServer(flightServer)
+                .withItemServer(carServer)
+                .withItemServer(roomServer)
+                .build();
+            middleware.connectToCustomerServer();
+            middleware.connectToItemServers();
+            serverSocket = new ServerSocket(middleware.getPort());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        if(room){
-            status = reserveRoom(xid, cid, location);
+
+        while(true) {
+            ClientWorker worker;
+
+            try {
+                Socket client = serverSocket.accept();
+                worker = new ClientWorker(client);
+                Thread t = new Thread(worker);
+                t.start();
+            } catch(IOException e) {
+                System.out.println("Middlware::main failed accepting clients");
+                System.exit(-1);
+            }
         }
-        return status;
-
-    }
-    public String getName() throws RemoteException{
-        return m_name;
     }
 
-    public synchronized void initMiddleware(String flightHost, int flightPort, String carHost, int carPort, String roomHost, int roomPort) {}
+    public static class Builder {
+        private InetAddress inetAddress;
+        private int port;
+        private ResourceManagerServer customerServer;
+        private ArrayList<ResourceManagerServer> itemServers;
 
+        public Builder atInetAddress(InetAddress inetAddress) throws UnknownHostException{
+            this.inetAddress = inetAddress;
+            return this;
+        }
+
+        public Builder atPort(int port) {
+            this.port = port;
+            return this;
+        }
+
+        public Builder withCustomerServer(ResourceManagerServer customerServer) {
+            this.customerServer = customerServer;
+            return this;
+        }
+
+        public Builder withItemServer(ResourceManagerServer itemServer) {
+            this.itemServers.add(itemServer);
+            return this;
+        }
+
+        public Middleware build() throws IOException {
+            Middleware middleware = new Middleware();
+            middleware.inetAddress = this.inetAddress;
+            middleware.port = this.port;
+            middleware.customerServer = this.customerServer;
+            middleware.itemServers = this.itemServers;
+
+            return middleware;
+        }
+    }
+
+    public int getPort() {
+        return this.port;
+    }
+
+    public InetAddress getInetAddres() {
+        return this.inetAddress;
+    }
+
+    public void connectToCustomerServer() throws IOException {
+        this.customerClient = new Socket(this.customerServer.getInetAddress(), this.customerServer.getPort());
+    }
+
+    public void connectToItemServers() throws IOException {
+        for (ResourceManagerServer itemServer: this.itemServers) {
+            this.itemClients.add(new Socket(itemServer.getInetAddress(), itemServer.getPort()));
+        }
+    }
 }

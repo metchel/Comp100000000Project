@@ -2,7 +2,7 @@
 
 #TODO: SPECIFY THE HOSTNAMES OF 4 CS MACHINES (lab1-1, cs-2, etc...)
 MACHINES=(lab2-15.cs.mcgill.ca lab2-17.cs.mcgill.ca lab2-19.cs.mcgill.ca lab2-21.cs.mcgill.ca lab2-23.cs.mcgill.ca)
-USER="oclark2@"
+USER="metche@"
 
 tmux new-session \; \
 	split-window -h \; \
