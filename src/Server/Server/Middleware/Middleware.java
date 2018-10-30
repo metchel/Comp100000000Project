@@ -2,6 +2,7 @@ package Server.Middleware;
 
 import Server.Common.Trace;
 import Server.Common.ResourceManager;
+import Server.Common.Constants;
 import Server.Sockets.ClientWorker;
 
 import java.io.BufferedReader;
@@ -11,6 +12,7 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Map;
 import java.net.ServerSocket;
 import java.net.UnknownHostException;
 
@@ -20,12 +22,8 @@ public class Middleware {
     private ResourceManagerServer customerServer;
     private Socket customerClient;
     private ArrayList<ResourceManagerServer> itemServers;
-    private ArrayList<Socket> itemClients;
+    private Map<String, Socket> itemClients;
     private static ServerSocket serverSocket;
-    final static String CUSTOMER = "CUSTOMER";
-    final static String FLIGHT = "FLIGHT";
-    final static String CAR = "CAR";
-    final static String ROOM = "ROOM";
 
     private Middleware() {}
     public static void main(String[] args) {
@@ -57,10 +55,10 @@ public class Middleware {
         int portRooms = Integer.parseInt(args[9]);
         
         try {
-            ResourceManagerServer customerServer = new ResourceManagerServer(InetAddress.getByName(inetCustomer), portCustomer, CUSTOMER);
-            ResourceManagerServer flightServer = new ResourceManagerServer(InetAddress.getByName(inetFlights), portFlights, FLIGHT);
-            ResourceManagerServer carServer = new ResourceManagerServer(InetAddress.getByName(inetCars), portCars, CAR);
-            ResourceManagerServer roomServer = new ResourceManagerServer(InetAddress.getByName(inetRooms), portRooms, ROOM);
+            ResourceManagerServer customerServer = new ResourceManagerServer(InetAddress.getByName(inetCustomer), portCustomer, Constants.CUSTOMER);
+            ResourceManagerServer flightServer = new ResourceManagerServer(InetAddress.getByName(inetFlights), portFlights, Constants.FLIGHT);
+            ResourceManagerServer carServer = new ResourceManagerServer(InetAddress.getByName(inetCars), portCars, Constants.CAR);
+            ResourceManagerServer roomServer = new ResourceManagerServer(InetAddress.getByName(inetRooms), portRooms, Constants.ROOM);
 
             Builder builder = new Builder();
             Middleware middleware = builder
@@ -71,8 +69,12 @@ public class Middleware {
                 .withItemServer(carServer)
                 .withItemServer(roomServer)
                 .build();
-            middleware.connectToCustomerServer();
-            middleware.connectToItemServers();
+            
+            final Socket customerClient = new Socket(customerServer.getInetAddress(), customerServer.getPort());
+            final Socket flightClient = new Socket(flightServer.getInetAddress(), flightServer.getPort());
+            final Socket carClient = new Socket(carServer.getInetAddress(), carServer.getPort());
+            final Socket roomClient = new Socket(roomServer.getInetAddress(), roomServer.getPort());
+
             serverSocket = new ServerSocket(middleware.getPort());
         } catch (IOException e) {
             e.printStackTrace();
@@ -97,7 +99,7 @@ public class Middleware {
         private InetAddress inetAddress;
         private int port;
         private ResourceManagerServer customerServer;
-        private ArrayList<ResourceManagerServer> itemServers;
+        private ArrayList<ResourceManagerServer> itemServers = new ArrayList<>();
 
         public Builder atInetAddress(InetAddress inetAddress) throws UnknownHostException{
             this.inetAddress = inetAddress;
@@ -136,15 +138,5 @@ public class Middleware {
 
     public InetAddress getInetAddres() {
         return this.inetAddress;
-    }
-
-    public void connectToCustomerServer() throws IOException {
-        this.customerClient = new Socket(this.customerServer.getInetAddress(), this.customerServer.getPort());
-    }
-
-    public void connectToItemServers() throws IOException {
-        for (ResourceManagerServer itemServer: this.itemServers) {
-            this.itemClients.add(new Socket(itemServer.getInetAddress(), itemServer.getPort()));
-        }
     }
 }

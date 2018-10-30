@@ -20,4 +20,8 @@ public class ResourceManagerServer {
     public int getPort() {
         return this.port;
     }
+    
+    public String getName() {
+        return this.name;
+    }
 }
