@@ -14,7 +14,7 @@ import java.io.*;
 public class TCPClient extends ClientAlt
 {
     private static String serverHost = "localhost";
-    private static int serverPort = 1236;
+    private static int serverPort = 9094;
     //private static String s_serverName = "Server";
 
     //private static String s_rmiPrefix = "group30";
@@ -35,10 +35,7 @@ public class TCPClient extends ClientAlt
             System.err.println((char)27 + "[31;1mClient exception: " + (char)27 + "[0mUsage: java client.RMIClient [server_hostname [server_rmiobject]]");
             System.exit(1);
         }
-        if (System.getSecurityManager() == null)
-        {
-            System.setSecurityManager(new SecurityManager());
-        }
+
         System.out.println(serverHost+":"+(Integer.toString(serverPort)));
         try {
             TCPClient client = new TCPClient();

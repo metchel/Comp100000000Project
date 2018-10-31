@@ -14,9 +14,11 @@ import java.net.ServerSocket;
 
 public class ClientWorker implements Runnable {
     final Socket client;
+    final RequestHandler handler;
 
-    public ClientWorker(Socket client) {
+    public ClientWorker(Socket client, RequestHandler handler) {
         this.client = client;
+        this.handler = handler;
     }
 
     public void run() {
@@ -35,8 +37,9 @@ public class ClientWorker implements Runnable {
         while(true) {
             try {
                 line = in.readLine();
-                System.out.println(line);
-                out.println(line);
+                String response = handler.handle(line);
+                System.out.println(response);
+                out.println(response);
             } catch (IOException e) {
                 e.printStackTrace();
                 System.out.println("ClientWorker::run failed on in or out stream.");

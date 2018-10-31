@@ -2,6 +2,7 @@ package Server.Sockets;
 
 import Server.Common.Trace;
 import Server.Common.ResourceManager;
+import Server.ResourceManager.SocketResourceManager;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,7 +17,7 @@ public class Server {
 
     private InetAddress inetAddress;
     private int port;
-    private ResourceManager resourceManager;
+    private SocketResourceManager resourceManager;
     private static ServerSocket serverSocket;
 
     private Server() {}
@@ -31,12 +32,14 @@ public class Server {
         int port = Integer.parseInt(args[1]);
         String rmName = args[2];
 
+        Server server = new Server();
+
         try {
             Builder builder = new Builder();
-            Server server = builder
+            server = builder
                 .atInetAddress(InetAddress.getByName(inetAddress))
                 .atPort(port)
-                .withResourceManager(new ResourceManager(rmName))
+                .withResourceManager(new SocketResourceManager(rmName))
                 .build();
             serverSocket = new ServerSocket(server.getPort());
         } catch (IOException e) {
@@ -48,11 +51,12 @@ public class Server {
 
             try {
                 Socket client = serverSocket.accept();
-                worker = new ClientWorker(client);
+                ServerRequestHandler handler = new ServerRequestHandler(server.getResourceManager());
+                worker = new ClientWorker(client, handler);
                 Thread t = new Thread(worker);
                 t.start();
             } catch(IOException e) {
-                System.out.println("Server::main failed accepting on port 9090");
+                System.out.println("Server::main failed accepting on port");
                 System.exit(-1);
             }
         }
@@ -61,9 +65,9 @@ public class Server {
     public static class Builder {
         private InetAddress inetAddress;
         private int port;
-        private ResourceManager resourceManager;
+        private SocketResourceManager resourceManager;
 
-        public Builder atInetAddress(InetAddress inetAddress) throws UnknownHostException{
+        public Builder atInetAddress(InetAddress inetAddress) throws UnknownHostException {
             this.inetAddress = inetAddress;
             return this;
         }
@@ -73,7 +77,7 @@ public class Server {
             return this;
         }
 
-        public Builder withResourceManager(ResourceManager resourceManager) {
+        public Builder withResourceManager(SocketResourceManager resourceManager) {
             this.resourceManager = resourceManager;
             return this;
         }
@@ -94,5 +98,9 @@ public class Server {
 
     public InetAddress getInetAddres() {
         return this.inetAddress;
+    }
+
+    public SocketResourceManager getResourceManager() {
+        return this.resourceManager;
     }
 }
