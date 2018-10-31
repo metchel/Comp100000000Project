@@ -4,6 +4,8 @@ import Server.Common.Trace;
 import Server.Common.ResourceManager;
 import Server.Common.Constants;
 import Server.Sockets.ClientWorker;
+import Server.ResourceManager.SocketResourceManager;
+import Server.Sockets.RequestHandler;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -60,6 +62,11 @@ public class Middleware {
             ResourceManagerServer carServer = new ResourceManagerServer(InetAddress.getByName(inetCars), portCars, Constants.CAR);
             ResourceManagerServer roomServer = new ResourceManagerServer(InetAddress.getByName(inetRooms), portRooms, Constants.ROOM);
 
+            final Socket customerClient = customerServer.connect();
+            final Socket flightClient = flightServer.connect();
+            final Socket carClient = carServer.connect();
+            final Socket roomClient = roomServer.connect();
+
             Builder builder = new Builder();
             Middleware middleware = builder
                 .atInetAddress(InetAddress.getByName(inetMiddleware))
@@ -69,11 +76,6 @@ public class Middleware {
                 .withItemServer(carServer)
                 .withItemServer(roomServer)
                 .build();
-            
-            final Socket customerClient = new Socket(customerServer.getInetAddress(), customerServer.getPort());
-            final Socket flightClient = new Socket(flightServer.getInetAddress(), flightServer.getPort());
-            final Socket carClient = new Socket(carServer.getInetAddress(), carServer.getPort());
-            final Socket roomClient = new Socket(roomServer.getInetAddress(), roomServer.getPort());
 
             serverSocket = new ServerSocket(middleware.getPort());
         } catch (IOException e) {
@@ -85,7 +87,9 @@ public class Middleware {
 
             try {
                 Socket client = serverSocket.accept();
-                worker = new ClientWorker(client);
+                SocketResourceManager resourceManager = new SocketResourceManager("middlewareRM");
+                RequestHandler handler = new MiddlewareRequestHandler(resourceManager);
+                worker = new ClientWorker(client, handler);
                 Thread t = new Thread(worker);
                 t.start();
             } catch(IOException e) {

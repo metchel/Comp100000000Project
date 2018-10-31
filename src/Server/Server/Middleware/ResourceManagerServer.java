@@ -1,6 +1,8 @@
 package Server.Middleware;
 
 import java.net.InetAddress;
+import java.net.Socket;
+import java.io.IOException;
 
 public class ResourceManagerServer {
     private InetAddress inetAddress;
@@ -23,5 +25,9 @@ public class ResourceManagerServer {
     
     public String getName() {
         return this.name;
+    }
+
+    public Socket connect() throws IOException {
+        return new Socket(this.inetAddress, this.port);
     }
 }
