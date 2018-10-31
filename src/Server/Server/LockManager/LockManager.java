@@ -64,7 +64,16 @@ public class LockManager
 
 						if (bConvert.get(0) == true) {
 							//TODO: Lock conversion 
-							// Trace.info("LM::lock(" + xid + ", " + data + ", " + lockType + ") converted");
+							//Convert if NO OTHER transaction has S(x) 
+
+							TransactionLockObject tmpT = new TransactionLockObject(xid, data, TransactionLockObject.LockType.READ);
+							DataLockObject tmpD = new DataLockObject(xid, data, TransactionLockObject.LockType.READ);
+							this.lockTable.remove(tmpT);
+							this.lockTable.remove(tmpD);
+							this.lockTable.add(xLockObject);
+							this.lockTable.add(dataLockObject);
+							Trace.info("LM::lock(" + xid + ", " + data + ", " + lockType + ") converted");
+
 						} else {
 							// Lock request that is not lock conversion
 							this.lockTable.add(xLockObject);
@@ -226,7 +235,21 @@ public class LockManager
 					// (1) transaction already had a READ lock
 					// (2) transaction already had a WRITE lock
 					// Seeing the comments at the top of this function might be helpful
-
+					if (l_dataLockObject.getLockType() == TransactionLockObject.LockType.LOCK_WRITE){
+						// Transaction already has a WRITE Lock and is further requesting a WRITE Lock
+						// This lock request is redundant.
+						throw new RedundantLockRequestException(dataLockObject.getXId(), "redundant WRITE lock request");
+					}
+					if (l_dataLockObject.getLockType() == TransactionLockObject.LockType.LOCK_READ){
+						for (Object o : vect){
+							if ((DataLockObject) o).getXId() != dataLockObject.getXId()){
+								return true;
+							}
+						}
+						bitset.set(o,true);
+						
+					}
+					
 					//TODO: Lock conversion
 				}
 			} 
