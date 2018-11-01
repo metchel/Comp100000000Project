@@ -7,6 +7,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.ObjectOutputStream;
+import java.io.ObjectInputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -25,9 +27,18 @@ public class ClientWorker implements Runnable {
         String line;
         BufferedReader in = null;
         PrintWriter out = null;
+
+        ObjectInputStream ois = null;
+        ObjectOutputStream oos = null;
+
         try {
+            /**
             in = new BufferedReader(new InputStreamReader(client.getInputStream()));
             out = new PrintWriter(client.getOutputStream(), true);
+            **/
+
+            ois = new ObjectInputStream(this.client.getInputStream());
+            oos = new ObjectOutputStream(this.client.getOutputStream());
         } catch(IOException e) {
             e.printStackTrace();
             System.out.println("ClientWorker::run failed on either in or out stream.");
@@ -36,8 +47,8 @@ public class ClientWorker implements Runnable {
 
         while(true) {
             try {
-                String response = handler.handle(in.readLine());
-                out.println(response);
+                Response response = handler.handle((Request) ois.readObject());
+                System.out.println(response.getMessage());
             } catch (IOException e) {
                 e.printStackTrace();
                 System.out.println("ClientWorker::run failed on in or out stream.");

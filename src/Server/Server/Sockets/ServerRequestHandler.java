@@ -15,12 +15,13 @@ public class ServerRequestHandler implements RequestHandler {
         this.resourceManager = resourceManager;
     }
 
-    public String handle(String req) throws IOException {
-        Vector<String> arguments = this.parse(req);
+    public Response handle(Request req) throws IOException, ClassNotFoundException {
+        Vector<String> arguments = this.parse(req.getMessage());
         Command COMMAND = Command.fromString(arguments.get(0));
-        String response = Boolean.toString(execute(COMMAND, arguments));
+        String res = Boolean.toString(execute(COMMAND, arguments));
 
-        System.out.println("RESPONSE: " + response);
+        Response response = new Response(res);
+        System.out.println("RESPONSE: " + response.getMessage());
 
         return response;
     }
