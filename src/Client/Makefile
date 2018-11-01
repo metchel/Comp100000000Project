@@ -11,8 +11,11 @@ FORCE: ;
 ../Server/RMIInterface.jar: ../Server/Server/Interface/IResourceManager.java
 	make -C ../Server/ RMIInterface.jar
 
-compile-client: ../Server/RMIInterface.jar
-	javac -cp ../Server/RMIInterface.jar Client/*.java
+../Server/NetworkInterface.jar: ../Server/Server/Network/Request.java
+	make -C ../Server/ NetworkInterface.jar
+
+compile-client: ../Server/RMIInterface.jar ../Server/NetworkInterface.jar Client/*.java
+	javac -cp ../Server/RMIInterface.jar:../Server/NetworkInterface.jar:. Client/*.java
 
 clean:
 	rm -f Client/*.class

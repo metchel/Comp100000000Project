@@ -13,6 +13,13 @@ RMIInterface.jar: Server/Interface/IResourceManager.java
 	javac Server/Interface/IResourceManager.java
 	jar cvf RMIInterface.jar Server/Interface/IResourceManager.class
 
+NetworkInterface.jar: Server/Network/*.java
+	@echo "Compiling network interface"
+	javac Server/Network/*.java
+	jar cvft NetworkInterface.jar Server/Network/*.class
+
+
+
 
 compile-middleware-rmi: Server/ResourceManager/*.java Server/Middleware/*.java Server/Interface/IResourceManager.java Server/Common/*.java Server/Network/*.java Server/Sockets/*.java
 	javac Server/Middleware/*.java Server/Interface/IResourceManager.java Server/Common/*.java Server/Network/*.java Server/Sockets/*.java Server/ResourceManager/*.java

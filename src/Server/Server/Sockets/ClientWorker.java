@@ -2,6 +2,7 @@ package Server.Sockets;
 
 import Server.Common.Trace;
 import Server.Common.ResourceManager;
+import Server.Network.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -39,7 +40,7 @@ public class ClientWorker implements Runnable {
 
             ois = new ObjectInputStream(this.client.getInputStream());
             oos = new ObjectOutputStream(this.client.getOutputStream());
-        } catch(IOException e) {
+        } catch(Exception e) {
             e.printStackTrace();
             System.out.println("ClientWorker::run failed on either in or out stream.");
             System.exit(-1);
@@ -49,7 +50,7 @@ public class ClientWorker implements Runnable {
             try {
                 Response response = handler.handle((Request) ois.readObject());
                 System.out.println(response.getMessage());
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 System.out.println("ClientWorker::run failed on in or out stream.");
                 System.exit(-1);

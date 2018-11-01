@@ -1,7 +1,7 @@
 package Client;
 
 import Server.Interface.*;
-import Server.Network.Request;
+import Server.Network.*;
 
 import java.util.*;
 import java.io.*;
@@ -105,9 +105,9 @@ public abstract class ClientAlt
                 String flightPrice = arguments.elementAt(4);
                 String packet = commandName+","+id+","+flightNum+","+flightSeats+","+flightPrice;
 
-                Request req = new Request(packet);
+                Server.Network.Request req = new Request(packet);
 
-                ois.writeObject(req);
+                oos.writeObject(req.toString());
                 //RequestBuilder rmb = new RequestBuilder();   
                 //RequestMessage rm = rmb.withCommand(commandName).inXId(id).withArgument(flightNum).withArgument(flightSeats).withArgument(flightPrice).build();
 
@@ -167,7 +167,7 @@ public abstract class ClientAlt
                 String price = arguments.elementAt(4);
 
                 String packet = commandName+","+id+","+location+","+numRooms+","+price;
-                
+
                 out.println(packet+"\n");
                 String response = in.readLine();
                 //System.out.println(response);

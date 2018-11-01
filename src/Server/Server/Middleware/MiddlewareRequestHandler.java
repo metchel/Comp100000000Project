@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.Socket;
 
 import Server.Sockets.RequestHandler;
+import Server.Network.*;
 
 public class MiddlewareRequestHandler implements RequestHandler {
     final Socket customerClient;
@@ -37,10 +38,9 @@ public class MiddlewareRequestHandler implements RequestHandler {
         this.roomOut = new PrintWriter(roomClient.getOutputStream(), true);
     }
 
-    public String handle(String req) throws IOException{
-        System.out.println("REQUEST: " + req);
-        String response = req;
-        this.roomOut.println(req);
+    public Response handle(Request req) throws IOException, ClassNotFoundException{
+        System.out.println("REQUEST: " + req.getMessage());
+        Response response = new Response("HI");
         return response;
     }
 }
