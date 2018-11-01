@@ -1,6 +1,7 @@
 package Client;
 
 import Server.Interface.*;
+import Server.Network.Request;
 
 import java.util.*;
 import java.io.*;
@@ -13,6 +14,8 @@ public abstract class ClientAlt
     Socket server = null;
     BufferedReader in;
     PrintWriter out;
+    ObjectInputStream ois = null;
+    ObjectOutputStream oos = null;
 
     public ClientAlt()
     {
@@ -100,9 +103,17 @@ public abstract class ClientAlt
                 String flightNum = arguments.elementAt(2);
                 String flightSeats = arguments.elementAt(3);
                 String flightPrice = arguments.elementAt(4);
-
                 String packet = commandName+","+id+","+flightNum+","+flightSeats+","+flightPrice;
-                out.println(packet);
+
+                Request req = new Request(packet);
+
+                ois.writeObject(req);
+                //RequestBuilder rmb = new RequestBuilder();   
+                //RequestMessage rm = rmb.withCommand(commandName).inXId(id).withArgument(flightNum).withArgument(flightSeats).withArgument(flightPrice).build();
+
+                //String packet = rm.toString();
+                
+                out.println(packet+"\n");
                 String response = in.readLine();
                 //System.out.println(response);
                 if (response.equals("true")){
@@ -128,7 +139,10 @@ public abstract class ClientAlt
                 String price = arguments.elementAt(4);
 
                 String packet = commandName+","+id+","+location+","+numCars+","+price;
-                out.println(packet+"\n");
+                Request req = new Request(packet);
+
+                oos.writeObject(req);
+                //out.println(packet+"\n");
                 String response = in.readLine();
                 //System.out.println(response);
                 if (response.equals("true")){
@@ -153,6 +167,7 @@ public abstract class ClientAlt
                 String price = arguments.elementAt(4);
 
                 String packet = commandName+","+id+","+location+","+numRooms+","+price;
+                
                 out.println(packet+"\n");
                 String response = in.readLine();
                 //System.out.println(response);
