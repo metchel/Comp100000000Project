@@ -102,7 +102,7 @@ public abstract class ClientAlt
                 String flightPrice = arguments.elementAt(4);
 
                 String packet = commandName+","+id+","+flightNum+","+flightSeats+","+flightPrice;
-                out.println(packet+"\n");
+                out.println(packet);
                 String response = in.readLine();
                 //System.out.println(response);
                 if (response.equals("true")){

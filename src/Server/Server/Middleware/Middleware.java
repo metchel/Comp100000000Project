@@ -72,9 +72,6 @@ public class Middleware {
             carClient = carServer.connect();
             roomClient = roomServer.connect();
 
-            BufferedReader flightIn = new BufferedReader(new InputStreamReader(flightClient.getInputStream()));
-            PrintWriter flightOut = new PrintWriter(flightClient.getOutputStream(), true);
-
             Builder builder = new Builder();
             Middleware middleware = builder
                 .atInetAddress(InetAddress.getByName(inetMiddleware))
