@@ -8,24 +8,24 @@ java.policy: FORCE
 
 FORCE: ;
 
-RMIInterface.jar: Server/Interface/IResourceManager.java
+RMIInterface.jar: Interface/IResourceManager.java
 	@echo "Compiling RMI server interface"
-	javac Server/Interface/IResourceManager.java
-	jar cvf RMIInterface.jar Server/Interface/IResourceManager.class
+	javac Interface/IResourceManager.java
+	jar cvf RMIInterface.jar Interface/IResourceManager.class
 
 NetworkInterface.jar: Server/Network/*.java
 	@echo "Compiling network interface"
-	javac Server/Network/*.java
-	jar cvft NetworkInterface.jar Server/Network/*.class
+	javac Network/*.java
+	jar cvf NetworkInterface.jar Network/*.class
 
 
 
 
-compile-middleware-rmi: Server/ResourceManager/*.java Server/Middleware/*.java Server/Interface/IResourceManager.java Server/Common/*.java Server/Network/*.java Server/Sockets/*.java
-	javac Server/Middleware/*.java Server/Interface/IResourceManager.java Server/Common/*.java Server/Network/*.java Server/Sockets/*.java Server/ResourceManager/*.java
-compile-server-rmi: Server/Interface/IResourceManager.java Server/Common/*.java
-	javac Server/Interface/IResourceManager.java Server/Common/*.java
+compile-middleware-rmi: ResourceManager/*.java Middleware/*.java Interface/IResourceManager.java Common/*.java Network/*.java Sockets/*.java
+	javac Middleware/*.java Interface/IResourceManager.java Common/*.java Network/*.java Sockets/*.java ResourceManager/*.java
+compile-server-rmi: Interface/IResourceManager.java Common/*.java
+	javac Interface/IResourceManager.java Common/*.java
 clean:
-	rm -f Server/Network/*.class Server/Sockets/*.class Server/Interface/*.class Server/Common/*.class Server/Middleware/*.class
+	rm -f Network/*.class Sockets/*.class Interface/*.class Common/*.class Middleware/*.class
 	rm -f RMIInterface.jar
 	rm -f java.policy 

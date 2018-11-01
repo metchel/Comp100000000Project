@@ -105,9 +105,9 @@ public abstract class ClientAlt
                 String flightPrice = arguments.elementAt(4);
                 String packet = commandName+","+id+","+flightNum+","+flightSeats+","+flightPrice;
 
-                Server.Network.Request req = new Request(packet);
+                Request req = new Request(packet);
 
-                oos.writeObject(req.toString());
+                oos.writeObject(req);
                 //RequestBuilder rmb = new RequestBuilder();   
                 //RequestMessage rm = rmb.withCommand(commandName).inXId(id).withArgument(flightNum).withArgument(flightSeats).withArgument(flightPrice).build();
 
