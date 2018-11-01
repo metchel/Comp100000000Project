@@ -36,9 +36,7 @@ public class ClientWorker implements Runnable {
 
         while(true) {
             try {
-                line = in.readLine();
-                String response = handler.handle(line);
-                System.out.println(response);
+                String response = handler.handle(in.readLine());
                 out.println(response);
             } catch (IOException e) {
                 e.printStackTrace();

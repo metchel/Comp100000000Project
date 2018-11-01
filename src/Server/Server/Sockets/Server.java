@@ -62,7 +62,7 @@ public class Server {
         }
     }
 
-    public static class Builder {
+    private static class Builder {
         private InetAddress inetAddress;
         private int port;
         private SocketResourceManager resourceManager;
