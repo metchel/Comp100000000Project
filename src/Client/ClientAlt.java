@@ -74,7 +74,7 @@ public abstract class ClientAlt
         }
     }
 
-    public void execute(Command cmd, Vector<String> arguments) throws IOException, NumberFormatException
+    public void execute(Command cmd, Vector<String> arguments) throws IOException, NumberFormatException, ClassNotFoundException
     {
         switch (cmd)
         {
@@ -113,10 +113,11 @@ public abstract class ClientAlt
 
                 //String packet = rm.toString();
                 
-                out.println(packet+"\n");
-                String response = in.readLine();
+                Response response = (Response) ois.readObject();
+
+                System.out.println("RESPONSE: " + response.getMessage());
                 //System.out.println(response);
-                if (response.equals("true")){
+                if (response.getMessage().equals("true")){
                     System.out.println("Flight added");
                 }else{
                     System.out.println("Flight could not be added");

@@ -49,7 +49,7 @@ public class ClientWorker implements Runnable {
         while(true) {
             try {
                 Response response = handler.handle((Request) ois.readObject());
-                System.out.println(response.getMessage());
+                oos.writeObject(response);
             } catch (Exception e) {
                 e.printStackTrace();
                 System.out.println("ClientWorker::run failed on in or out stream.");
