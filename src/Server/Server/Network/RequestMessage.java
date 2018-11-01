@@ -12,9 +12,15 @@ public class RequestMessage {
     private RequestMessage(){
 
     }
+<<<<<<< HEAD:src/Server/Server/Network/RequestMessage.java
 
     public String toString() {
         return this.sName + " " + this.cName + " " + this.xid + " " + this.argums.toString();
+=======
+    public String toString(){
+        String tmp = String.join(",", this.argums);
+        return (sName+","+cName+","+xid+","+tmp);
+>>>>>>> fa2aea66fe24ce9817b5af2c6d42ee243f638e94:src/Client/Client/RequestMessage.java
     }
         
     public static class RequestBuilder {
@@ -43,10 +49,17 @@ public class RequestMessage {
                     case("Ro"): this.sName = "ROOMS"; break;
                 }
             }
+<<<<<<< HEAD:src/Server/Server/Network/RequestMessage.java
             else if (command.startsWith("Query")) {
                 if (command.length() < 13) {
                     this.cName = "QUERY";
                     switch(command.substring(5,6)) {
+=======
+            else if (command.startsWith("Query")){
+                if (command.length < 13) {
+                    this.cName = "QUERY";
+                    switch(command.substring(5,6){
+>>>>>>> fa2aea66fe24ce9817b5af2c6d42ee243f638e94:src/Client/Client/RequestMessage.java
                         case("Cu"): this.sName = "CUSTOMERS"; break;
                         case("Ca"): this.sName = "CARS"; break;
                         case("Fl"): this.sName = "FLIGHTS"; break;
@@ -55,7 +68,11 @@ public class RequestMessage {
                 }
                 else {
                     this.cName = "QUERYPRICE";
+<<<<<<< HEAD:src/Server/Server/Network/RequestMessage.java
                     switch(command.substring(5,6)) {
+=======
+                    switch(command.substring(5,6){
+>>>>>>> fa2aea66fe24ce9817b5af2c6d42ee243f638e94:src/Client/Client/RequestMessage.java
                         case("Ca"): this.sName = "CARS"; break;
                         case("Fl"): this.sName = "FLIGHTS"; break;
                         case("Ro"): this.sName = "ROOMS"; break;
@@ -64,14 +81,20 @@ public class RequestMessage {
 
             }
             else if (command.startsWith("Reserve")){
+                this.cName = "RESERVE";
+                switch(command.substring(7,8){
+                    case("Ca"): this.sName = "CARS"; break;
+                    case("Fl"): this.sName = "FLIGHTS"; break;
+                    case("Ro"): this.sName = "ROOMS"; break;
+                }
+
 
             }
             else if (command.startsWith("Bundle")){
-
+                this.cName = "BUNDLE";
+                this.sName = "";
             }
 
-            this.sName = sName;
-            this.cName = cName;
             return this;
         }
         public RequestBuilder inXId(String xid){
