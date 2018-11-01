@@ -1,5 +1,6 @@
 package Server.Middleware;
 
+import Server.Sockets.RequestHandler;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.io.IOException;

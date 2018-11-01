@@ -24,8 +24,6 @@ public class Middleware {
     private ResourceManagerServer customerServer;
     private Socket customerClient;
     private ArrayList<ResourceManagerServer> itemServers;
-    private Map<String, Socket> itemClients;
-    private static ServerSocket serverSocket;
 
     private Middleware() {}
     public static void main(String[] args) {
@@ -55,6 +53,13 @@ public class Middleware {
         int portCars = Integer.parseInt(args[7]);
         String inetRooms = args[8];
         int portRooms = Integer.parseInt(args[9]);
+
+        final Socket customerClient;
+        final Socket flightClient;
+        final Socket carClient;
+        final Socket roomClient;
+
+        final ServerSocket serverSocket;
         
         try {
             ResourceManagerServer customerServer = new ResourceManagerServer(InetAddress.getByName(inetCustomer), portCustomer, Constants.CUSTOMER);
@@ -62,10 +67,13 @@ public class Middleware {
             ResourceManagerServer carServer = new ResourceManagerServer(InetAddress.getByName(inetCars), portCars, Constants.CAR);
             ResourceManagerServer roomServer = new ResourceManagerServer(InetAddress.getByName(inetRooms), portRooms, Constants.ROOM);
 
-            final Socket customerClient = customerServer.connect();
-            final Socket flightClient = flightServer.connect();
-            final Socket carClient = carServer.connect();
-            final Socket roomClient = roomServer.connect();
+            customerClient = customerServer.connect();
+            flightClient = flightServer.connect();
+            carClient = carServer.connect();
+            roomClient = roomServer.connect();
+
+            BufferedReader flightIn = new BufferedReader(new InputStreamReader(flightClient.getInputStream()));
+            PrintWriter flightOut = new PrintWriter(flightClient.getOutputStream(), true);
 
             Builder builder = new Builder();
             Middleware middleware = builder
@@ -78,28 +86,28 @@ public class Middleware {
                 .build();
 
             serverSocket = new ServerSocket(middleware.getPort());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
-        while(true) {
-            ClientWorker worker;
-
-            try {
-                Socket client = serverSocket.accept();
-                SocketResourceManager resourceManager = new SocketResourceManager("middlewareRM");
-                RequestHandler handler = new MiddlewareRequestHandler(resourceManager);
-                worker = new ClientWorker(client, handler);
-                Thread t = new Thread(worker);
-                t.start();
-            } catch(IOException e) {
-                System.out.println("Middlware::main failed accepting clients");
-                System.exit(-1);
+            while(true) {
+                ClientWorker worker;
+                try {
+                    Socket client = serverSocket.accept();
+                    RequestHandler handler = new MiddlewareRequestHandler(customerClient, flightClient, carClient, roomClient);
+                    worker = new ClientWorker(client, handler);
+                    PrintWriter writer = new PrintWriter(customerClient.getOutputStream());
+                    Thread t = new Thread(worker);
+                    t.start();
+                } catch(IOException e) {
+                    System.out.println("Middlware::main failed accepting clients");
+                    System.exit(-1);
+                }
             }
+        } catch(IOException e) {
+            System.out.println("Middleware::main failed somewhere");
+            System.exit(-1);
         }
     }
 
-    public static class Builder {
+    private static class Builder {
         private InetAddress inetAddress;
         private int port;
         private ResourceManagerServer customerServer;
