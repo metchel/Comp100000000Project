@@ -21,7 +21,7 @@ import java.net.UnknownHostException;
 public class Middleware {
     private InetAddress inetAddress;
     private int port;
-    private ArrayList<ResourceManagerServer> itemServers;
+    private ArrayList<MiddlewareClient> clients;
 
     private Middleware() {}
     public static void main(String[] args) {
@@ -30,15 +30,9 @@ public class Middleware {
             System.exit(-1);
         }
 
-        /**
-         * Middleware host and port
-         */
         String inetMiddleware = args[0];
         int portMiddleware = Integer.parseInt(args[1]);
 
-        /**
-         * Item servers hosts and ports
-         */
         String inetFlights = args[2];
         int portFlights = Integer.parseInt(args[3]);
         String inetCars = args[4];
@@ -46,46 +40,40 @@ public class Middleware {
         String inetRooms = args[6];
         int portRooms = Integer.parseInt(args[7]);
 
-        final Socket flightClient;
-        final Socket carClient;
-        final Socket roomClient;
-
+        final Middleware middleware;
         final ServerSocket serverSocket;
         
         try {
-            ResourceManagerServer flightServer = new ResourceManagerServer(InetAddress.getByName(inetFlights), portFlights, Constants.FLIGHT);
-            ResourceManagerServer carServer = new ResourceManagerServer(InetAddress.getByName(inetCars), portCars, Constants.CAR);
-            ResourceManagerServer roomServer = new ResourceManagerServer(InetAddress.getByName(inetRooms), portRooms, Constants.ROOM);
 
-            flightClient = flightServer.connect();
-            carClient = carServer.connect();
-            roomClient = roomServer.connect();
+            MiddlewareClient flightClient = new MiddlewareClient(InetAddress.getByName(inetFlights), portFlights);
+            MiddlewareClient carClient = new MiddlewareClient(InetAddress.getByName(inetCars), portCars);
+            MiddlewareClient roomClient = new MiddlewareClient(InetAddress.getByName(inetRooms), portRooms);
 
             Builder builder = new Builder();
-            Middleware middleware = builder
+            middleware = builder
                 .atInetAddress(InetAddress.getByName(inetMiddleware))
                 .atPort(portMiddleware)
-                .withItemServer(flightServer)
-                .withItemServer(carServer)
-                .withItemServer(roomServer)
+                .withClient(flightClient)
+                .withClient(carClient)
+                .withClient(roomClient)
                 .build();
 
             serverSocket = new ServerSocket(middleware.getPort());
+            RequestHandler handler = new MiddlewareRequestHandler(flightClient, carClient, roomClient);
 
             while(true) {
                 ClientWorker worker;
                 try {
                     Socket client = serverSocket.accept();
-                    RequestHandler handler = new MiddlewareRequestHandler(flightClient, carClient, roomClient);
                     worker = new ClientWorker(client, handler);
                     Thread t = new Thread(worker);
                     t.start();
                 } catch(IOException e) {
-                    System.out.println("Middlware::main failed accepting clients");
+                    System.out.println("Middlware::main failed somewhere");
                     System.exit(-1);
                 }
             }
-        } catch(IOException e) {
+        } catch(Exception e) {
             System.out.println("Middleware::main failed somewhere");
             System.exit(-1);
         }
@@ -94,8 +82,7 @@ public class Middleware {
     private static class Builder {
         private InetAddress inetAddress;
         private int port;
-        private ResourceManagerServer customerServer;
-        private ArrayList<ResourceManagerServer> itemServers = new ArrayList<>();
+        private ArrayList<MiddlewareClient> clients = new ArrayList<>();
 
         public Builder atInetAddress(InetAddress inetAddress) throws UnknownHostException{
             this.inetAddress = inetAddress;
@@ -107,8 +94,8 @@ public class Middleware {
             return this;
         }
 
-        public Builder withItemServer(ResourceManagerServer itemServer) {
-            this.itemServers.add(itemServer);
+        public Builder withClient(MiddlewareClient client) {
+            this.clients.add(client);
             return this;
         }
 
@@ -116,7 +103,7 @@ public class Middleware {
             Middleware middleware = new Middleware();
             middleware.inetAddress = this.inetAddress;
             middleware.port = this.port;
-            middleware.itemServers = this.itemServers;
+            middleware.clients = this.clients;
 
             return middleware;
         }

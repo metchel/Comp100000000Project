@@ -30,7 +30,6 @@ public class Request implements Serializable {
 
     public String toString() {
         final String delim = "|";
-        return this.timeStamp + delim
-            + this.data.toString();
+        return this.data.toString();
     }
 }

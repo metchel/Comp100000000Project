@@ -46,12 +46,13 @@ public class Server {
             e.printStackTrace();
         }
 
+        RequestHandler handler = new ServerRequestHandler(server.getResourceManager());
+
         while(true) {
             ClientWorker worker;
-
+            Socket client = null;
             try {
-                Socket client = serverSocket.accept();
-                ServerRequestHandler handler = new ServerRequestHandler(server.getResourceManager());
+                client = serverSocket.accept();
                 worker = new ClientWorker(client, handler);
                 Thread t = new Thread(worker);
                 t.start();

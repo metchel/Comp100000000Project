@@ -36,8 +36,7 @@ public class Response implements Serializable {
 
     public String toString() {
         final String delim = "|";
-        return this.timeStamp.toString() + delim
-            + this.status.toString() + delim
+        return this.status.toString() + delim
             + this.message;
     }
 }

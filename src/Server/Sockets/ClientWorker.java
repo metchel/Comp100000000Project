@@ -16,6 +16,7 @@ import java.net.UnknownHostException;
 import java.net.ServerSocket;
 
 public class ClientWorker implements Runnable {
+    private volatile boolean running = false;
     final Socket client;
     final RequestHandler handler;
 
@@ -33,10 +34,6 @@ public class ClientWorker implements Runnable {
         ObjectOutputStream oos = null;
 
         try {
-            /**
-            in = new BufferedReader(new InputStreamReader(client.getInputStream()));
-            out = new PrintWriter(client.getOutputStream(), true);
-            **/
 
             ois = new ObjectInputStream(this.client.getInputStream());
             oos = new ObjectOutputStream(this.client.getOutputStream());
@@ -46,14 +43,16 @@ public class ClientWorker implements Runnable {
             System.exit(-1);
         }
 
-        while(true) {
+        this.running = true;
+
+        while(this.running) {
             try {
                 Response response = handler.handle((Request) ois.readObject());
                 oos.writeObject(response);
             } catch (Exception e) {
                 e.printStackTrace();
                 System.out.println("ClientWorker::run failed on in or out stream.");
-                System.exit(-1);
+                this.running = false;
             }
         }
     }
