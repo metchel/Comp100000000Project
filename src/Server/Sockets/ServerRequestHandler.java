@@ -41,11 +41,7 @@ public class ServerRequestHandler implements RequestHandler {
         Response response = new Response();
         response.addCurrentTimeStamp()
             .addStatus(resStatus)
-<<<<<<< HEAD
-            .addMessage("");
-=======
             .addMessage(message);
->>>>>>> matt
 
         System.out.println(response.toString());
 
@@ -60,25 +56,6 @@ public class ServerRequestHandler implements RequestHandler {
 
             case AddFlight: {
 
-<<<<<<< HEAD
-                int flightNum = ((Integer)arguments.get("flightNum")).intValue();
-                int flightSeats = ((Integer)arguments.get("flightSeats")).intValue();
-                int flightPrice = ((Integer)arguments.get("flightPrice")).intValue();
-
-                try {
-                    Thread.sleep(3000);
-                } catch(InterruptedException e){
-                    e.printStackTrace();
-                }
-
-                if (resourceManager.addFlight(xId, flightNum, flightSeats, flightPrice)) {
-                    System.out.println("Flight added");
-                    return new Boolean(true);
-                } else {
-                    System.out.println("Flight could not be added");
-                    return new Boolean(false);
-                }
-=======
                 Integer flightNum = (Integer)arguments.get("flightNum");
                 Integer flightSeats = (Integer)arguments.get("flightSeats");
                 Integer flightPrice = (Integer)arguments.get("flightPrice");
@@ -188,7 +165,6 @@ public class ServerRequestHandler implements RequestHandler {
 
             case Quit: {
                 return new Boolean(false);
->>>>>>> matt
             }
         }
 
