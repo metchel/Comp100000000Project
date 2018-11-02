@@ -49,11 +49,9 @@ public class Server {
         RequestHandler handler = new ServerRequestHandler(server.getResourceManager());
 
         while(true) {
-            ClientWorker worker;
-            Socket client = null;
             try {
-                client = serverSocket.accept();
-                worker = new ClientWorker(client, handler);
+                Socket client = serverSocket.accept();
+                ClientWorker worker = new ClientWorker(client, handler);
                 Thread t = new Thread(worker);
                 t.start();
             } catch(IOException e) {

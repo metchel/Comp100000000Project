@@ -62,10 +62,9 @@ public class Middleware {
             RequestHandler handler = new MiddlewareRequestHandler(flightClient, carClient, roomClient);
 
             while(true) {
-                ClientWorker worker;
                 try {
                     Socket client = serverSocket.accept();
-                    worker = new ClientWorker(client, handler);
+                    ClientWorker worker = new ClientWorker(client, handler);
                     Thread t = new Thread(worker);
                     t.start();
                 } catch(IOException e) {
@@ -113,7 +112,7 @@ public class Middleware {
         return this.port;
     }
 
-    public InetAddress getInetAddres() {
+    public InetAddress getInetAddress() {
         return this.inetAddress;
     }
 }

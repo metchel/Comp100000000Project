@@ -30,7 +30,7 @@ public class ServerRequestHandler implements RequestHandler {
         Response response = new Response();
         response.addCurrentTimeStamp()
             .addStatus(resStatus)
-            .addMessage("IDK");
+            .addMessage("");
 
         System.out.println(response.toString());
 
@@ -48,6 +48,12 @@ public class ServerRequestHandler implements RequestHandler {
                 int flightNum = ((Integer)arguments.get("flightNum")).intValue();
                 int flightSeats = ((Integer)arguments.get("flightSeats")).intValue();
                 int flightPrice = ((Integer)arguments.get("flightPrice")).intValue();
+
+                try {
+                    Thread.sleep(3000);
+                } catch(InterruptedException e){
+                    e.printStackTrace();
+                }
 
                 if (resourceManager.addFlight(xId, flightNum, flightSeats, flightPrice)) {
                     System.out.println("Flight added");

@@ -26,6 +26,8 @@ public class ClientWorker implements Runnable {
     }
 
     public void run() {
+
+        Trace.info("ClientWorker is working...");
         String line;
         BufferedReader in = null;
         PrintWriter out = null;
@@ -50,7 +52,6 @@ public class ClientWorker implements Runnable {
                 Response response = handler.handle((Request) ois.readObject());
                 oos.writeObject(response);
             } catch (Exception e) {
-                e.printStackTrace();
                 System.out.println("ClientWorker::run failed on in or out stream.");
                 this.running = false;
             }
