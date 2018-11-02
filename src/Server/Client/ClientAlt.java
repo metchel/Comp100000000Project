@@ -99,8 +99,7 @@ public abstract class ClientAlt
                 String flightNum = arguments.elementAt(2);
                 String flightSeats = arguments.elementAt(3);
                 String flightPrice = arguments.elementAt(4);
-                String packet = commandName+","+id+","+flightNum+","+flightSeats+","+flightPrice;
-
+                
                 RequestData data = new RequestData();
                 data.addXId(Integer.parseInt(id))
                     .addCommand(cmd)
@@ -136,16 +135,31 @@ public abstract class ClientAlt
 
                 String commandName = arguments.elementAt(0);
                 String id = arguments.elementAt(1);
-                String location = arguments.elementAt(2);
+                String carLoc = arguments.elementAt(2);
                 String numCars = arguments.elementAt(3);
-                String price = arguments.elementAt(4);
+                String carPrice = arguments.elementAt(4);
 
-                String packet = commandName+","+id+","+location+","+numCars+","+price;
-                String response = in.readLine();
-                if (response.equals("true")){
-                    System.out.println("Cars added");
-                }else{
-                    System.out.println("Cars could not be added");
+                RequestData data = new RequestData();
+                data.addXId(Integer.parseInt(id))
+                    .addCommand(cmd)
+                    .addArgument("carLoc", carLoc)
+                    .addArgument("numCars", Integer.parseInt(numCars))
+                    .addArgument("carPrice", Integer.parseInt(carPrice));
+        
+                Request req = new Request();
+                req.addCurrentTimeStamp()
+                    .addData(data);
+
+                oos.writeObject(req);
+                
+                Response response = (Response) ois.readObject();
+
+                System.out.println("RESPONSE: " + response.toString());
+
+                if (response.getStatus()) {
+                    System.out.println("Car added");
+                } else {
+                    System.out.println("Car could not be added");
                 }
                 break;
             }
@@ -159,19 +173,31 @@ public abstract class ClientAlt
 
                 String commandName = arguments.elementAt(0);
                 String id = arguments.elementAt(1);
-                String location = arguments.elementAt(2);
+                String roomLoc = arguments.elementAt(2);
                 String numRooms = arguments.elementAt(3);
-                String price = arguments.elementAt(4);
+                String roomPrice = arguments.elementAt(4);
 
-                String packet = commandName+","+id+","+location+","+numRooms+","+price;
+                RequestData data = new RequestData();
+                data.addXId(Integer.parseInt(id))
+                    .addCommand(cmd)
+                    .addArgument("roomLoc", roomLoc)
+                    .addArgument("numCars", Integer.parseInt(numRooms))
+                    .addArgument("carPrice", Integer.parseInt(roomPrice));
+        
+                Request req = new Request();
+                req.addCurrentTimeStamp()
+                    .addData(data);
 
-                out.println(packet+"\n");
-                String response = in.readLine();
-                //System.out.println(response);
-                if (response.equals("true")){
-                    System.out.println("Rooms added");
-                }else{
-                    System.out.println("Rooms could not be added");
+                oos.writeObject(req);
+                
+                Response response = (Response) ois.readObject();
+
+                System.out.println("RESPONSE: " + response.toString());
+
+                if (response.getStatus()) {
+                    System.out.println("Room added");
+                } else {
+                    System.out.println("Room could not be added");
                 }
                 break;
             }
@@ -183,11 +209,19 @@ public abstract class ClientAlt
                 String commandName = arguments.elementAt(0);
                 String id = arguments.elementAt(1);
 
-                String packet = commandName+","+id;
-                out.println(packet+"\n");
-                String response = in.readLine();
-                //System.out.println(response);
-                System.out.println("Add customer ID: " + id);
+                RequestData data = new RequestData();
+                data.addXId(Integer.parseInt(id))
+                    .addCommand(cmd);
+        
+                Request req = new Request();
+                req.addCurrentTimeStamp()
+                    .addData(data);
+
+                oos.writeObject(req);
+                
+                Response response = (Response) ois.readObject();
+
+                System.out.println("RESPONSE: " + response.toString());
                 break;
             }
             case AddCustomerID: {
@@ -198,15 +232,26 @@ public abstract class ClientAlt
 
                 String commandName = arguments.elementAt(0);
                 String id = arguments.elementAt(1);
-                String customerID = arguments.elementAt(2);
+                String cId = arguments.elementAt(2);
 
-                String packet = commandName+","+id+","+customerID;
-                out.println(packet+"\n");
-                String response = in.readLine();
-                //System.out.println(response);
-                if (response.equals("true")){
-                    System.out.println("Add customer ID: " + customerID);
-                }else{
+                RequestData data = new RequestData();
+                data.addXId(Integer.parseInt(id))
+                    .addCommand(cmd)
+                    .addArgument("cId", Integer.parseInt(cId));
+        
+                Request req = new Request();
+                req.addCurrentTimeStamp()
+                    .addData(data);
+
+                oos.writeObject(req);
+                
+                Response response = (Response) ois.readObject();
+
+                System.out.println("RESPONSE: " + response.toString());
+
+                if (response.getStatus()) {
+                    System.out.println("Add customer ID: " + cId);
+                } else {
                     System.out.println("Customer could not be added");
                 }
 
@@ -222,11 +267,22 @@ public abstract class ClientAlt
                 String id = arguments.elementAt(1);
                 String flightNum = arguments.elementAt(2);
 
-                String packet = commandName+","+id+","+flightNum;
-                out.println(packet+"\n");
-                String response = in.readLine();
-                //System.out.println(response);
-                if (response.equals("true")){
+                RequestData data = new RequestData();
+                data.addXId(Integer.parseInt(id))
+                    .addCommand(cmd)
+                    .addArgument("flightNum", Integer.parseInt(flightNum));
+        
+                Request req = new Request();
+                req.addCurrentTimeStamp()
+                    .addData(data);
+
+                oos.writeObject(req);
+                
+                Response response = (Response) ois.readObject();
+
+                System.out.println("RESPONSE: " + response.toString());
+
+                if (response.getStatus()){
                     System.out.println("Flight Deleted");
                 }else{
                     System.out.println("Flight could not be deleted");
@@ -241,13 +297,24 @@ public abstract class ClientAlt
 
                 String commandName = arguments.elementAt(0);
                 String id = arguments.elementAt(1);
-                String location = arguments.elementAt(2);
+                String carLoc = arguments.elementAt(2);
 
-                String packet = commandName+","+id+","+location;
-                out.println(packet+"\n");
-                String response = in.readLine();
-                //System.out.println(response);
-                if (response.equals("true")){
+                RequestData data = new RequestData();
+                data.addXId(Integer.parseInt(id))
+                    .addCommand(cmd)
+                    .addArgument("carLoc", carLoc);
+        
+                Request req = new Request();
+                req.addCurrentTimeStamp()
+                    .addData(data);
+
+                oos.writeObject(req);
+                
+                Response response = (Response) ois.readObject();
+
+                System.out.println("RESPONSE: " + response.toString());
+
+                if (response.getStatus()){
                     System.out.println("Cars Deleted");
                 }else{
                     System.out.println("Cars could not be deleted");
@@ -258,17 +325,28 @@ public abstract class ClientAlt
                 checkArgumentsCount(3, arguments.size());
 
                 System.out.println("Deleting all rooms at a particular location [xid=" + arguments.elementAt(1) + "]");
-                System.out.println("-Car Location: " + arguments.elementAt(2));
+                System.out.println("-Room Location: " + arguments.elementAt(2));
 
                 String commandName = arguments.elementAt(0);
                 String id = arguments.elementAt(1);
-                String location = arguments.elementAt(2);
+                String roomLoc = arguments.elementAt(2);
 
-                String packet = commandName+","+id+","+location;
-                out.println(packet+"\n");
-                String response = in.readLine();
-                //System.out.println(response);
-                if (response.equals("true")){
+                RequestData data = new RequestData();
+                data.addXId(Integer.parseInt(id))
+                    .addCommand(cmd)
+                    .addArgument("roomLoc", roomLoc);
+        
+                Request req = new Request();
+                req.addCurrentTimeStamp()
+                    .addData(data);
+
+                oos.writeObject(req);
+                
+                Response response = (Response) ois.readObject();
+
+                System.out.println("RESPONSE: " + response.toString());
+
+                if (response.getStatus()){
                     System.out.println("Rooms Deleted");
                 }else{
                     System.out.println("Rooms could not be deleted");
@@ -283,13 +361,24 @@ public abstract class ClientAlt
 
                 String commandName = arguments.elementAt(0);
                 String id = arguments.elementAt(1);
-                String customerID = arguments.elementAt(2);
+                String cId = arguments.elementAt(2);
 
-                String packet = commandName+","+id+","+customerID;
-                out.println(packet+"\n");
-                String response = in.readLine();
-                //System.out.println(response);
-                if (response.equals("true")){
+                RequestData data = new RequestData();
+                data.addXId(Integer.parseInt(id))
+                    .addCommand(cmd)
+                    .addArgument("cId", Integer.parseInt(cId));
+        
+                Request req = new Request();
+                req.addCurrentTimeStamp()
+                    .addData(data);
+
+                oos.writeObject(req);
+                
+                Response response = (Response) ois.readObject();
+
+                System.out.println("RESPONSE: " + response.toString());
+
+                if (response.getStatus()){
                     System.out.println("Customer Deleted");
                 }else{
                     System.out.println("Customer could not be deleted");
@@ -305,12 +394,23 @@ public abstract class ClientAlt
                 String commandName = arguments.elementAt(0);
                 String id = arguments.elementAt(1);
                 String flightNum = arguments.elementAt(2);
-                String packet = commandName+","+id+","+flightNum;
 
+                RequestData data = new RequestData();
+                data.addXId(Integer.parseInt(id))
+                    .addCommand(cmd)
+                    .addArgument("flightNum", Integer.parseInt(flightNum));
+        
+                Request req = new Request();
+                req.addCurrentTimeStamp()
+                    .addData(data);
 
-                out.println(packet+"\n");
-                String response = in.readLine();
-                System.out.println("Number of seats available: "+response);
+                oos.writeObject(req);
+                
+                Response response = (Response) ois.readObject();
+
+                System.out.println("RESPONSE: " + response.toString());
+
+                System.out.println("Number of seats available: " + response.toString());
                 //System.out.println(response);
                 break;
             }
@@ -322,14 +422,24 @@ public abstract class ClientAlt
 
                 String commandName = arguments.elementAt(0);
                 String id = arguments.elementAt(1);
-                String location = arguments.elementAt(2);
+                String carLoc = arguments.elementAt(2);
 
-                String packet = commandName+","+id+","+location;
-                out.println(packet+"\n");
-                String response = in.readLine();
-                //System.out.println(response);
-                System.out.println("Number of cars at this location: "+response);
-               // System.out.println("Number of cars at this location: " + numCars);
+                RequestData data = new RequestData();
+                data.addXId(Integer.parseInt(id))
+                    .addCommand(cmd)
+                    .addArgument("carLoc", carLoc);
+        
+                Request req = new Request();
+                req.addCurrentTimeStamp()
+                    .addData(data);
+
+                oos.writeObject(req);
+                
+                Response response = (Response) ois.readObject();
+
+                System.out.println("RESPONSE: " + response.toString());
+
+                System.out.println("Number of cars at this location: " + response.toString());
                 break;
             }
             case QueryRooms: {
@@ -340,14 +450,23 @@ public abstract class ClientAlt
 
                 String commandName = arguments.elementAt(0);
                 String id = arguments.elementAt(1);
-                String location = arguments.elementAt(2);
+                String roomLoc = arguments.elementAt(2);
 
-                String packet = commandName+","+id+","+location;
-                out.println(packet+"\n");
-                String response = in.readLine();
-                //System.out.println(response);
-                System.out.println("Number of rooms at this location: "+response);
-                //System.out.println("Number of rooms at this location: " + numRoom);
+                RequestData data = new RequestData();
+                data.addXId(Integer.parseInt(id))
+                    .addCommand(cmd)
+                    .addArgument("roomLoc", roomLoc);
+        
+                Request req = new Request();
+                req.addCurrentTimeStamp()
+                    .addData(data);
+
+                oos.writeObject(req);
+                
+                Response response = (Response) ois.readObject();
+
+                System.out.println("RESPONSE: " + response.toString());
+                System.out.println("Number of rooms at this location: " + response.toString());
                 break;
             }
             case QueryCustomer: {
@@ -358,13 +477,22 @@ public abstract class ClientAlt
 
                 String commandName = arguments.elementAt(0);
                 String id = arguments.elementAt(1);
-                String customerID = arguments.elementAt(2);
-                String packet = commandName+","+id+","+customerID;
-                out.println(packet+"\n");
-                String response = in.readLine();
-                String keyword = "Bill for customer "+customerID;
-                String test = response.replaceAll(keyword,"\n");
-                System.out.println(keyword+"\n"+test);
+                String cId = arguments.elementAt(2);
+
+                RequestData data = new RequestData();
+                data.addXId(Integer.parseInt(id))
+                    .addCommand(cmd)
+                    .addArgument("cId", Integer.parseInt(cId));
+        
+                Request req = new Request();
+                req.addCurrentTimeStamp()
+                    .addData(data);
+
+                oos.writeObject(req);
+                
+                Response response = (Response) ois.readObject();
+
+                System.out.println("RESPONSE: " + response.toString());
                 //System.out.print(bill);
                 break;
             }
@@ -377,11 +505,22 @@ public abstract class ClientAlt
                 String commandName = arguments.elementAt(0);
                 String id = arguments.elementAt(1);
                 String flightNum = arguments.elementAt(2);
-                String packet = commandName+","+id+","+flightNum;
-                out.println(packet+"\n");
-                String response = in.readLine();
-                //System.out.println(response);
-                System.out.println("Price of a seat: " + response);
+
+                RequestData data = new RequestData();
+                data.addXId(Integer.parseInt(id))
+                    .addCommand(cmd)
+                    .addArgument("flightNum", Integer.parseInt(flightNum));
+        
+                Request req = new Request();
+                req.addCurrentTimeStamp()
+                    .addData(data);
+
+                oos.writeObject(req);
+                
+                Response response = (Response) ois.readObject();
+
+                System.out.println("RESPONSE: " + response.toString());
+                System.out.println("Price of a seat: " + response.toString());
                 break;
             }
             case QueryCarsPrice: {
@@ -392,12 +531,23 @@ public abstract class ClientAlt
 
                 String commandName = arguments.elementAt(0);
                 String id = arguments.elementAt(1);
-                String location = arguments.elementAt(2);
-                String packet = commandName+","+id+","+location;
-                out.println(packet+"\n");
-                String response = in.readLine();
-                //System.out.println(response);
-                System.out.println("Price of cars at this location: " + response);
+                String carLoc = arguments.elementAt(2);
+
+                RequestData data = new RequestData();
+                data.addXId(Integer.parseInt(id))
+                    .addCommand(cmd)
+                    .addArgument("carLoc", carLoc);
+        
+                Request req = new Request();
+                req.addCurrentTimeStamp()
+                    .addData(data);
+
+                oos.writeObject(req);
+                
+                Response response = (Response) ois.readObject();
+
+                System.out.println("RESPONSE: " + response.toString());
+                System.out.println("Price of cars at this location: " + response.toString());
                 break;
             }
             case QueryRoomsPrice: {
@@ -408,12 +558,23 @@ public abstract class ClientAlt
 
                 String commandName = arguments.elementAt(0);
                 String id = arguments.elementAt(1);
-                String location = arguments.elementAt(2);
-                String packet = commandName+","+id+","+location;
-                out.println(packet+"\n");
-                String response = in.readLine();
-                //System.out.println(response);
-                System.out.println("Price of rooms at this location: " + response);
+                String roomLoc = arguments.elementAt(2);
+                
+                RequestData data = new RequestData();
+                data.addXId(Integer.parseInt(id))
+                    .addCommand(cmd)
+                    .addArgument("roomLoc", roomLoc);
+        
+                Request req = new Request();
+                req.addCurrentTimeStamp()
+                    .addData(data);
+
+                oos.writeObject(req);
+                
+                Response response = (Response) ois.readObject();
+
+                System.out.println("RESPONSE: " + response.toString());
+                System.out.println("Price of rooms at this location: " + response.toString());
                 break;
             }
             case ReserveFlight: {
@@ -425,14 +586,26 @@ public abstract class ClientAlt
 
                 String commandName = arguments.elementAt(0);
                 String id = arguments.elementAt(1);
-                String customerID = arguments.elementAt(2);
+                String cId = arguments.elementAt(2);
                 String flightNum = arguments.elementAt(3);
 
-                String packet = commandName+","+id+","+customerID+","+flightNum;
-                out.println(packet+"\n");
-                String response = in.readLine();
-                //System.out.println(response);
-                if (response.equals("true")){
+                RequestData data = new RequestData();
+                data.addXId(Integer.parseInt(id))
+                    .addCommand(cmd)
+                    .addArgument("cId", Integer.parseInt(cId))
+                    .addArgument("flightNum", Integer.parseInt(flightNum));
+        
+                Request req = new Request();
+                req.addCurrentTimeStamp()
+                    .addData(data);
+
+                oos.writeObject(req);
+                
+                Response response = (Response) ois.readObject();
+
+                System.out.println("RESPONSE: " + response.toString());
+
+                if (response.getStatus()) {
                     System.out.println("Flight Reserved");
                 }else{
                     System.out.println("Flight could not be reserved");
@@ -448,14 +621,27 @@ public abstract class ClientAlt
 
                 String commandName = arguments.elementAt(0);
                 String id = arguments.elementAt(1);
-                String customerID = arguments.elementAt(2);
-                String location = arguments.elementAt(3);
+                String cId = arguments.elementAt(2);
+                String carLoc = arguments.elementAt(3);
 
-                String packet = commandName+","+id+","+customerID+","+location;
-                out.println(packet+"\n");
-                String response = in.readLine();
-                //System.out.println(response);
-                if (response.equals("true")){
+
+                RequestData data = new RequestData();
+                data.addXId(Integer.parseInt(id))
+                    .addCommand(cmd)
+                    .addArgument("cId", Integer.parseInt(cId))
+                    .addArgument("carLoc", carLoc);
+        
+                Request req = new Request();
+                req.addCurrentTimeStamp()
+                    .addData(data);
+
+                oos.writeObject(req);
+                
+                Response response = (Response) ois.readObject();
+
+                System.out.println("RESPONSE: " + response.toString());
+
+                if (response.getStatus()) {
                     System.out.println("Car Reserved");
                 }else{
                     System.out.println("Car could not be reserved");
@@ -471,14 +657,26 @@ public abstract class ClientAlt
 
                 String commandName = arguments.elementAt(0);
                 String id = arguments.elementAt(1);
-                String customerID = arguments.elementAt(2);
-                String location = arguments.elementAt(3);
+                String cId = arguments.elementAt(2);
+                String roomLoc = arguments.elementAt(3);
 
-                String packet = commandName+","+id+","+customerID+","+location;
-                out.println(packet+"\n");
-                String response = in.readLine();
-                //System.out.println(response);
-                if (response.equals("true")){
+                RequestData data = new RequestData();
+                data.addXId(Integer.parseInt(id))
+                    .addCommand(cmd)
+                    .addArgument("cId", Integer.parseInt(cId))
+                    .addArgument("roomLoc", roomLoc);
+        
+                Request req = new Request();
+                req.addCurrentTimeStamp()
+                    .addData(data);
+
+                oos.writeObject(req);
+                
+                Response response = (Response) ois.readObject();
+
+                System.out.println("RESPONSE: " + response.toString());
+
+                if (response.getStatus()) {
                     System.out.println("Room Reserved");
                 }else{
                     System.out.println("Room could not be reserved");
@@ -504,7 +702,6 @@ public abstract class ClientAlt
                 String id = arguments.elementAt(1);
                 String customerID = arguments.elementAt(2);
                 String packet = commandName+","+id+","+customerID;
-
 
                 for (int i = 0; i < arguments.size() - 6; ++i)
                 {

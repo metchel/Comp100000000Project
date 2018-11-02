@@ -1,5 +1,8 @@
 package Server.Middleware;
 
+import Server.Network.Request;
+import Server.Network.Response;
+
 import java.io.ObjectOutputStream;
 import java.io.ObjectInputStream;
 import java.io.IOException;
@@ -22,12 +25,12 @@ public class MiddlewareClient {
         this.ois = new ObjectInputStream(this.socket.getInputStream());
     }
 
-    public void send(Object o) throws IOException {
-        this.oos.writeObject(o);
+    public void send(Request request) throws IOException {
+        this.oos.writeObject(request);
     }
 
-    public Object receive() throws IOException, ClassNotFoundException {
-        return this.ois.readObject();
+    public Response receive() throws IOException, ClassNotFoundException {
+        return (Response)this.ois.readObject();
     }
 
     public void closeConnection() throws IOException {
