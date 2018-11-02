@@ -1,7 +1,8 @@
-package Client;
+package Server.Client;
 
 import Server.Interface.*;
 import Server.Network.*;
+import Server.Common.Command;
 
 import java.util.*;
 import java.io.*;
@@ -103,14 +104,12 @@ public abstract class ClientAlt
                 RequestData data = new RequestData();
                 data.addXId(Integer.parseInt(id))
                     .addCommand(cmd)
-                    .addArgument("cId", Integer.parseInt(id))
                     .addArgument("flightNum", Integer.parseInt(flightNum))
                     .addArgument("flightSeats", Integer.parseInt(flightSeats))
                     .addArgument("flightPrice", Integer.parseInt(flightPrice));
         
                 Request req = new Request();
                 req.addCurrentTimeStamp()
-                    .addMessage(packet)
                     .addData(data);
 
                 oos.writeObject(req);
@@ -142,9 +141,6 @@ public abstract class ClientAlt
                 String price = arguments.elementAt(4);
 
                 String packet = commandName+","+id+","+location+","+numCars+","+price;
-                Request req = new Request(packet);
-
-                oos.writeObject(req);
                 String response = in.readLine();
                 if (response.equals("true")){
                     System.out.println("Cars added");

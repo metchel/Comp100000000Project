@@ -21,13 +21,11 @@ import java.net.UnknownHostException;
 public class Middleware {
     private InetAddress inetAddress;
     private int port;
-    private ResourceManagerServer customerServer;
-    private Socket customerClient;
     private ArrayList<ResourceManagerServer> itemServers;
 
     private Middleware() {}
     public static void main(String[] args) {
-        if (args.length != 10) {
+        if (args.length != 8) {
             System.out.println("Middleware::main not enough arguments.");
             System.exit(-1);
         }
@@ -39,22 +37,15 @@ public class Middleware {
         int portMiddleware = Integer.parseInt(args[1]);
 
         /**
-         * Customer server host and port
-         */
-        String inetCustomer = args[2];
-        int portCustomer = Integer.parseInt(args[3]);
-
-        /**
          * Item servers hosts and ports
          */
-        String inetFlights = args[4];
-        int portFlights = Integer.parseInt(args[5]);
-        String inetCars = args[6];
-        int portCars = Integer.parseInt(args[7]);
-        String inetRooms = args[8];
-        int portRooms = Integer.parseInt(args[9]);
+        String inetFlights = args[2];
+        int portFlights = Integer.parseInt(args[3]);
+        String inetCars = args[4];
+        int portCars = Integer.parseInt(args[5]);
+        String inetRooms = args[6];
+        int portRooms = Integer.parseInt(args[7]);
 
-        final Socket customerClient;
         final Socket flightClient;
         final Socket carClient;
         final Socket roomClient;
@@ -62,12 +53,10 @@ public class Middleware {
         final ServerSocket serverSocket;
         
         try {
-            ResourceManagerServer customerServer = new ResourceManagerServer(InetAddress.getByName(inetCustomer), portCustomer, Constants.CUSTOMER);
             ResourceManagerServer flightServer = new ResourceManagerServer(InetAddress.getByName(inetFlights), portFlights, Constants.FLIGHT);
             ResourceManagerServer carServer = new ResourceManagerServer(InetAddress.getByName(inetCars), portCars, Constants.CAR);
             ResourceManagerServer roomServer = new ResourceManagerServer(InetAddress.getByName(inetRooms), portRooms, Constants.ROOM);
 
-            customerClient = customerServer.connect();
             flightClient = flightServer.connect();
             carClient = carServer.connect();
             roomClient = roomServer.connect();
@@ -76,7 +65,6 @@ public class Middleware {
             Middleware middleware = builder
                 .atInetAddress(InetAddress.getByName(inetMiddleware))
                 .atPort(portMiddleware)
-                .withCustomerServer(customerServer)
                 .withItemServer(flightServer)
                 .withItemServer(carServer)
                 .withItemServer(roomServer)
@@ -88,9 +76,8 @@ public class Middleware {
                 ClientWorker worker;
                 try {
                     Socket client = serverSocket.accept();
-                    RequestHandler handler = new MiddlewareRequestHandler(customerClient, flightClient, carClient, roomClient);
+                    RequestHandler handler = new MiddlewareRequestHandler(flightClient, carClient, roomClient);
                     worker = new ClientWorker(client, handler);
-                    PrintWriter writer = new PrintWriter(customerClient.getOutputStream());
                     Thread t = new Thread(worker);
                     t.start();
                 } catch(IOException e) {
@@ -120,11 +107,6 @@ public class Middleware {
             return this;
         }
 
-        public Builder withCustomerServer(ResourceManagerServer customerServer) {
-            this.customerServer = customerServer;
-            return this;
-        }
-
         public Builder withItemServer(ResourceManagerServer itemServer) {
             this.itemServers.add(itemServer);
             return this;
@@ -134,7 +116,6 @@ public class Middleware {
             Middleware middleware = new Middleware();
             middleware.inetAddress = this.inetAddress;
             middleware.port = this.port;
-            middleware.customerServer = this.customerServer;
             middleware.itemServers = this.itemServers;
 
             return middleware;

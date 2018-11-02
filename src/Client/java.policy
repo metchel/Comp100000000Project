@@ -1,3 +1,0 @@
-grant codebase "file:/Users/matthewetchells/Desktop/fall-2018/COMP512/Project/src/Client/" {
-permission java.security.AllPermission;
-};

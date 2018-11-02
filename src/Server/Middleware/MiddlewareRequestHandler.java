@@ -14,7 +14,6 @@ import java.net.Socket;
 import Server.Sockets.RequestHandler;
 
 public class MiddlewareRequestHandler implements RequestHandler {
-    final Socket customerClient;
     final Socket flightClient;
     final Socket carClient;
     final Socket roomClient;
@@ -25,8 +24,7 @@ public class MiddlewareRequestHandler implements RequestHandler {
     final ObjectOutputStream roomOos;
     final ObjectInputStream roomOis;
 
-    public MiddlewareRequestHandler(Socket customerClient, Socket flightClient, Socket carClient, Socket roomClient) throws IOException {
-        this.customerClient = customerClient;
+    public MiddlewareRequestHandler(Socket flightClient, Socket carClient, Socket roomClient) throws IOException {
         this.flightClient = flightClient;
         this.carClient = carClient;
         this.roomClient = roomClient;
@@ -44,7 +42,7 @@ public class MiddlewareRequestHandler implements RequestHandler {
         System.out.println("REQUEST: " + req.toString());
         this.flightOos.writeObject(req);
         Response response = (Response) this.flightOis.readObject();
-        System.out.println("RESPONSE" + response.toString());
+        System.out.println("RESPONSE: " + response.toString());
         return response;
     }
 }

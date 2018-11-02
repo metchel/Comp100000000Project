@@ -1,7 +1,7 @@
-package Client;
+package Server.Client;
 
 import Server.Interface.*;
-
+import Server.Common.Command;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -46,7 +46,6 @@ public class TCPClient extends ClientAlt
         }
 
     }
-
 
     public void connectServer() throws UnknownHostException, IOException
     {

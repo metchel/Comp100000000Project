@@ -3,8 +3,11 @@ package Server.Network;
 import Server.Common.Command;
 
 import java.util.Map;
+import java.io.Serializable;
+import java.util.HashMap;
 
-public class RequestData {
+public class RequestData implements Serializable {
+    private static final long serialVersionUID = 214867365778553221L;
     private Integer xId;
     private Command command;
     private Map<String, Object> commandArgs;
@@ -22,6 +25,10 @@ public class RequestData {
     }
 
     public RequestData addArgument(String key, Object val) {
+        if (this.commandArgs == null) {
+            this.commandArgs = new HashMap<String, Object>();
+        }
+
         this.commandArgs.put(key, val);
         return this;
     }
@@ -39,7 +46,7 @@ public class RequestData {
     }
 
     public String toString() {
-        final String delim = " ";
+        final String delim = "|";
         return this.xId.toString() + delim
             + this.command.toString() + delim
             + this.commandArgs.toString();

@@ -19,52 +19,47 @@ public class ServerRequestHandler implements RequestHandler {
     }
 
     public Response handle(Request req) throws IOException, ClassNotFoundException {
-        Map<String, Object> arguments = req.getData().getCommandArgs();
-        Command cmd = req.getData().getCommand();
+        Map<String, Object> arguments = ((RequestData)req.getData()).getCommandArgs();
+        Command cmd = ((RequestData)req.getData()).getCommand();
         Integer xId = req.getData().getXId();
 
-        boolean resStatus = execute(cmd, arguments);
+        System.out.println(req.toString());
+
+        Boolean resStatus = execute(xId, cmd, arguments);
 
         Response response = new Response();
         response.addCurrentTimeStamp()
             .addStatus(resStatus)
             .addMessage("IDK");
 
-        System.out.println("RESPONSE: " + response.toString());
+        System.out.println(response.toString());
 
         return response;
     }
 
-    public boolean execute(Command cmd, Map<String, Object> arguments) throws IOException {
+    public Boolean execute(Integer xId, Command cmd, Map<String, Object> arguments) throws IOException {
         switch (cmd) {
             case Help: {
                 break;
             }
 
             case AddFlight: {
-                checkArgumentsCount(5, arguments.keySet().size());
 
-                System.out.println("Adding a new flight [xid=" + arguments.get("xId").toString() + "]");
-                System.out.println("-Flight Number: " + arguments.get("flightNum").toString());
-                System.out.println("-Flight Seats: " + arguments.get("flightSeats").toString());
-                System.out.println("-Flight Price: " + arguments.get("flightPrice").toString());
-
-                int id = ((Integer)arguments.get("xId")).intValue();
                 int flightNum = ((Integer)arguments.get("flightNum")).intValue();
                 int flightSeats = ((Integer)arguments.get("flightSeats")).intValue();
                 int flightPrice = ((Integer)arguments.get("flightPrice")).intValue();
 
-                if (resourceManager.addFlight(id, flightNum, flightSeats, flightPrice)) {
+                if (resourceManager.addFlight(xId, flightNum, flightSeats, flightPrice)) {
                     System.out.println("Flight added");
-                    return true;
+                    return new Boolean(true);
                 } else {
                     System.out.println("Flight could not be added");
-                    return false;
+                    return new Boolean(false);
                 }
             }
         }
 
-        return false;
+        return new Boolean(false);
     }
 
     public void checkArgumentsCount(Integer expected, Integer actual) throws IllegalArgumentException {

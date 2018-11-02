@@ -12,7 +12,7 @@ public class Response implements Serializable {
     public Response() {}
 
     public Response addCurrentTimeStamp() {
-        Date current = new Date();
+        this.timeStamp = new Date();
         return this;
     }
 
