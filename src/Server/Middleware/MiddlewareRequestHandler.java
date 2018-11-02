@@ -41,10 +41,10 @@ public class MiddlewareRequestHandler implements RequestHandler {
     }
 
     public Response handle(Request req) throws IOException, ClassNotFoundException {
-        System.out.println("REQUEST: " + req.getMessage());
+        System.out.println("REQUEST: " + req.toString());
         this.flightOos.writeObject(req);
         Response response = (Response) this.flightOis.readObject();
-        System.out.println("RESPONSE" + response.getMessage());
+        System.out.println("RESPONSE" + response.toString());
         return response;
     }
 }

@@ -12,8 +12,8 @@ public abstract class ClientAlt
 {
     //IResourceManager m_resourceManager = null;
     Socket server = null;
-    BufferedReader in;
-    PrintWriter out;
+    PrintWriter out = null;
+    BufferedReader in = null;
     ObjectInputStream ois = null;
     ObjectOutputStream oos = null;
 
@@ -56,17 +56,12 @@ public abstract class ClientAlt
                 catch(Exception e){
                     e.printStackTrace();
                 }
-                /*catch (ConnectException e) {
-                    connectServer();
-                    execute(cmd, arguments);
-                }*/
+
             }
             catch (IllegalArgumentException e) {
                 System.err.println((char)27 + "[31;1mCommand exception: " + (char)27 + "[0m" + e.getLocalizedMessage());
             }
-            /*catch (ConnectIOException e) {
-                System.err.println((char)27 + "[31;1mCommand exception: " + (char)27 + "[0mConnection to server lost");
-            }*/
+
             catch (Exception e) {
                 System.err.println((char)27 + "[31;1mCommand exception: " + (char)27 + "[0mUncaught exception");
                 e.printStackTrace();
@@ -105,21 +100,28 @@ public abstract class ClientAlt
                 String flightPrice = arguments.elementAt(4);
                 String packet = commandName+","+id+","+flightNum+","+flightSeats+","+flightPrice;
 
-                Request req = new Request(packet);
+                RequestData data = new RequestData();
+                data.addXId(Integer.parseInt(id))
+                    .addCommand(cmd)
+                    .addArgument("cId", Integer.parseInt(id))
+                    .addArgument("flightNum", Integer.parseInt(flightNum))
+                    .addArgument("flightSeats", Integer.parseInt(flightSeats))
+                    .addArgument("flightPrice", Integer.parseInt(flightPrice));
+        
+                Request req = new Request();
+                req.addCurrentTimeStamp()
+                    .addMessage(packet)
+                    .addData(data);
 
                 oos.writeObject(req);
-                //RequestBuilder rmb = new RequestBuilder();   
-                //RequestMessage rm = rmb.withCommand(commandName).inXId(id).withArgument(flightNum).withArgument(flightSeats).withArgument(flightPrice).build();
-
-                //String packet = rm.toString();
                 
                 Response response = (Response) ois.readObject();
 
-                System.out.println("RESPONSE: " + response.getMessage());
-                //System.out.println(response);
-                if (response.getMessage().equals("true")){
+                System.out.println("RESPONSE: " + response.toString());
+
+                if (response.getStatus()) {
                     System.out.println("Flight added");
-                }else{
+                } else {
                     System.out.println("Flight could not be added");
                 }
 
@@ -143,9 +145,7 @@ public abstract class ClientAlt
                 Request req = new Request(packet);
 
                 oos.writeObject(req);
-                //out.println(packet+"\n");
                 String response = in.readLine();
-                //System.out.println(response);
                 if (response.equals("true")){
                     System.out.println("Cars added");
                 }else{

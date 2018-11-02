@@ -11,7 +11,7 @@ FORCE: ;
 ../Server/RMIInterface.jar: ../Server/Interface/IResourceManager.java
 	make -C ../Server/ RMIInterface.jar
 
-../Server/NetworkInterface.jar: ../Server/Network/Request.java
+../Server/NetworkInterface.jar: ../Server/Network/*.java
 	make -C ../Server/ NetworkInterface.jar
 
 compile-client: ../Server/RMIInterface.jar ../Server/NetworkInterface.jar *.java

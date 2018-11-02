@@ -15,9 +15,6 @@ public class TCPClient extends ClientAlt
 {
     private static String serverHost = "localhost";
     private static int serverPort = 9094;
-    //private static String s_serverName = "Server";
-
-    //private static String s_rmiPrefix = "group30";
 
     public static void main(String args[])
     {
@@ -68,7 +65,6 @@ public class TCPClient extends ClientAlt
         }
         in = new BufferedReader(new InputStreamReader(server.getInputStream()));
         out = new PrintWriter(server.getOutputStream(),true);
-
         oos = new ObjectOutputStream(server.getOutputStream());
         ois = new ObjectInputStream(server.getInputStream());
     }

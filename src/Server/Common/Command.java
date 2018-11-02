@@ -65,8 +65,6 @@ public enum Command {
 
 	public String toString()
 	{
-		String ret = name() + ": " + m_description + "\n";
-		ret += "Usage: " + name() + "," + m_args;
-		return ret;
+		return name();
 	}
 }             

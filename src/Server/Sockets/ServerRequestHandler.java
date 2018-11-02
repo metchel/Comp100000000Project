@@ -7,7 +7,9 @@ import Server.Network.*;
 
 import java.io.IOException;
 import java.util.Vector;
+import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.Date;
 
 public class ServerRequestHandler implements RequestHandler {
     private SocketResourceManager resourceManager;
@@ -17,73 +19,46 @@ public class ServerRequestHandler implements RequestHandler {
     }
 
     public Response handle(Request req) throws IOException, ClassNotFoundException {
-        Vector<String> arguments = this.parse(req.getMessage());
-        Command COMMAND = Command.fromString(arguments.get(0));
-        String res = Boolean.toString(execute(COMMAND, arguments));
+        Map<String, Object> arguments = req.getData().getCommandArgs();
+        Command cmd = req.getData().getCommand();
+        Integer xId = req.getData().getXId();
 
-        Response response = new Response(res);
-        System.out.println("RESPONSE: " + response.getMessage());
+        boolean resStatus = execute(cmd, arguments);
+
+        Response response = new Response();
+        response.addCurrentTimeStamp()
+            .addStatus(resStatus)
+            .addMessage("IDK");
+
+        System.out.println("RESPONSE: " + response.toString());
 
         return response;
     }
 
-    public Vector<String> parse(String command) {
-        Vector<String> arguments = new Vector<String>();
-        StringTokenizer tokenizer = new StringTokenizer(command,",");
-        String argument = "";
-        while (tokenizer.hasMoreTokens())
-        {
-            argument = tokenizer.nextToken();
-            argument = argument.trim();
-            arguments.add(argument);
-        }
-        return arguments;
-    }
-
-    public boolean execute(Command cmd, Vector<String> arguments) throws IOException {
+    public boolean execute(Command cmd, Map<String, Object> arguments) throws IOException {
         switch (cmd) {
             case Help: {
                 break;
             }
+
             case AddFlight: {
-                checkArgumentsCount(5, arguments.size());
+                checkArgumentsCount(5, arguments.keySet().size());
 
-                System.out.println("Adding a new flight [xid=" + arguments.elementAt(1) + "]");
-                System.out.println("-Flight Number: " + arguments.elementAt(2));
-                System.out.println("-Flight Seats: " + arguments.elementAt(3));
-                System.out.println("-Flight Price: " + arguments.elementAt(4));
+                System.out.println("Adding a new flight [xid=" + arguments.get("xId").toString() + "]");
+                System.out.println("-Flight Number: " + arguments.get("flightNum").toString());
+                System.out.println("-Flight Seats: " + arguments.get("flightSeats").toString());
+                System.out.println("-Flight Price: " + arguments.get("flightPrice").toString());
 
-                int id = toInt(arguments.elementAt(1));
-                int flightNum = toInt(arguments.elementAt(2));
-                int flightSeats = toInt(arguments.elementAt(3));
-                int flightPrice = toInt(arguments.elementAt(4));
+                int id = ((Integer)arguments.get("xId")).intValue();
+                int flightNum = ((Integer)arguments.get("flightNum")).intValue();
+                int flightSeats = ((Integer)arguments.get("flightSeats")).intValue();
+                int flightPrice = ((Integer)arguments.get("flightPrice")).intValue();
 
                 if (resourceManager.addFlight(id, flightNum, flightSeats, flightPrice)) {
                     System.out.println("Flight added");
                     return true;
                 } else {
                     System.out.println("Flight could not be added");
-                    return false;
-                }
-            }
-            case AddCars: {
-                checkArgumentsCount(5, arguments.size());
-
-                System.out.println("Adding new cars [xid=" + arguments.elementAt(1) + "]");
-                System.out.println("-Car Location: " + arguments.elementAt(2));
-                System.out.println("-Number of Cars: " + arguments.elementAt(3));
-                System.out.println("-Car Price: " + arguments.elementAt(4));
-
-                int id = toInt(arguments.elementAt(1));
-                String location = arguments.elementAt(2);
-                int numCars = toInt(arguments.elementAt(3));
-                int price = toInt(arguments.elementAt(4));
-
-                if (resourceManager.addCars(id, location, numCars, price)) {
-                    System.out.println("Cars added");
-                    return true;
-                } else {
-                    System.out.println("Cars could not be added");
                     return false;
                 }
             }
