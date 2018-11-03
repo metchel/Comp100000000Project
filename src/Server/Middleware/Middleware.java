@@ -21,6 +21,8 @@ import java.net.UnknownHostException;
 public class Middleware {
     private InetAddress inetAddress;
     private int port;
+    private SocketResourceManager customerResourceManager;
+    private TransactionManager coordinator;
     private ArrayList<MiddlewareClient> clients;
 
     private Middleware() {}
@@ -44,22 +46,25 @@ public class Middleware {
         final ServerSocket serverSocket;
         
         try {
-
-            MiddlewareClient flightClient = new MiddlewareClient(InetAddress.getByName(inetFlights), portFlights);
-            MiddlewareClient carClient = new MiddlewareClient(InetAddress.getByName(inetCars), portCars);
-            MiddlewareClient roomClient = new MiddlewareClient(InetAddress.getByName(inetRooms), portRooms);
+            final SocketResourceManager customerResourceManager = new SocketResourceManager(Constants.CUSTOMER);
+            final TransactionManager coordinator = new TransactionManager();
+            MiddlewareClient flightClient = new MiddlewareClient(Constants.FLIGHT, InetAddress.getByName(inetFlights), portFlights);
+            MiddlewareClient carClient = new MiddlewareClient(Constants.CAR, InetAddress.getByName(inetCars), portCars);
+            MiddlewareClient roomClient = new MiddlewareClient(Constants.ROOM, InetAddress.getByName(inetRooms), portRooms);
 
             Builder builder = new Builder();
             middleware = builder
                 .atInetAddress(InetAddress.getByName(inetMiddleware))
                 .atPort(portMiddleware)
+                .withResourceManager(customerResourceManager)
+                .withTransactionManager(coordinator)
                 .withClient(flightClient)
                 .withClient(carClient)
                 .withClient(roomClient)
                 .build();
 
             serverSocket = new ServerSocket(middleware.getPort());
-            RequestHandler handler = new MiddlewareRequestHandler(flightClient, carClient, roomClient);
+            RequestHandler handler = new MiddlewareRequestHandler(customerResourceManager, coordinator, flightClient, carClient, roomClient);
 
             while(true) {
                 try {
@@ -81,6 +86,8 @@ public class Middleware {
     private static class Builder {
         private InetAddress inetAddress;
         private int port;
+        private SocketResourceManager customerResourceManager;
+        private TransactionManager coordinator;
         private ArrayList<MiddlewareClient> clients = new ArrayList<>();
 
         public Builder atInetAddress(InetAddress inetAddress) throws UnknownHostException{
@@ -93,6 +100,16 @@ public class Middleware {
             return this;
         }
 
+        public Builder withResourceManager(SocketResourceManager customerResourceManager) {
+            this.customerResourceManager = customerResourceManager;
+            return this;
+        }
+
+        public Builder withTransactionManager(TransactionManager coordinator) {
+            this.coordinator = coordinator;
+            return this;
+        }
+
         public Builder withClient(MiddlewareClient client) {
             this.clients.add(client);
             return this;
@@ -101,6 +118,8 @@ public class Middleware {
         public Middleware build() throws IOException {
             Middleware middleware = new Middleware();
             middleware.inetAddress = this.inetAddress;
+            middleware.customerResourceManager = this.customerResourceManager;
+            middleware.coordinator = this.coordinator;
             middleware.port = this.port;
             middleware.clients = this.clients;
 
@@ -114,5 +133,13 @@ public class Middleware {
 
     public InetAddress getInetAddress() {
         return this.inetAddress;
+    }
+
+    public SocketResourceManager getCustomerResourceManager() {
+        return this.customerResourceManager;
+    }
+
+    public TransactionManager getTransactionManager() {
+        return this.coordinator;
     }
 }

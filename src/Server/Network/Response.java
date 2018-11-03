@@ -34,6 +34,10 @@ public class Response implements Serializable {
         return this.status;
     }
 
+    public String getMessage() {
+        return this.message;
+    }
+
     public String toString() {
         final String delim = "|";
         return this.status.toString() + delim

@@ -1,3 +1,10 @@
+package Server.Middleware;
+
+import java.util.Queue;
+import java.util.Set;
+import java.util.LinkedList;
+import java.util.HashSet;
+
 /*
 Maintain a list of active transactions
 – Keep track of which ResourceManagers are involved in a transaction (i.e. for each
@@ -8,3 +15,7 @@ commit/abort the transaction
 operation involving a transaction is performed, the time is reset. If the time-to-live
 expires then the transaction should be aborted
 */
+
+public class TransactionManager {
+    public TransactionManager() {}
+}

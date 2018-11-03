@@ -12,12 +12,13 @@ import java.net.InetAddress;
 public class MiddlewareClient {
     private InetAddress inetAddress;
     private int port;
-    private String name;
+    final String name;
     final Socket socket;
     final ObjectOutputStream oos;
     final ObjectInputStream ois;
 
-    public MiddlewareClient(InetAddress inetAddress, int port) throws IOException, ClassNotFoundException{
+    public MiddlewareClient(String name, InetAddress inetAddress, int port) throws IOException, ClassNotFoundException{
+        this.name = name;
         this.inetAddress = inetAddress;
         this.port = port;
         this.socket = new Socket(inetAddress, port);

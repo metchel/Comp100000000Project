@@ -8,9 +8,8 @@ import Server.Common.Command;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.util.Map;
 import java.util.Queue;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 
 import Server.Sockets.RequestHandler;
@@ -21,14 +20,14 @@ public class MiddlewareRequestHandler implements RequestHandler {
     final MiddlewareClient roomClient;
 
     final SocketResourceManager customerResourceManager;
-    final Map<Integer, Queue<Request>> transactionMap;
+    final TransactionManager coordinator;
 
-    public MiddlewareRequestHandler(MiddlewareClient flightClient, MiddlewareClient carClient, MiddlewareClient roomClient) throws IOException, ClassNotFoundException {
+    public MiddlewareRequestHandler(SocketResourceManager customerResourceManager, TransactionManager coordinator, MiddlewareClient flightClient, MiddlewareClient carClient, MiddlewareClient roomClient) throws IOException, ClassNotFoundException {
+        this.customerResourceManager = customerResourceManager;
+        this.coordinator = coordinator;
         this.flightClient = flightClient;
         this.carClient = carClient;
         this.roomClient = roomClient;
-        this.customerResourceManager = new SocketResourceManager("Customers");
-        this.transactionMap = new HashMap<Integer, Queue<Request>>();
     }
 
     public Response handle(Request request) throws IOException, ClassNotFoundException {
@@ -40,6 +39,58 @@ public class MiddlewareRequestHandler implements RequestHandler {
             case Help: {
                 break;
             }
+            /**
+             * Read only operations
+             */
+            case QueryFlight: {
+                this.flightClient.send(request);
+                response = this.flightClient.receive();
+                break;
+            }
+            case QueryCars: {
+                this.carClient.send(request);
+                response = this.carClient.receive();
+                break;
+            }
+            case QueryRooms: {
+                this.roomClient.send(request);
+                response = this.roomClient.receive();
+                break;
+            }
+            case QueryCustomer: {
+                Integer xId = data.getXId();
+                Integer cId = (Integer)data.getCommandArgs().get("cId");
+                String info = this.customerResourceManager.queryCustomerInfo(xId, cId);
+                Boolean resStatus = new Boolean(false);
+                String message = "Customer does not exist.";
+                if (info != null && info != "") {
+                    resStatus = new Boolean(true);
+                    message = info;
+                }
+                response.addCurrentTimeStamp()
+                    .addStatus(resStatus)
+                    .addMessage(message);
+                break;
+            }
+            case QueryFlightPrice: {
+                this.flightClient.send(request);
+                response = this.flightClient.receive();
+                break;
+            }
+            case QueryCarsPrice: {
+                this.carClient.send(request);
+                response = this.carClient.receive();
+                break;
+            }
+            case QueryRoomsPrice: {
+                this.roomClient.send(request);
+                response = this.roomClient.receive();
+                break;
+            }
+
+            /**
+             * Write only operations
+             */
             case AddFlight: {
                 this.flightClient.send(request);
                 response = this.flightClient.receive();
@@ -57,6 +108,7 @@ public class MiddlewareRequestHandler implements RequestHandler {
                 response = this.carClient.receive();
                 break;
             }
+
 
             case AddCustomer: {
                 Integer xId = data.getXId();
@@ -146,51 +198,10 @@ public class MiddlewareRequestHandler implements RequestHandler {
                     .addMessage(resStatusBoolean.toString());
                 break;
             }
-            case QueryFlight: {
-                this.flightClient.send(request);
-                response = this.flightClient.receive();
-                break;
-            }
-            case QueryCars: {
-                this.carClient.send(request);
-                response = this.carClient.receive();
-                break;
-            }
-            case QueryRooms: {
-                this.roomClient.send(request);
-                response = this.roomClient.receive();
-                break;
-            }
-            case QueryCustomer: {
-                Integer xId = data.getXId();
-                Integer cId = (Integer)data.getCommandArgs().get("cId");
-                String info = this.customerResourceManager.queryCustomerInfo(xId, cId);
-                Boolean resStatus = new Boolean(false);
-                String message = "Customer does not exist.";
-                if (info != null && info != "") {
-                    resStatus = new Boolean(true);
-                    message = info;
-                }
-                response.addCurrentTimeStamp()
-                    .addStatus(resStatus)
-                    .addMessage(message);
-                break;
-            }
-            case QueryFlightPrice: {
-                this.flightClient.send(request);
-                response = this.flightClient.receive();
-                break;
-            }
-            case QueryCarsPrice: {
-                this.carClient.send(request);
-                response = this.carClient.receive();
-                break;
-            }
-            case QueryRoomsPrice: {
-                this.roomClient.send(request);
-                response = this.roomClient.receive();
-                break;
-            }
+
+            /**
+             * Read and Write operations
+             */
             case ReserveFlight: {
                 Integer xId = data.getXId();
                 Integer cId = (Integer)data.getCommandArgs().get("cId");
@@ -205,6 +216,7 @@ public class MiddlewareRequestHandler implements RequestHandler {
                 }
                 break;
             }
+
             case ReserveCar: {
                 Integer xId = data.getXId();
                 Integer cId = (Integer)data.getCommandArgs().get("cId");
