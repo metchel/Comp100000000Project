@@ -76,87 +76,89 @@ public class ServerRequestHandler implements RequestHandler {
                 Integer numRooms = (Integer)arguments.get("numRooms");
                 Integer roomPrice = (Integer)arguments.get("roomPrice");
 
-                return new Boolean(resourceManager.addRooms(xId, roomLoc, numRooms.intValue(), roomPrice.intValue()));
+                return new Boolean(resourceManager.addRooms(xId.intValue(), roomLoc, numRooms.intValue(), roomPrice.intValue()));
             }
 
             case AddCustomer: {
-                return new Integer(resourceManager.newCustomer(xId));
+                return new Boolean(false);
             }
 
             case AddCustomerID: {
                 Integer cId = (Integer)arguments.get("cId");
-                return new Boolean(resourceManager.newCustomer(xId, cId.intValue()));
+                return new Boolean(resourceManager.newCustomer(xId.intValue(), cId.intValue()));
             }
 
             case DeleteFlight: {
                 Integer flightNum = (Integer)arguments.get("flightNum");
-                return new Boolean(resourceManager.deleteFlight(xId, flightNum.intValue()));
+                return new Boolean(resourceManager.deleteFlight(xId.intValue(), flightNum.intValue()));
             }
 
             case DeleteCars: {
                 String carLoc = (String)arguments.get("carLoc");
-                return new Boolean(resourceManager.deleteCars(xId, carLoc));
+                return new Boolean(resourceManager.deleteCars(xId.intValue(), carLoc));
             }
 
             case DeleteRooms: {
                 String roomLoc = (String)arguments.get("roomLoc");
-                return new Boolean(resourceManager.deleteRooms(xId, roomLoc));
+                return new Boolean(resourceManager.deleteRooms(xId.intValue(), roomLoc));
             }
 
             case QueryFlight: {
                 Integer flightNum = (Integer)arguments.get("flightNum");
-                return new Integer(resourceManager.queryFlight(xId, flightNum.intValue()));
+                return new Integer(resourceManager.queryFlight(xId.intValue(), flightNum.intValue()));
             }
 
             case QueryCars: {
                 String carLoc = (String)arguments.get("carLoc");
-                return new Integer(resourceManager.queryCars(xId, carLoc));
+                return new Integer(resourceManager.queryCars(xId.intValue(), carLoc));
             }
 
             case QueryRooms: {
                 String roomLoc = (String)arguments.get("roomLoc");
-                return new Integer(resourceManager.queryRooms(xId, roomLoc));
+                return new Integer(resourceManager.queryRooms(xId.intValue(), roomLoc));
             }
 
             case QueryFlightPrice: {
                 Integer flightNum = (Integer)arguments.get("flightNum");
-                return new Integer(resourceManager.queryFlightPrice(xId, flightNum.intValue()));
+                return new Integer(resourceManager.queryFlightPrice(xId.intValue(), flightNum.intValue()));
             }
 
             case QueryCarsPrice: {
                 String carLoc = (String)arguments.get("carLoc");
-                return new Integer(resourceManager.queryCarsPrice(xId, carLoc));
+                return new Integer(resourceManager.queryCarsPrice(xId.intValue(), carLoc));
             }
 
             case QueryRoomsPrice: {
                 String roomLoc = (String)arguments.get("roomLoc");
-                return new Integer(resourceManager.queryRoomsPrice(xId, roomLoc));
+                return new Integer(resourceManager.queryRoomsPrice(xId.intValue(), roomLoc));
             }
 
             case QueryCustomer: {
-                return new Boolean(false);
+                Integer cId = (Integer)arguments.get("cId");
+                return new String(resourceManager.queryCustomerInfo(xId.intValue(), cId.intValue()));
             }
 
             case DeleteCustomer: {
-                return new Boolean(false);
+                Integer cId = (Integer)arguments.get("cId");
+                return new Boolean(resourceManager.deleteCustomer(xId.intValue(), cId.intValue()));
             }
 
             case ReserveFlight: {
                 Integer cId = (Integer)arguments.get("cId");
                 Integer flightNum = (Integer)arguments.get("flightNum");
-                return new Boolean(resourceManager.reserveFlight(xId, cId, flightNum));
+                return new Boolean(resourceManager.reserveFlight(xId.intValue(), cId.intValue(), flightNum.intValue()));
             }
 
             case ReserveCar: {
                 Integer cId = (Integer)arguments.get("cId");
                 String carLoc = (String)arguments.get("carLoc");
-                return new Boolean(resourceManager.reserveCar(xId, cId, carLoc));
+                return new Boolean(resourceManager.reserveCar(xId.intValue(), cId.intValue(), carLoc));
             }
 
             case ReserveRoom: {
                 Integer cId = (Integer)arguments.get("cId");
                 String roomLoc = (String)arguments.get("roomLoc");
-                return new Boolean(resourceManager.reserveRoom(xId, cId, roomLoc));
+                return new Boolean(resourceManager.reserveRoom(xId.intValue(), cId.intValue(), roomLoc));
             }
 
             case Bundle: {

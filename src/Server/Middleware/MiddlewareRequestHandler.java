@@ -21,142 +21,224 @@ public class MiddlewareRequestHandler implements RequestHandler {
     final MiddlewareClient roomClient;
 
     final SocketResourceManager customerResourceManager;
-    final Map<String, Queue<Request>> transactionMap;
+    final Map<Integer, Queue<Request>> transactionMap;
 
     public MiddlewareRequestHandler(MiddlewareClient flightClient, MiddlewareClient carClient, MiddlewareClient roomClient) throws IOException, ClassNotFoundException {
         this.flightClient = flightClient;
         this.carClient = carClient;
         this.roomClient = roomClient;
         this.customerResourceManager = new SocketResourceManager("Customers");
-        this.transactionMap = new HashMap<String, Queue<Request>>();
-        this.transactionMap.put("FLIGHTS", new LinkedList<Request>());
-        this.transactionMap.put("CARS", new LinkedList<Request>());
-        this.transactionMap.put("ROOMS", new LinkedList<Request>());
-        this.transactionMap.put("CUSTOMERS", new LinkedList<Request>());
+        this.transactionMap = new HashMap<Integer, Queue<Request>>();
     }
 
-    public Response handle(Request req) throws IOException, ClassNotFoundException {
-        System.out.println("REQUEST: " + req.toString());
-        requestMapper(req);
+    public Response handle(Request request) throws IOException, ClassNotFoundException {
+        final RequestData data = (RequestData) request.getData();
+        final Command command = data.getCommand();
+        Response response = new Response();
 
-        Response response = null;
-        while(!this.transactionMap.get("FLIGHTS").isEmpty()) {
-            Request request = this.transactionMap.get("FLIGHTS").remove();
-            this.flightClient.send(request);
-            response = this.flightClient.receive();
-        }
-
-        while(!this.transactionMap.get("CARS").isEmpty()) {
-            Request request = this.transactionMap.get("CARS").remove();
-            this.carClient.send(request);
-            response = this.carClient.receive();
-        }
-
-        while(!this.transactionMap.get("ROOMS").isEmpty()) {
-            Request request = this.transactionMap.get("ROOMS").remove();
-            this.roomClient.send(request);
-            response = roomClient.receive();
-        }
-        System.out.println("RESPONSE: " + response.toString());
-        return response;
-    }
-
-    public void requestMapper(Request request) {
-        RequestData data = (RequestData) request.getData();
-        Command command = data.getCommand();
-
-        switch (command)
-        {
-            case Help:
-            {
+        switch (command) {
+            case Help: {
                 break;
             }
             case AddFlight: {
-                this.transactionMap.get("FLIGHTS").add(request);
+                this.flightClient.send(request);
+                response = this.flightClient.receive();
                 break;
             }
 
             case AddCars: {
-                this.transactionMap.get("CARS").add(request);
+                this.carClient.send(request);
+                response = this.carClient.receive();
                 break;
             }
 
             case AddRooms: {
-                this.transactionMap.get("ROOMS").add(request);
+                this.roomClient.send(request);
+                response = this.carClient.receive();
                 break;
             }
 
             case AddCustomer: {
-                this.transactionMap.get("CUSTOMERS").add(request);
+                Integer xId = data.getXId();
+                int newId = this.customerResourceManager.newCustomer(xId.intValue());
+                Integer newIdInteger = new Integer(newId);
+
+                Request clone = new Request();
+                RequestData informClients = new RequestData();
+                informClients
+                    .addCommand(Command.fromString("AddCustomerID"))
+                    .addArgument("cId", newId);
+                clone.addData(informClients);
+                this.flightClient.send(clone);
+                Response flightResponse = this.flightClient.receive();
+                this.carClient.send(clone);
+                Response carResponse = this.carClient.receive();
+                this.roomClient.send(clone);
+                Response roomResponse = this.roomClient.receive();
+                boolean informClientSuccess = flightResponse.getStatus().booleanValue() 
+                    && carResponse.getStatus().booleanValue()
+                    && roomResponse.getStatus().booleanValue();
+                if (informClientSuccess) {
+                    response.addCurrentTimeStamp()
+                        .addStatus(new Boolean(true))
+                        .addMessage(newIdInteger.toString());
+                } else {
+                    this.customerResourceManager.deleteCustomer(xId.intValue(), newId);
+                    response.addCurrentTimeStamp()
+                        .addStatus(new Boolean(false))
+                        .addMessage("Could not inform resourcemanagers of new customer.");
+                }
                 break;
             }
             case AddCustomerID: {
-                this.transactionMap.get("CUSTOMERS").add(request);
+                Integer xId = data.getXId();
+                Integer cId = (Integer)data.getCommandArgs().get("cId");
+                boolean resStatus = this.customerResourceManager.newCustomer(xId, cId);
+                Boolean resStatusBoolean = new Boolean(resStatus);
+
+                Request clone = new Request();
+                clone.addCurrentTimeStamp()
+                    .addData(data);
+                this.flightClient.send(clone);
+                Response flightResponse = this.flightClient.receive();
+                this.carClient.send(clone);
+                Response carResponse = this.carClient.receive();
+                this.roomClient.send(clone);
+                Response roomResponse = this.roomClient.receive();
+                boolean informClientSuccess = resStatus 
+                    && flightResponse.getStatus().booleanValue() 
+                    && carResponse.getStatus().booleanValue()
+                    && roomResponse.getStatus().booleanValue();
+                if (informClientSuccess) {
+                    response.addCurrentTimeStamp()
+                        .addStatus(resStatusBoolean)
+                        .addMessage(resStatusBoolean.toString());
+                } else {
+                    this.customerResourceManager.deleteCustomer(xId, cId);
+                    response.addCurrentTimeStamp()
+                        .addStatus(new Boolean(false))
+                        .addMessage("Could not inform resourcemanagers of new customer.");
+                }
                 break;
             }
             case DeleteFlight: {
-                this.transactionMap.get("FLIGHTS").add(request);
+                this.flightClient.send(request);
+                response = this.flightClient.receive();
                 break;
             }
             case DeleteCars: {
-                this.transactionMap.get("CARS").add(request);
+                this.carClient.send(request);
+                response = this.carClient.receive();
                 break;
             }
             case DeleteRooms: {
-                this.transactionMap.get("ROOMS").add(request);
+                this.roomClient.send(request);
+                response = this.roomClient.receive();
                 break;
             }
             case DeleteCustomer: {
-                this.transactionMap.get("CUSTOMERS").add(request);
+                Integer xId = data.getXId();
+                Integer cId = (Integer)data.getCommandArgs().get("cId");
+                boolean resStatus = this.customerResourceManager.deleteCustomer(xId, cId);
+                Boolean resStatusBoolean = new Boolean(resStatus);
+                response.addCurrentTimeStamp()
+                    .addStatus(resStatusBoolean)
+                    .addMessage(resStatusBoolean.toString());
                 break;
             }
             case QueryFlight: {
-                this.transactionMap.get("FLIGHTS").add(request);
+                this.flightClient.send(request);
+                response = this.flightClient.receive();
                 break;
             }
             case QueryCars: {
-                this.transactionMap.get("CARS").add(request);
+                this.carClient.send(request);
+                response = this.carClient.receive();
                 break;
             }
             case QueryRooms: {
-                this.transactionMap.get("CARS").add(request);
+                this.roomClient.send(request);
+                response = this.roomClient.receive();
                 break;
             }
             case QueryCustomer: {
-                this.transactionMap.get("CUSTOMERS").add(request);
+                Integer xId = data.getXId();
+                Integer cId = (Integer)data.getCommandArgs().get("cId");
+                String info = this.customerResourceManager.queryCustomerInfo(xId, cId);
+                Boolean resStatus = new Boolean(false);
+                String message = "Customer does not exist.";
+                if (info != null && info != "") {
+                    resStatus = new Boolean(true);
+                    message = info;
+                }
+                response.addCurrentTimeStamp()
+                    .addStatus(resStatus)
+                    .addMessage(message);
                 break;
             }
             case QueryFlightPrice: {
-                this.transactionMap.get("FLIGHTS").add(request);
+                this.flightClient.send(request);
+                response = this.flightClient.receive();
                 break;
             }
             case QueryCarsPrice: {
-                this.transactionMap.get("CARS").add(request);
+                this.carClient.send(request);
+                response = this.carClient.receive();
                 break;
             }
             case QueryRoomsPrice: {
-                this.transactionMap.get("ROOMS").add(request);
+                this.roomClient.send(request);
+                response = this.roomClient.receive();
                 break;
             }
             case ReserveFlight: {
-                this.transactionMap.get("FLIGHTS").add(request);
+                Integer xId = data.getXId();
+                Integer cId = (Integer)data.getCommandArgs().get("cId");
+                String info = this.customerResourceManager.queryCustomerInfo(xId, cId);
+                if (info != null && info != "") {
+                    this.flightClient.send(request);
+                    response = this.flightClient.receive();
+                } else {
+                    response.addCurrentTimeStamp()
+                        .addStatus(new Boolean(false))
+                        .addMessage("Customer does not exist.");
+                }
                 break;
             }
             case ReserveCar: {
-                this.transactionMap.get("CARS").add(request);
+                Integer xId = data.getXId();
+                Integer cId = (Integer)data.getCommandArgs().get("cId");
+                String info = this.customerResourceManager.queryCustomerInfo(xId, cId);
+                if (info != null && info != "") {
+                    this.carClient.send(request);
+                    response = this.carClient.receive();
+                } else {
+                    response.addCurrentTimeStamp()
+                        .addStatus(new Boolean(false))
+                        .addMessage("Customer does not exist.");
+                }
                 break;
             }
             case ReserveRoom: {
-                this.transactionMap.get("ROOMS").add(request);
+                Integer xId = data.getXId();
+                Integer cId = (Integer)data.getCommandArgs().get("cId");
+                String info = this.customerResourceManager.queryCustomerInfo(xId, cId);
+                if (info != null && info != "") {
+                    this.roomClient.send(request);
+                    response = this.roomClient.receive();
+                } else {
+                    response.addCurrentTimeStamp()
+                        .addStatus(new Boolean(false))
+                        .addMessage("Customer does not exist.");
+                }
                 break;
             }
             case Bundle: {
-                this.transactionMap.get("CUSTOMERS").add(request);
-                this.transactionMap.get("FLIGHTS").add(request);
-                this.transactionMap.get("CARS").add(request);
-                this.transactionMap.get("ROOMS").add(request);
+                // to do
                 break;
             }
         }
+
+        return response;
     }
 }

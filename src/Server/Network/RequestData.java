@@ -45,6 +45,11 @@ public class RequestData implements Serializable {
         return this.commandArgs;
     }
 
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+
     public String toString() {
         final String delim = "|";
         return this.xId.toString() + delim

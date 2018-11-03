@@ -28,8 +28,11 @@ public class Request implements Serializable {
         return this.data;
     }
 
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+
     public String toString() {
-        final String delim = "|";
         return this.data.toString();
     }
 }
