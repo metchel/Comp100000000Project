@@ -26,11 +26,11 @@ public class MiddlewareClient {
         this.ois = new ObjectInputStream(this.socket.getInputStream());
     }
 
-    public void send(Request request) throws IOException {
+    public synchronized void send(Request request) throws IOException {
         this.oos.writeObject(request);
     }
 
-    public Response receive() throws IOException, ClassNotFoundException {
+    public synchronized Response receive() throws IOException, ClassNotFoundException {
         return (Response)this.ois.readObject();
     }
 

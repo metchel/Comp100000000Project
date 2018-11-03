@@ -16,7 +16,6 @@ public class RequestWorker implements Runnable {
         Trace.info("RequestWorker is working...");
         while(active) {
             try {
-                Thread.sleep(5000);
                 this.response = this.handler.handle(this.request);
                 active = false;
             } catch(Exception e) {

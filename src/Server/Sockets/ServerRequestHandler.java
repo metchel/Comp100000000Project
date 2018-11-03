@@ -79,6 +79,13 @@ public class ServerRequestHandler implements RequestHandler {
                 return new Boolean(resourceManager.addRooms(xId.intValue(), roomLoc, numRooms.intValue(), roomPrice.intValue()));
             }
 
+            /**
+             * This should never be called to the server directly.
+             * Called at the Middleware:
+             *  - Middleware generates new Id.
+             *  - Middleware calls forwards newId through AddCustomerId request.
+             *  - data replication of customers at all ResourceManagers.
+             */
             case AddCustomer: {
                 return new Boolean(false);
             }

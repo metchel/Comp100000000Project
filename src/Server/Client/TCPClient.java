@@ -44,7 +44,6 @@ public class TCPClient extends ClientAlt
             e.printStackTrace();
             System.exit(1);
         }
-
     }
 
     public void connectServer() throws UnknownHostException, IOException
@@ -62,8 +61,6 @@ public class TCPClient extends ClientAlt
             e.printStackTrace();
             return;
         }
-        in = new BufferedReader(new InputStreamReader(server.getInputStream()));
-        out = new PrintWriter(server.getOutputStream(),true);
         oos = new ObjectOutputStream(server.getOutputStream());
         ois = new ObjectInputStream(server.getInputStream());
     }

@@ -105,7 +105,7 @@ public class MiddlewareRequestHandler implements RequestHandler {
 
             case AddRooms: {
                 this.roomClient.send(request);
-                response = this.carClient.receive();
+                response = this.roomClient.receive();
                 break;
             }
 
@@ -117,10 +117,11 @@ public class MiddlewareRequestHandler implements RequestHandler {
 
                 Request clone = new Request();
                 RequestData informClients = new RequestData();
-                informClients
-                    .addCommand(Command.fromString("AddCustomerID"))
+                informClients.addXId(xId)
+                    .addCommand(Command.AddCustomerID)
                     .addArgument("cId", newId);
-                clone.addData(informClients);
+                clone.addCurrentTimeStamp()
+                    .addData(informClients);
                 this.flightClient.send(clone);
                 Response flightResponse = this.flightClient.receive();
                 this.carClient.send(clone);
@@ -130,16 +131,9 @@ public class MiddlewareRequestHandler implements RequestHandler {
                 boolean informClientSuccess = flightResponse.getStatus().booleanValue() 
                     && carResponse.getStatus().booleanValue()
                     && roomResponse.getStatus().booleanValue();
-                if (informClientSuccess) {
-                    response.addCurrentTimeStamp()
-                        .addStatus(new Boolean(true))
-                        .addMessage(newIdInteger.toString());
-                } else {
-                    this.customerResourceManager.deleteCustomer(xId.intValue(), newId);
-                    response.addCurrentTimeStamp()
-                        .addStatus(new Boolean(false))
-                        .addMessage("Could not inform resourcemanagers of new customer.");
-                }
+                response.addCurrentTimeStamp()
+                    .addStatus(new Boolean(true))
+                    .addMessage(newIdInteger.toString());
                 break;
             }
             case AddCustomerID: {
@@ -161,16 +155,9 @@ public class MiddlewareRequestHandler implements RequestHandler {
                     && flightResponse.getStatus().booleanValue() 
                     && carResponse.getStatus().booleanValue()
                     && roomResponse.getStatus().booleanValue();
-                if (informClientSuccess) {
-                    response.addCurrentTimeStamp()
-                        .addStatus(resStatusBoolean)
-                        .addMessage(resStatusBoolean.toString());
-                } else {
-                    this.customerResourceManager.deleteCustomer(xId, cId);
-                    response.addCurrentTimeStamp()
-                        .addStatus(new Boolean(false))
-                        .addMessage("Could not inform resourcemanagers of new customer.");
-                }
+                response.addCurrentTimeStamp()
+                    .addStatus(resStatusBoolean)
+                    .addMessage(resStatusBoolean.toString());
                 break;
             }
             case DeleteFlight: {

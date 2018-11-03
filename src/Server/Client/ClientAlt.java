@@ -94,7 +94,6 @@ public abstract class ClientAlt
                 System.out.println("-Flight Seats: " + arguments.elementAt(3));
                 System.out.println("-Flight Price: " + arguments.elementAt(4));
 
-                String commandName = arguments.elementAt(0);
                 String id = arguments.elementAt(1);
                 String flightNum = arguments.elementAt(2);
                 String flightSeats = arguments.elementAt(3);
@@ -133,7 +132,6 @@ public abstract class ClientAlt
                 System.out.println("-Number of Cars: " + arguments.elementAt(3));
                 System.out.println("-Car Price: " + arguments.elementAt(4));
 
-                String commandName = arguments.elementAt(0);
                 String id = arguments.elementAt(1);
                 String carLoc = arguments.elementAt(2);
                 String numCars = arguments.elementAt(3);
@@ -171,7 +169,6 @@ public abstract class ClientAlt
                 System.out.println("-Number of Rooms: " + arguments.elementAt(3));
                 System.out.println("-Room Price: " + arguments.elementAt(4));
 
-                String commandName = arguments.elementAt(0);
                 String id = arguments.elementAt(1);
                 String roomLoc = arguments.elementAt(2);
                 String numRooms = arguments.elementAt(3);
@@ -181,8 +178,8 @@ public abstract class ClientAlt
                 data.addXId(Integer.parseInt(id))
                     .addCommand(cmd)
                     .addArgument("roomLoc", roomLoc)
-                    .addArgument("numCars", Integer.parseInt(numRooms))
-                    .addArgument("carPrice", Integer.parseInt(roomPrice));
+                    .addArgument("numRooms", Integer.parseInt(numRooms))
+                    .addArgument("roomPrice", Integer.parseInt(roomPrice));
         
                 Request req = new Request();
                 req.addCurrentTimeStamp()
@@ -206,7 +203,6 @@ public abstract class ClientAlt
 
                 System.out.println("Adding a new customer [xid=" + arguments.elementAt(1) + "]");
 
-                String commandName = arguments.elementAt(0);
                 String id = arguments.elementAt(1);
 
                 RequestData data = new RequestData();
@@ -230,7 +226,6 @@ public abstract class ClientAlt
                 System.out.println("Adding a new customer [xid=" + arguments.elementAt(1) + "]");
                 System.out.println("-Customer ID: " + arguments.elementAt(2));
 
-                String commandName = arguments.elementAt(0);
                 String id = arguments.elementAt(1);
                 String cId = arguments.elementAt(2);
 
@@ -263,7 +258,6 @@ public abstract class ClientAlt
                 System.out.println("Deleting a flight [xid=" + arguments.elementAt(1) + "]");
                 System.out.println("-Flight Number: " + arguments.elementAt(2));
 
-                String commandName = arguments.elementAt(0);
                 String id = arguments.elementAt(1);
                 String flightNum = arguments.elementAt(2);
 
@@ -295,7 +289,6 @@ public abstract class ClientAlt
                 System.out.println("Deleting all cars at a particular location [xid=" + arguments.elementAt(1) + "]");
                 System.out.println("-Car Location: " + arguments.elementAt(2));
 
-                String commandName = arguments.elementAt(0);
                 String id = arguments.elementAt(1);
                 String carLoc = arguments.elementAt(2);
 
@@ -327,7 +320,6 @@ public abstract class ClientAlt
                 System.out.println("Deleting all rooms at a particular location [xid=" + arguments.elementAt(1) + "]");
                 System.out.println("-Room Location: " + arguments.elementAt(2));
 
-                String commandName = arguments.elementAt(0);
                 String id = arguments.elementAt(1);
                 String roomLoc = arguments.elementAt(2);
 
@@ -359,7 +351,6 @@ public abstract class ClientAlt
                 System.out.println("Deleting a customer from the database [xid=" + arguments.elementAt(1) + "]");
                 System.out.println("-Customer ID: " + arguments.elementAt(2));
 
-                String commandName = arguments.elementAt(0);
                 String id = arguments.elementAt(1);
                 String cId = arguments.elementAt(2);
 
@@ -391,7 +382,6 @@ public abstract class ClientAlt
                 System.out.println("Querying a flight [xid=" + arguments.elementAt(1) + "]");
                 System.out.println("-Flight Number: " + arguments.elementAt(2));
 
-                String commandName = arguments.elementAt(0);
                 String id = arguments.elementAt(1);
                 String flightNum = arguments.elementAt(2);
 
@@ -409,9 +399,7 @@ public abstract class ClientAlt
                 Response response = (Response) ois.readObject();
 
                 System.out.println("RESPONSE: " + response.toString());
-
                 System.out.println("Number of seats available: " + response.toString());
-                //System.out.println(response);
                 break;
             }
             case QueryCars: {
@@ -420,7 +408,6 @@ public abstract class ClientAlt
                 System.out.println("Querying cars location [xid=" + arguments.elementAt(1) + "]");
                 System.out.println("-Car Location: " + arguments.elementAt(2));
 
-                String commandName = arguments.elementAt(0);
                 String id = arguments.elementAt(1);
                 String carLoc = arguments.elementAt(2);
 
@@ -438,7 +425,6 @@ public abstract class ClientAlt
                 Response response = (Response) ois.readObject();
 
                 System.out.println("RESPONSE: " + response.toString());
-
                 System.out.println("Number of cars at this location: " + response.toString());
                 break;
             }
@@ -448,7 +434,6 @@ public abstract class ClientAlt
                 System.out.println("Querying rooms location [xid=" + arguments.elementAt(1) + "]");
                 System.out.println("-Room Location: " + arguments.elementAt(2));
 
-                String commandName = arguments.elementAt(0);
                 String id = arguments.elementAt(1);
                 String roomLoc = arguments.elementAt(2);
 
@@ -475,7 +460,6 @@ public abstract class ClientAlt
                 System.out.println("Querying customer information [xid=" + arguments.elementAt(1) + "]");
                 System.out.println("-Customer ID: " + arguments.elementAt(2));
 
-                String commandName = arguments.elementAt(0);
                 String id = arguments.elementAt(1);
                 String cId = arguments.elementAt(2);
 
@@ -493,7 +477,6 @@ public abstract class ClientAlt
                 Response response = (Response) ois.readObject();
 
                 System.out.println("RESPONSE: " + response.toString());
-                //System.out.print(bill);
                 break;
             }
             case QueryFlightPrice: {
@@ -502,7 +485,6 @@ public abstract class ClientAlt
                 System.out.println("Querying a flight price [xid=" + arguments.elementAt(1) + "]");
                 System.out.println("-Flight Number: " + arguments.elementAt(2));
 
-                String commandName = arguments.elementAt(0);
                 String id = arguments.elementAt(1);
                 String flightNum = arguments.elementAt(2);
 
@@ -528,8 +510,6 @@ public abstract class ClientAlt
 
                 System.out.println("Querying cars price [xid=" + arguments.elementAt(1) + "]");
                 System.out.println("-Car Location: " + arguments.elementAt(2));
-
-                String commandName = arguments.elementAt(0);
                 String id = arguments.elementAt(1);
                 String carLoc = arguments.elementAt(2);
 
@@ -556,7 +536,6 @@ public abstract class ClientAlt
                 System.out.println("Querying rooms price [xid=" + arguments.elementAt(1) + "]");
                 System.out.println("-Room Location: " + arguments.elementAt(2));
 
-                String commandName = arguments.elementAt(0);
                 String id = arguments.elementAt(1);
                 String roomLoc = arguments.elementAt(2);
                 
@@ -584,7 +563,6 @@ public abstract class ClientAlt
                 System.out.println("-Customer ID: " + arguments.elementAt(2));
                 System.out.println("-Flight Number: " + arguments.elementAt(3));
 
-                String commandName = arguments.elementAt(0);
                 String id = arguments.elementAt(1);
                 String cId = arguments.elementAt(2);
                 String flightNum = arguments.elementAt(3);
@@ -618,8 +596,6 @@ public abstract class ClientAlt
                 System.out.println("Reserving a car at a location [xid=" + arguments.elementAt(1) + "]");
                 System.out.println("-Customer ID: " + arguments.elementAt(2));
                 System.out.println("-Car Location: " + arguments.elementAt(3));
-
-                String commandName = arguments.elementAt(0);
                 String id = arguments.elementAt(1);
                 String cId = arguments.elementAt(2);
                 String carLoc = arguments.elementAt(3);
@@ -655,7 +631,6 @@ public abstract class ClientAlt
                 System.out.println("-Customer ID: " + arguments.elementAt(2));
                 System.out.println("-Room Location: " + arguments.elementAt(3));
 
-                String commandName = arguments.elementAt(0);
                 String id = arguments.elementAt(1);
                 String cId = arguments.elementAt(2);
                 String roomLoc = arguments.elementAt(3);
