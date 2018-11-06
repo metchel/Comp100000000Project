@@ -1,10 +1,5 @@
 package Server.Middleware;
 
-import java.util.Queue;
-import java.util.Set;
-import java.util.LinkedList;
-import java.util.HashSet;
-
 /*
 Maintain a list of active transactions
 – Keep track of which ResourceManagers are involved in a transaction (i.e. for each
@@ -16,6 +11,36 @@ operation involving a transaction is performed, the time is reset. If the time-t
 expires then the transaction should be aborted
 */
 
-public class MiddlewareCoordinator {
-    public MiddlewareCoordinator() {}
+import java.util.Set;
+import java.util.Map;
+import java.util.HashMap;
+
+public class MiddlewareCoordinator implements TransactionManager{
+    private static int nextTransactionId = 0;
+    private final Map<Integer, Transaction> transactionMap;
+
+    public MiddlewareCoordinator() {
+        this.transactionMap = new HashMap<Integer, Transaction>();
+    }
+
+    public int start() {
+        int nextT = MiddlewareCoordinator.nextTransactionId + 1;
+        Transaction t = new Transaction();
+        MiddlewareCoordinator.nextTransactionId++;
+        return nextT;
+    }
+
+    public boolean commit(int transactionId) {
+        Transaction t = (Transaction)this.transactionMap.get(transactionId);
+        return t.commit();
+    }
+
+    public void abort(int transactionId) {
+        Transaction t = (Transaction)this.transactionMap.get(transactionId);
+        t.abort();
+    }
+
+    public boolean shutdown() {
+        return false;
+    }
 }
