@@ -18,7 +18,6 @@ public class Server {
     private InetAddress inetAddress;
     private int port;
     private SocketResourceManager resourceManager;
-    private static ServerSocket serverSocket;
 
     private Server() {}
     public static void main (String[] args) {
@@ -32,11 +31,10 @@ public class Server {
         int port = Integer.parseInt(args[1]);
         String rmName = args[2];
 
-        Server server = new Server();
-
+        Server server = null;
+        ServerSocket serverSocket = null;
         try {
-            Builder builder = new Builder();
-            server = builder
+            server = new Server.Builder()
                 .atInetAddress(InetAddress.getByName(inetAddress))
                 .atPort(port)
                 .withResourceManager(new SocketResourceManager(rmName))

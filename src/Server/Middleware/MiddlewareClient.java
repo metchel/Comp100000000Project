@@ -10,12 +10,12 @@ import java.net.Socket;
 import java.net.InetAddress;
 
 public class MiddlewareClient {
-    private InetAddress inetAddress;
-    private int port;
-    final String name;
-    final Socket socket;
-    final ObjectOutputStream oos;
-    final ObjectInputStream ois;
+    private final InetAddress inetAddress;
+    private final int port;
+    private final String name;
+    private final Socket socket;
+    private final ObjectOutputStream oos;
+    private final ObjectInputStream ois;
 
     public MiddlewareClient(String name, InetAddress inetAddress, int port) throws IOException, ClassNotFoundException{
         this.name = name;

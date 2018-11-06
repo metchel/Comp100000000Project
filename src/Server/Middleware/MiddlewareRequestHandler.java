@@ -15,14 +15,14 @@ import java.util.LinkedList;
 import Server.Sockets.RequestHandler;
 
 public class MiddlewareRequestHandler implements RequestHandler {
-    final MiddlewareClient flightClient;
-    final MiddlewareClient carClient;
-    final MiddlewareClient roomClient;
+    private final MiddlewareClient flightClient;
+    private final MiddlewareClient carClient;
+    private final MiddlewareClient roomClient;
 
-    final SocketResourceManager customerResourceManager;
-    final TransactionManager coordinator;
+    private final SocketResourceManager customerResourceManager;
+    private final MiddlewareCoordinator coordinator;
 
-    public MiddlewareRequestHandler(SocketResourceManager customerResourceManager, TransactionManager coordinator, MiddlewareClient flightClient, MiddlewareClient carClient, MiddlewareClient roomClient) throws IOException, ClassNotFoundException {
+    public MiddlewareRequestHandler(SocketResourceManager customerResourceManager, MiddlewareCoordinator coordinator, MiddlewareClient flightClient, MiddlewareClient carClient, MiddlewareClient roomClient) throws IOException, ClassNotFoundException {
         this.customerResourceManager = customerResourceManager;
         this.coordinator = coordinator;
         this.flightClient = flightClient;

@@ -12,7 +12,7 @@ import java.util.StringTokenizer;
 import java.util.Date;
 
 public class ServerRequestHandler implements RequestHandler {
-    private SocketResourceManager resourceManager;
+    private final SocketResourceManager resourceManager;
 
     public ServerRequestHandler(SocketResourceManager resourceManager) {
         this.resourceManager = resourceManager;
