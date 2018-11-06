@@ -27,13 +27,8 @@ public class SocketResourceManager implements IResourceManager {
 	{
 		synchronized(m_data) {
 			RMItem item = m_data.get(key);
-			boolean lockSuccess;
-			try {
-				lockSuccess = this.lockManager.Lock(xid, item.toString(), TransactionLockObject.LockType.LOCK_READ);
-			} catch(DeadlockException e) {
-				lockSuccess = false;
-			}
-			if (lockSuccess && item != null) {
+
+			if (item != null) {
 				return (RMItem)item.clone();
 			}
 			return null;
@@ -45,15 +40,7 @@ public class SocketResourceManager implements IResourceManager {
 	{
 		synchronized(m_data) {
 			RMItem item = m_data.get(key);
-			boolean lockSuccess;
-			try {
-				lockSuccess = this.lockManager.Lock(xid, item.toString(), TransactionLockObject.LockType.LOCK_WRITE);
-			} catch(DeadlockException e) {
-				lockSuccess = false;
-			}
-			if (lockSuccess) {
-				m_data.put(key, value);
-			}
+			m_data.put(key, value);
 		}
 	}
 
@@ -62,15 +49,7 @@ public class SocketResourceManager implements IResourceManager {
 	{
 		synchronized(m_data) {
 			RMItem item = m_data.get(key);
-			boolean lockSuccess;
-			try {
-				lockSuccess = this.lockManager.Lock(xid, item.toString(), TransactionLockObject.LockType.LOCK_WRITE);
-			} catch(DeadlockException e) {
-				lockSuccess = false;
-			}
-			if (lockSuccess) {
-				m_data.remove(key);
-			}
+			m_data.remove(key);
 		}
 	}
 

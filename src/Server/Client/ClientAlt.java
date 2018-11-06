@@ -86,6 +86,88 @@ public abstract class ClientAlt
                 }
                 break;
             }
+
+            case Start: {
+                checkArgumentsCount(1, arguments.size());
+
+                System.out.println("Starting transaction.");
+
+                RequestData data = new RequestData();
+                data.addXId(-1)
+                    .addCommand(cmd);
+                
+                Request req = new Request();
+                req.addCurrentTimeStamp()
+                    .addData(data);
+
+                oos.writeObject(req);
+                Response response = (Response) ois.readObject();
+
+                System.out.println("RESPONSE: " + response.toString());
+
+                if (response.getStatus()) {
+                    System.out.println("Transaction started with xid " + response.getMessage());
+                } else {
+                    System.out.println("Transaction could not be started.");
+                }
+
+                break;
+            }
+
+            case Commit: {
+                checkArgumentsCount(2, arguments.size());
+
+                System.out.println("Commit request for transaction " + arguments.elementAt(1));
+
+                String id = arguments.elementAt(1);
+                RequestData data = new RequestData();
+                data.addXId(Integer.parseInt(id))
+                    .addCommand(cmd);
+                
+                Request req = new Request();
+                req.addCurrentTimeStamp()
+                    .addData(data);
+
+                oos.writeObject(req);
+                Response response = (Response) ois.readObject();
+
+                System.out.println("RESPONSE: " + response.toString());
+
+                if (response.getStatus()) {
+                    System.out.println("Transaction committed." + response.getMessage());
+                } else {
+                    System.out.println("Transaction could not commit.");
+                }
+
+                break;
+            }
+
+            case Abort: {checkArgumentsCount(2, arguments.size());
+
+                System.out.println("Abort request for transaction " + arguments.elementAt(1));
+
+                String id = arguments.elementAt(1);
+                RequestData data = new RequestData();
+                data.addXId(Integer.parseInt(id))
+                    .addCommand(cmd);
+                
+                Request req = new Request();
+                req.addCurrentTimeStamp()
+                    .addData(data);
+
+                oos.writeObject(req);
+                Response response = (Response) ois.readObject();
+
+                System.out.println("RESPONSE: " + response.toString());
+
+                if (response.getStatus()) {
+                    System.out.println("Transaction aborted." + response.getMessage());
+                } else {
+                    System.out.println("Transaction could not abort. Shutting down.");
+                }
+
+                break;
+            }
             case AddFlight: {
                 checkArgumentsCount(5, arguments.size());
 

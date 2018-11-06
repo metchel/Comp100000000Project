@@ -18,7 +18,7 @@ public class Transaction {
     public Transaction() {
         this.id = nextTransactionId;
         nextTransactionId++;
-        this.clients = new HashSet<String>();
+        this.clients = new HashSet<MiddlewareClient>();
         this.commands = new LinkedList<Command>();
     }
 
@@ -50,6 +50,12 @@ public class Transaction {
 
     public void addCommand(Command c) {
         this.commands.add(c);
+    }
+
+    public void addClient(MiddlewareClient client) {
+        if (!this.clients.contains(client)) {
+            this.clients.add(client);
+        }
     }
 
     enum Status {

@@ -40,6 +40,36 @@ public class MiddlewareRequestHandler implements RequestHandler {
                 break;
             }
             /**
+             * Transaction related operations
+             */
+            case Start: {
+                int nextTransactionId = coordinator.start();
+                response.addCurrentTimeStamp()
+                    .addStatus(new Boolean(true))
+                    .addMessage(Integer.toString(nextTransactionId));
+                break;
+            }
+            case Commit: {
+                Integer xId = request.getData().getXId();
+                boolean commitSuccess = this.coordinator.commit(xId.intValue());
+                if (commitSuccess) {
+                    response.addCurrentTimeStamp()
+                        .addStatus(true)
+                        .addMessage("Transaction " + xId + " committed.");
+                } else {
+                    response.addCurrentTimeStamp()
+                        .addStatus(true)
+                        .addMessage("Transaction " + xId + " not committed.");
+                }
+            }
+            case Abort: {
+                Integer xId = request.getData().getXId();
+                this.coordinator.abort(xId.intValue());
+                response.addCurrentTimeStamp()
+                    .addStatus(true)
+                    .addMessage("Transaction " + xId + " aborted.");
+            }
+            /**
              * Read only operations
              */
             case QueryFlight: {

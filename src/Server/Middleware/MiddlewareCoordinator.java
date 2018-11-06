@@ -15,8 +15,8 @@ import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
 
-public class MiddlewareCoordinator implements TransactionManager{
-    private static int nextTransactionId = 0;
+public class MiddlewareCoordinator implements TransactionManager {
+    public static int nextTransactionId = 0;
     private final Map<Integer, Transaction> transactionMap;
 
     public MiddlewareCoordinator() {
@@ -26,6 +26,8 @@ public class MiddlewareCoordinator implements TransactionManager{
     public int start() {
         int nextT = MiddlewareCoordinator.nextTransactionId + 1;
         Transaction t = new Transaction();
+        t.start();
+        this.transactionMap.put(new Integer(nextT), t);
         MiddlewareCoordinator.nextTransactionId++;
         return nextT;
     }

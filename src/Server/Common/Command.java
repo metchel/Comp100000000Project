@@ -3,6 +3,10 @@ package Server.Common;
 public enum Command {
 	Help("List all available commands", "[CommandName]"),
 
+	Start("Start a transaction", "<xid>"),
+	Commit("Commit a transaction", "<xid>"),
+	Abort("Abort a transaction", "<xid>"),
+
 	AddFlight("Add a new flight number", "<xid>,<FlightNumber>,<NumberOfSeats>,<PricePerSeat>"),
 	AddCars("Add a new car location", "<xid>,<Location>,<NumberOfCar>,<Price>"),
 	AddRooms("Add a new room location", "<xid>,<Location>,<NumberOfRoom>,<Price>"),
