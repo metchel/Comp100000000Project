@@ -66,8 +66,8 @@ public class LockManager
 							//TODO: Lock conversion 
 							//Convert if NO OTHER transaction has S(x) 
 
-							TransactionLockObject tmpT = new TransactionLockObject(xid, data, TransactionLockObject.LockType.READ);
-							DataLockObject tmpD = new DataLockObject(xid, data, TransactionLockObject.LockType.READ);
+							TransactionLockObject tmpT = new TransactionLockObject(xid, data, TransactionLockObject.LockType.LOCK_READ);
+							DataLockObject tmpD = new DataLockObject(xid, data, TransactionLockObject.LockType.LOCK_READ);
 							this.lockTable.remove(tmpT);
 							this.lockTable.remove(tmpD);
 							this.lockTable.add(xLockObject);
@@ -242,12 +242,11 @@ public class LockManager
 					}
 					if (l_dataLockObject.getLockType() == TransactionLockObject.LockType.LOCK_READ){
 						for (Object o : vect){
-							if ((DataLockObject) o).getXId() != dataLockObject.getXId()){
+							if (((DataLockObject) o).getXId() != dataLockObject.getXId()){
 								return true;
 							}
+						bitset.set(0,true);
 						}
-						bitset.set(o,true);
-						
 					}
 					
 					//TODO: Lock conversion

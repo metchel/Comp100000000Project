@@ -1,6 +1,10 @@
 package Server.ResourceManager;
 
 import Server.Interface.IResourceManager;
+import Server.LockManager.DeadlockException;
+import Server.LockManager.LockManager;
+import Server.LockManager.TransactionLockObject;
+
 import Server.Common.*;
 
 import java.util.*;
@@ -10,10 +14,12 @@ public class SocketResourceManager implements IResourceManager {
     
 	protected String m_name = "";
 	protected RMHashMap m_data = new RMHashMap();
+	private final LockManager lockManager;
 
 	public SocketResourceManager(String p_name)
 	{
 		m_name = p_name;
+		this.lockManager = new LockManager();
 	}
 
 	// Reads a data item
@@ -21,7 +27,13 @@ public class SocketResourceManager implements IResourceManager {
 	{
 		synchronized(m_data) {
 			RMItem item = m_data.get(key);
-			if (item != null) {
+			boolean lockSuccess;
+			try {
+				lockSuccess = this.lockManager.Lock(xid, item.toString(), TransactionLockObject.LockType.LOCK_READ);
+			} catch(DeadlockException e) {
+				lockSuccess = false;
+			}
+			if (lockSuccess && item != null) {
 				return (RMItem)item.clone();
 			}
 			return null;
@@ -32,7 +44,16 @@ public class SocketResourceManager implements IResourceManager {
 	protected void writeData(int xid, String key, RMItem value)
 	{
 		synchronized(m_data) {
-			m_data.put(key, value);
+			RMItem item = m_data.get(key);
+			boolean lockSuccess;
+			try {
+				lockSuccess = this.lockManager.Lock(xid, item.toString(), TransactionLockObject.LockType.LOCK_WRITE);
+			} catch(DeadlockException e) {
+				lockSuccess = false;
+			}
+			if (lockSuccess) {
+				m_data.put(key, value);
+			}
 		}
 	}
 
@@ -40,7 +61,16 @@ public class SocketResourceManager implements IResourceManager {
 	protected void removeData(int xid, String key)
 	{
 		synchronized(m_data) {
-			m_data.remove(key);
+			RMItem item = m_data.get(key);
+			boolean lockSuccess;
+			try {
+				lockSuccess = this.lockManager.Lock(xid, item.toString(), TransactionLockObject.LockType.LOCK_WRITE);
+			} catch(DeadlockException e) {
+				lockSuccess = false;
+			}
+			if (lockSuccess) {
+				m_data.remove(key);
+			}
 		}
 	}
 
