@@ -2,7 +2,7 @@ package Server.Sockets;
 
 import Server.Common.Trace;
 import Server.Common.ResourceManager;
-import Server.ResourceManager.SocketResourceManager;
+import Server.ResourceManager.TransactionResourceManager;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,7 +17,7 @@ public class Server {
 
     private InetAddress inetAddress;
     private int port;
-    private SocketResourceManager resourceManager;
+    private TransactionResourceManager resourceManager;
 
     private Server() {}
     public static void main (String[] args) {
@@ -37,7 +37,7 @@ public class Server {
             server = new Server.Builder()
                 .atInetAddress(InetAddress.getByName(inetAddress))
                 .atPort(port)
-                .withResourceManager(new SocketResourceManager(rmName))
+                .withResourceManager(new TransactionResourceManager(rmName))
                 .build();
             serverSocket = new ServerSocket(server.getPort());
         } catch (IOException e) {
@@ -62,7 +62,7 @@ public class Server {
     private static class Builder {
         private InetAddress inetAddress;
         private int port;
-        private SocketResourceManager resourceManager;
+        private TransactionResourceManager resourceManager;
 
         public Builder atInetAddress(InetAddress inetAddress) throws UnknownHostException {
             this.inetAddress = inetAddress;
@@ -74,7 +74,7 @@ public class Server {
             return this;
         }
 
-        public Builder withResourceManager(SocketResourceManager resourceManager) {
+        public Builder withResourceManager(TransactionResourceManager resourceManager) {
             this.resourceManager = resourceManager;
             return this;
         }
@@ -97,7 +97,7 @@ public class Server {
         return this.inetAddress;
     }
 
-    public SocketResourceManager getResourceManager() {
+    public TransactionResourceManager getResourceManager() {
         return this.resourceManager;
     }
 }

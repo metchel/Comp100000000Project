@@ -1,9 +1,9 @@
 package Server.Sockets;
 
-import Server.ResourceManager.SocketResourceManager;
 import Server.Interface.IResourceManager;
 import Server.Common.Command;
 import Server.Network.*;
+import Server.ResourceManager.TransactionResourceManager;
 
 import java.io.IOException;
 import java.util.Vector;
@@ -12,13 +12,13 @@ import java.util.StringTokenizer;
 import java.util.Date;
 
 public class ServerRequestHandler implements RequestHandler {
-    private final SocketResourceManager resourceManager;
+    private final TransactionResourceManager resourceManager;
 
-    public ServerRequestHandler(SocketResourceManager resourceManager) {
+    public ServerRequestHandler(TransactionResourceManager resourceManager) {
         this.resourceManager = resourceManager;
     }
 
-    public Response handle(Request req) throws IOException, ClassNotFoundException {
+    public synchronized Response handle(Request req) throws IOException, ClassNotFoundException {
         Map<String, Object> arguments = ((RequestData)req.getData()).getCommandArgs();
         RequestData data = req.getData();
         Command cmd = data.getCommand();
@@ -48,10 +48,19 @@ public class ServerRequestHandler implements RequestHandler {
         return response;
     }
 
-    public Object execute(Integer xId, Command cmd, Map<String, Object> arguments) throws IOException {
+    public synchronized Object execute(Integer xId, Command cmd, Map<String, Object> arguments) throws IOException {
         switch (cmd) {
             case Help: {
                 return new Boolean(false);
+            }
+
+            case Start: {
+                return new Boolean(resourceManager.start(xId.intValue()));
+            }
+
+            case Commit: {
+                System.out.println("committing!");
+                return new Boolean(resourceManager.commit(xId.intValue()));
             }
 
             case AddFlight: {

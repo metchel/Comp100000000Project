@@ -6,18 +6,20 @@ import Server.Network.Response;
 import Server.Sockets.RequestHandler;
 
 public class RequestWorker implements Runnable {
-    private volatile Response response;
-    private Request request;
-    private RequestHandler handler;
+    private Response response;
+    private final Request request;
+    private final RequestHandler handler;
 
-    boolean active;
+    volatile boolean active;
 
     public void run() {
         Trace.info("RequestWorker is working...");
         while(active) {
             try {
-                this.response = this.handler.handle(this.request);
-                active = false;
+                synchronized(this.request) {
+                    this.response = this.handler.handle(this.request);
+                    active = false;
+                }
             } catch(Exception e) {
                 e.printStackTrace();
                 this.response = null;

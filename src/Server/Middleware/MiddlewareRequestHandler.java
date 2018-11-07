@@ -12,6 +12,7 @@ import java.net.Socket;
 import java.util.Queue;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Set;
 
 import Server.Sockets.RequestHandler;
 
@@ -36,7 +37,7 @@ public class MiddlewareRequestHandler implements RequestHandler {
         this.roomClient = roomClient;
     }
 
-    public Response handle(Request request) throws IOException, ClassNotFoundException {
+    public synchronized Response handle(Request request) throws IOException, ClassNotFoundException {
         final RequestData data = (RequestData) request.getData();
         final Command command = data.getCommand();
         Response response = new Response();
@@ -50,6 +51,17 @@ public class MiddlewareRequestHandler implements RequestHandler {
              */
             case Start: {
                 int nextTransactionId = coordinator.start();
+                Request clone = new Request();
+                RequestData informClients = new RequestData();
+                informClients.addXId(new Integer(nextTransactionId))
+                    .addCommand(Command.Start);
+                clone.addData(informClients);
+                this.flightClient.send(clone);
+                Response flightResponse = this.flightClient.receive();
+                this.carClient.send(clone);
+                Response carResponse = this.carClient.receive();
+                this.roomClient.send(clone);
+                Response roomResponse = this.roomClient.receive();
                 response.addCurrentTimeStamp()
                     .addStatus(new Boolean(true))
                     .addMessage(Integer.toString(nextTransactionId));
@@ -57,14 +69,37 @@ public class MiddlewareRequestHandler implements RequestHandler {
             }
             case Commit: {
                 Integer xId = data.getXId();
-                boolean commitSuccess = this.coordinator.commit(xId.intValue());
+                Set<String> servers = this.coordinator.getTransactionRms(xId);
+                boolean commitSuccess = true;
+                for (String server: servers) {
+                    if (server.equals(FLIGHT)) {
+                        this.flightClient.send(request);
+                        Response flightResponse = this.flightClient.receive();
+                        commitSuccess = commitSuccess && flightResponse.getStatus().booleanValue();
+                        System.out.println("SENDING to " + server);
+                        continue;
+                    } else if(server.equals(CAR)) {
+                        this.carClient.send(request);
+                        Response carResponse = this.carClient.receive();
+                        commitSuccess = commitSuccess && carResponse.getStatus().booleanValue();
+                        System.out.println("SENDING to " + server);
+                        continue;
+                    } else if (server.equals(ROOM)) {
+                        this.roomClient.send(request);
+                        Response roomResponse = this.roomClient.receive();
+                        System.out.println("SENDING to " + server);
+                        commitSuccess = commitSuccess && roomResponse.getStatus().booleanValue();
+                        continue;
+                    }
+                }
+
                 if (commitSuccess) {
                     response.addCurrentTimeStamp()
                         .addStatus(true)
                         .addMessage("Transaction " + xId + " committed.");
                 } else {
                     response.addCurrentTimeStamp()
-                        .addStatus(true)
+                        .addStatus(false)
                         .addMessage("Transaction " + xId + " not committed.");
                 }
             }

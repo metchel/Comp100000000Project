@@ -63,12 +63,15 @@ public class MiddlewareCoordinator implements TransactionManager {
         return false;
     }
 
-    public void addOperation(int transactionId, String... rms) {
+    public void addOperation(int transactionId, String rm) {
         HashSet<String> transactionRMs = (HashSet)this.rmMap.get(transactionId);
-        for(String rm: rms) {
-            if (!transactionRMs.contains(rm)) {
-                transactionRMs.add(rm);
-            }
+        if (!transactionRMs.contains(rm)) {
+            transactionRMs.add(rm);
         }
+    }
+
+    public Set<String> getTransactionRms(int transactionId) {
+        Integer xId = new Integer(transactionId);
+        return this.rmMap.get(xId);
     }
 }

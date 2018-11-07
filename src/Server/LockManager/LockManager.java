@@ -10,9 +10,9 @@ public class LockManager
 	private static int TABLE_SIZE = 2039;
 	private static int DEADLOCK_TIMEOUT = 10000;
 
-	private static TPHashTable lockTable = new TPHashTable(LockManager.TABLE_SIZE);
-	private static TPHashTable stampTable = new TPHashTable(LockManager.TABLE_SIZE);
-	private static TPHashTable waitTable = new TPHashTable(LockManager.TABLE_SIZE);
+	private final TPHashTable lockTable = new TPHashTable(LockManager.TABLE_SIZE);
+	private final TPHashTable stampTable = new TPHashTable(LockManager.TABLE_SIZE);
+	private final TPHashTable waitTable = new TPHashTable(LockManager.TABLE_SIZE);
 
 	public LockManager()
 	{
@@ -65,7 +65,7 @@ public class LockManager
 						if (bConvert.get(0) == true) {
 							//TODO: Lock conversion 
 							//Convert if NO OTHER transaction has S(x) 
-
+							Trace.info("Upgrading lock for " + xid + " " + data);
 							TransactionLockObject tmpT = new TransactionLockObject(xid, data, TransactionLockObject.LockType.LOCK_READ);
 							DataLockObject tmpD = new DataLockObject(xid, data, TransactionLockObject.LockType.LOCK_READ);
 							this.lockTable.remove(tmpT);

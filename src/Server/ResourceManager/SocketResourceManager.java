@@ -4,6 +4,7 @@ import Server.Interface.IResourceManager;
 import Server.LockManager.DeadlockException;
 import Server.LockManager.LockManager;
 import Server.LockManager.TransactionLockObject;
+import Server.Transactions.Operation;
 
 import Server.Common.*;
 
@@ -14,12 +15,10 @@ public class SocketResourceManager implements IResourceManager {
     
 	protected String m_name = "";
 	protected RMHashMap m_data = new RMHashMap();
-	private final LockManager lockManager;
 
 	public SocketResourceManager(String p_name)
 	{
 		m_name = p_name;
-		this.lockManager = new LockManager();
 		// each transaction gets a local set of objects 
 		// mostly important for write operations
 	}

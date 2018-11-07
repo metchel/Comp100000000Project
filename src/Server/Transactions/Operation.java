@@ -5,7 +5,7 @@ public class Operation {
     private String key;
     private Object value;
 
-    public Operation(OperationType type; String key, Object value) {
+    public Operation(OperationType type, String key, Object value) {
         this.type = type;
         this.key = key;
         this.value = value;
