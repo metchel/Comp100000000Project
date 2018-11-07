@@ -5,6 +5,7 @@ import Server.Network.RequestData;
 import Server.Network.Response;
 import Server.ResourceManager.SocketResourceManager;
 import Server.Common.Command;
+import Server.Common.Constants;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -21,6 +22,11 @@ public class MiddlewareRequestHandler implements RequestHandler {
 
     private final SocketResourceManager customerResourceManager;
     private final MiddlewareCoordinator coordinator;
+
+    private static final String CUSTOMER = Constants.CUSTOMER;
+    private static final String FLIGHT = Constants.FLIGHT;
+    private static final String ROOM = Constants.ROOM;
+    private static final String CAR = Constants.CAR;
 
     public MiddlewareRequestHandler(SocketResourceManager customerResourceManager, MiddlewareCoordinator coordinator, MiddlewareClient flightClient, MiddlewareClient carClient, MiddlewareClient roomClient) throws IOException, ClassNotFoundException {
         this.customerResourceManager = customerResourceManager;
@@ -50,7 +56,7 @@ public class MiddlewareRequestHandler implements RequestHandler {
                 break;
             }
             case Commit: {
-                Integer xId = request.getData().getXId();
+                Integer xId = data.getXId();
                 boolean commitSuccess = this.coordinator.commit(xId.intValue());
                 if (commitSuccess) {
                     response.addCurrentTimeStamp()
@@ -63,7 +69,7 @@ public class MiddlewareRequestHandler implements RequestHandler {
                 }
             }
             case Abort: {
-                Integer xId = request.getData().getXId();
+                Integer xId = data.getXId();
                 this.coordinator.abort(xId.intValue());
                 response.addCurrentTimeStamp()
                     .addStatus(true)
@@ -73,22 +79,30 @@ public class MiddlewareRequestHandler implements RequestHandler {
              * Read only operations
              */
             case QueryFlight: {
+                Integer xId = data.getXId();
+                this.coordinator.addOperation(xId, FLIGHT);
                 this.flightClient.send(request);
                 response = this.flightClient.receive();
                 break;
             }
             case QueryCars: {
+                Integer xId = data.getXId();
+                this.coordinator.addOperation(xId, CAR);
                 this.carClient.send(request);
                 response = this.carClient.receive();
                 break;
             }
             case QueryRooms: {
+                Integer xId = data.getXId();
+                this.coordinator.addOperation(xId, ROOM);
                 this.roomClient.send(request);
                 response = this.roomClient.receive();
                 break;
             }
             case QueryCustomer: {
                 Integer xId = data.getXId();
+                this.coordinator.addOperation(xId, CUSTOMER);
+
                 Integer cId = (Integer)data.getCommandArgs().get("cId");
                 String info = this.customerResourceManager.queryCustomerInfo(xId, cId);
                 Boolean resStatus = new Boolean(false);
@@ -103,16 +117,25 @@ public class MiddlewareRequestHandler implements RequestHandler {
                 break;
             }
             case QueryFlightPrice: {
+                Integer xId = data.getXId();
+                this.coordinator.addOperation(xId, FLIGHT);
+
                 this.flightClient.send(request);
                 response = this.flightClient.receive();
                 break;
             }
             case QueryCarsPrice: {
+                Integer xId = data.getXId();
+                this.coordinator.addOperation(xId, CAR);
+
                 this.carClient.send(request);
                 response = this.carClient.receive();
                 break;
             }
             case QueryRoomsPrice: {
+                Integer xId = data.getXId();
+                this.coordinator.addOperation(xId, CAR);
+
                 this.roomClient.send(request);
                 response = this.roomClient.receive();
                 break;
@@ -122,18 +145,27 @@ public class MiddlewareRequestHandler implements RequestHandler {
              * Write only operations
              */
             case AddFlight: {
+                Integer xId = data.getXId();
+                this.coordinator.addOperation(xId, FLIGHT);
+
                 this.flightClient.send(request);
                 response = this.flightClient.receive();
                 break;
             }
 
             case AddCars: {
+                Integer xId = data.getXId();
+                this.coordinator.addOperation(xId, CAR);
+
                 this.carClient.send(request);
                 response = this.carClient.receive();
                 break;
             }
 
             case AddRooms: {
+                Integer xId = data.getXId();
+                this.coordinator.addOperation(xId, ROOM);
+
                 this.roomClient.send(request);
                 response = this.roomClient.receive();
                 break;
@@ -142,6 +174,8 @@ public class MiddlewareRequestHandler implements RequestHandler {
 
             case AddCustomer: {
                 Integer xId = data.getXId();
+                this.coordinator.addOperation(xId, CUSTOMER);
+
                 int newId = this.customerResourceManager.newCustomer(xId.intValue());
                 Integer newIdInteger = new Integer(newId);
 
@@ -168,6 +202,8 @@ public class MiddlewareRequestHandler implements RequestHandler {
             }
             case AddCustomerID: {
                 Integer xId = data.getXId();
+                this.coordinator.addOperation(xId, CUSTOMER);
+
                 Integer cId = (Integer)data.getCommandArgs().get("cId");
                 boolean resStatus = this.customerResourceManager.newCustomer(xId, cId);
                 Boolean resStatusBoolean = new Boolean(resStatus);
@@ -191,22 +227,33 @@ public class MiddlewareRequestHandler implements RequestHandler {
                 break;
             }
             case DeleteFlight: {
+                Integer xId = data.getXId();
+                this.coordinator.addOperation(xId, FLIGHT);
+
                 this.flightClient.send(request);
                 response = this.flightClient.receive();
                 break;
             }
             case DeleteCars: {
+                Integer xId = data.getXId();
+                this.coordinator.addOperation(xId, CAR);
+
                 this.carClient.send(request);
                 response = this.carClient.receive();
                 break;
             }
             case DeleteRooms: {
+                Integer xId = data.getXId();
+                this.coordinator.addOperation(xId, ROOM);
+
                 this.roomClient.send(request);
                 response = this.roomClient.receive();
                 break;
             }
             case DeleteCustomer: {
                 Integer xId = data.getXId();
+                this.coordinator.addOperation(xId, CUSTOMER);
+
                 Integer cId = (Integer)data.getCommandArgs().get("cId");
                 boolean resStatus = this.customerResourceManager.deleteCustomer(xId, cId);
                 Boolean resStatusBoolean = new Boolean(resStatus);
@@ -221,6 +268,8 @@ public class MiddlewareRequestHandler implements RequestHandler {
              */
             case ReserveFlight: {
                 Integer xId = data.getXId();
+                this.coordinator.addOperation(xId, FLIGHT);
+
                 Integer cId = (Integer)data.getCommandArgs().get("cId");
                 String info = this.customerResourceManager.queryCustomerInfo(xId, cId);
                 if (info != null && info != "") {
@@ -236,6 +285,8 @@ public class MiddlewareRequestHandler implements RequestHandler {
 
             case ReserveCar: {
                 Integer xId = data.getXId();
+                this.coordinator.addOperation(xId, CAR);
+                
                 Integer cId = (Integer)data.getCommandArgs().get("cId");
                 String info = this.customerResourceManager.queryCustomerInfo(xId, cId);
                 if (info != null && info != "") {
@@ -250,6 +301,8 @@ public class MiddlewareRequestHandler implements RequestHandler {
             }
             case ReserveRoom: {
                 Integer xId = data.getXId();
+                this.coordinator.addOperation(xId, ROOM);
+
                 Integer cId = (Integer)data.getCommandArgs().get("cId");
                 String info = this.customerResourceManager.queryCustomerInfo(xId, cId);
                 if (info != null && info != "") {
