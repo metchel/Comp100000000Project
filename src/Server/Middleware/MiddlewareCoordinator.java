@@ -56,6 +56,7 @@ public class MiddlewareCoordinator implements TransactionManager {
 
     public synchronized void abort(int transactionId) {
         Transaction t = (Transaction)this.transactionMap.get(transactionId);
+        this.transactionStatusMap.put(transactionId, Status.ABORTED);
         t.abort();
     }
 

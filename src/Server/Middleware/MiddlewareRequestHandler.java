@@ -4,6 +4,7 @@ import Server.Network.Request;
 import Server.Network.RequestData;
 import Server.Network.Response;
 import Server.ResourceManager.SocketResourceManager;
+import Server.ResourceManager.TransactionResourceManager;
 import Server.Common.Command;
 import Server.Common.Constants;
 
@@ -21,7 +22,7 @@ public class MiddlewareRequestHandler implements RequestHandler {
     private final MiddlewareClient carClient;
     private final MiddlewareClient roomClient;
 
-    private final SocketResourceManager customerResourceManager;
+    private final TransactionResourceManager customerResourceManager;
     private final MiddlewareCoordinator coordinator;
 
     private static final String CUSTOMER = Constants.CUSTOMER;
@@ -29,7 +30,7 @@ public class MiddlewareRequestHandler implements RequestHandler {
     private static final String ROOM = Constants.ROOM;
     private static final String CAR = Constants.CAR;
 
-    public MiddlewareRequestHandler(SocketResourceManager customerResourceManager, MiddlewareCoordinator coordinator, MiddlewareClient flightClient, MiddlewareClient carClient, MiddlewareClient roomClient) throws IOException, ClassNotFoundException {
+    public MiddlewareRequestHandler(TransactionResourceManager customerResourceManager, MiddlewareCoordinator coordinator, MiddlewareClient flightClient, MiddlewareClient carClient, MiddlewareClient roomClient) throws IOException, ClassNotFoundException {
         this.customerResourceManager = customerResourceManager;
         this.coordinator = coordinator;
         this.flightClient = flightClient;
@@ -51,6 +52,9 @@ public class MiddlewareRequestHandler implements RequestHandler {
              */
             case Start: {
                 int nextTransactionId = coordinator.start();
+
+                this.customerResourceManager.start(nextTransactionId);
+
                 Request clone = new Request();
                 RequestData informClients = new RequestData();
                 informClients.addXId(new Integer(nextTransactionId))
@@ -62,6 +66,7 @@ public class MiddlewareRequestHandler implements RequestHandler {
                 Response carResponse = this.carClient.receive();
                 this.roomClient.send(clone);
                 Response roomResponse = this.roomClient.receive();
+
                 response.addCurrentTimeStamp()
                     .addStatus(new Boolean(true))
                     .addMessage(Integer.toString(nextTransactionId));
@@ -87,10 +92,14 @@ public class MiddlewareRequestHandler implements RequestHandler {
                         Response roomResponse = this.roomClient.receive();
                         commitSuccess = commitSuccess && roomResponse.getStatus().booleanValue();
                         continue;
+                    } else if (server.equals(CUSTOMER)) {
+                        boolean customerSuccess = this.customerResourceManager.commit(xId);
+                        commitSuccess = commitSuccess && customerSuccess;
                     }
                 }
 
                 if (commitSuccess) {
+                    this.coordinator.commit(xId.intValue());
                     response.addCurrentTimeStamp()
                         .addStatus(true)
                         .addMessage("Transaction " + xId + " committed.");
@@ -122,9 +131,13 @@ public class MiddlewareRequestHandler implements RequestHandler {
                         Response roomResponse = this.roomClient.receive();
                         abortSuccess = abortSuccess && roomResponse.getStatus().booleanValue();
                         continue;
+                    } else if (server.equals(CUSTOMER)) {
+                        boolean customerResponse = this.customerResourceManager.abort(xId);
+                        abortSuccess = abortSuccess && customerResponse;
                     }
                 }
                 if (abortSuccess) {
+                    this.coordinator.abort(xId);
                     response.addCurrentTimeStamp()
                         .addStatus(true)
                         .addMessage("Transaction " + xId + " aborted.");
@@ -235,34 +248,43 @@ public class MiddlewareRequestHandler implements RequestHandler {
             case AddCustomer: {
                 Integer xId = data.getXId();
                 this.coordinator.addOperation(xId, CUSTOMER);
+                this.coordinator.addOperation(xId, FLIGHT);
+                this.coordinator.addOperation(xId, CAR);
+                this.coordinator.addOperation(xId, ROOM);
 
                 int newId = this.customerResourceManager.newCustomer(xId.intValue());
-                Integer newIdInteger = new Integer(newId);
-
-                Request clone = new Request();
-                RequestData informClients = new RequestData();
-                informClients.addXId(xId)
-                    .addCommand(Command.AddCustomerID)
-                    .addArgument("cId", newId);
-                clone.addCurrentTimeStamp()
-                    .addData(informClients);
-                this.flightClient.send(clone);
-                Response flightResponse = this.flightClient.receive();
-                this.carClient.send(clone);
-                Response carResponse = this.carClient.receive();
-                this.roomClient.send(clone);
-                Response roomResponse = this.roomClient.receive();
-                boolean informClientSuccess = flightResponse.getStatus().booleanValue() 
-                    && carResponse.getStatus().booleanValue()
-                    && roomResponse.getStatus().booleanValue();
-                response.addCurrentTimeStamp()
-                    .addStatus(new Boolean(true))
-                    .addMessage(newIdInteger.toString());
+                
+                if (newId != -1) { 
+                    Integer newIdInteger = new Integer(newId);
+                    Request clone = new Request();
+                    RequestData informClients = new RequestData();
+                    informClients.addXId(xId)
+                        .addCommand(Command.AddCustomerID)
+                        .addArgument("cId", newId);
+                    clone.addCurrentTimeStamp()
+                        .addData(informClients);
+                    this.flightClient.send(clone);
+                    Response flightResponse = this.flightClient.receive();
+                    this.carClient.send(clone);
+                    Response carResponse = this.carClient.receive();
+                    this.roomClient.send(clone);
+                    Response roomResponse = this.roomClient.receive();
+                    response.addCurrentTimeStamp()
+                        .addStatus(new Boolean(true))
+                        .addMessage(newIdInteger.toString());
+                } else {
+                    response.addCurrentTimeStamp()
+                        .addStatus(new Boolean(false))
+                        .addMessage(new Integer(-1).toString());
+                }
                 break;
             }
             case AddCustomerID: {
                 Integer xId = data.getXId();
                 this.coordinator.addOperation(xId, CUSTOMER);
+                this.coordinator.addOperation(xId, FLIGHT);
+                this.coordinator.addOperation(xId, CAR);
+                this.coordinator.addOperation(xId, ROOM);
 
                 Integer cId = (Integer)data.getCommandArgs().get("cId");
                 boolean resStatus = this.customerResourceManager.newCustomer(xId, cId);
@@ -281,9 +303,10 @@ public class MiddlewareRequestHandler implements RequestHandler {
                     && flightResponse.getStatus().booleanValue() 
                     && carResponse.getStatus().booleanValue()
                     && roomResponse.getStatus().booleanValue();
+                
                 response.addCurrentTimeStamp()
-                    .addStatus(resStatusBoolean)
-                    .addMessage(resStatusBoolean.toString());
+                    .addStatus(new Boolean(informClientSuccess))
+                    .addMessage(Boolean.toString(informClientSuccess));
                 break;
             }
             case DeleteFlight: {

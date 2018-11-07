@@ -4,7 +4,7 @@ import Server.Common.Trace;
 import Server.Common.ResourceManager;
 import Server.Common.Constants;
 import Server.Sockets.ClientWorker;
-import Server.ResourceManager.SocketResourceManager;
+import Server.ResourceManager.TransactionResourceManager;
 import Server.Sockets.RequestHandler;
 
 import java.io.BufferedReader;
@@ -21,7 +21,7 @@ import java.net.UnknownHostException;
 public class Middleware {
     private InetAddress inetAddress;
     private int port;
-    private SocketResourceManager customerResourceManager;
+    private TransactionResourceManager customerResourceManager;
     private MiddlewareCoordinator coordinator;
     private ArrayList<MiddlewareClient> clients;
 
@@ -46,7 +46,7 @@ public class Middleware {
         final ServerSocket serverSocket;
         
         try {
-            final SocketResourceManager customerResourceManager = new SocketResourceManager(Constants.CUSTOMER);
+            final TransactionResourceManager customerResourceManager = new TransactionResourceManager(Constants.CUSTOMER);
             final MiddlewareCoordinator coordinator = new MiddlewareCoordinator();
             final MiddlewareClient flightClient = new MiddlewareClient(Constants.FLIGHT, InetAddress.getByName(inetFlights), portFlights);
             final MiddlewareClient carClient = new MiddlewareClient(Constants.CAR, InetAddress.getByName(inetCars), portCars);
@@ -85,9 +85,9 @@ public class Middleware {
     private static class Builder {
         private InetAddress inetAddress;
         private int port;
-        private SocketResourceManager customerResourceManager;
+        private TransactionResourceManager customerResourceManager;
         private MiddlewareCoordinator coordinator;
-        private ArrayList<MiddlewareClient> clients = new ArrayList<>();
+        private ArrayList<MiddlewareClient> clients = new ArrayList<MiddlewareClient    >();
 
         public Builder atInetAddress(InetAddress inetAddress) throws UnknownHostException{
             this.inetAddress = inetAddress;
@@ -99,7 +99,7 @@ public class Middleware {
             return this;
         }
 
-        public Builder withResourceManager(SocketResourceManager customerResourceManager) {
+        public Builder withResourceManager(TransactionResourceManager customerResourceManager) {
             this.customerResourceManager = customerResourceManager;
             return this;
         }
@@ -134,7 +134,7 @@ public class Middleware {
         return this.inetAddress;
     }
 
-    public SocketResourceManager getCustomerResourceManager() {
+    public TransactionResourceManager getCustomerResourceManager() {
         return this.customerResourceManager;
     }
 

@@ -4,6 +4,7 @@ import Server.Common.*;
 import Server.LockManager.LockManager;
 import Server.LockManager.DeadlockException;
 import Server.LockManager.TransactionLockObject.LockType;
+import Server.Middleware.TransactionManager;
 import Server.Transactions.Operation;
 import Server.Transactions.Operation.OperationType;
 
@@ -11,6 +12,7 @@ import java.io.IOException;
 import java.util.Stack;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Calendar;
 
 public class TransactionResourceManager extends SocketResourceManager {
     private final LockManager lockManager;
@@ -29,11 +31,11 @@ public class TransactionResourceManager extends SocketResourceManager {
                 return false;
             } 
             this.txMap.put(xId, new Stack<Operation>());
+            return true;
         } catch (Exception e) {
             Trace.info("Could not enlist transaction " + xId);
             return false;
         }
-        return true;
     }
 
     public boolean commit(int xId) {
@@ -76,6 +78,10 @@ public class TransactionResourceManager extends SocketResourceManager {
         }
     }
 
+    public boolean shutdown() {
+        return false;
+    }
+
     public void undo(int xId, Operation operation) {
         OperationType type = operation.getOperationType();
 
@@ -112,10 +118,18 @@ public class TransactionResourceManager extends SocketResourceManager {
             }
 
             case AddCustomer: {
+                RMItem value = operation.getValue();
+                removeData(xId, operation.getKey());
                 break;
             }
 
             case AddCustomerID: {
+                RMItem value = operation.getValue();
+                if (value == null) {
+                    removeData(xId, operation.getKey());
+                } else {
+                    writeData(xId, operation.getKey(), operation.getValue());
+                }
                 break;
             }
 
@@ -147,6 +161,34 @@ public class TransactionResourceManager extends SocketResourceManager {
             case ReserveRoom: {
                 break;
             }   
+            
+            case QueryFlight: {
+                break;
+            }
+
+            case QueryCars: {
+                break;
+            }
+
+            case QueryRooms: {
+                break;
+            }
+
+            case QueryCustomer: {
+                break;
+            }
+
+            case QueryFlightPrice: {
+                break;
+            }
+
+            case QueryCarPrice: {
+                break;
+            }
+            
+            case QueryRoomPrice: {
+                break;
+            }
         }
     }
 
@@ -297,6 +339,103 @@ public class TransactionResourceManager extends SocketResourceManager {
             }
         } catch(Exception e) {
             return -1;
+        }
+    }
+
+    @Override 
+    public int queryCars(int xid, String location) throws IOException {
+        try {
+            Stack txOps = this.txMap.get(xid);
+            if (txOps == null) {
+                return -1;
+            }
+
+            if(lockManager.Lock(xid, location, LockType.LOCK_READ)) {
+                return queryNum(xid, Car.getKey(location));
+            } else {
+                return -1;
+            }
+        } catch(Exception e) {
+            return -1;
+        }
+    }
+
+    @Override 
+    public int queryRooms(int xid, String location) throws IOException {
+        try {
+            Stack txOps = this.txMap.get(xid);
+            if (txOps == null) {
+                return -1;
+            }
+
+            if(lockManager.Lock(xid, location, LockType.LOCK_READ)) {
+                return queryNum(xid, Room.getKey(location));
+            } else {
+                return -1;
+            }
+        } catch(Exception e) {
+            return -1;
+        }
+    }
+
+    @Override
+    public int newCustomer(int xid) throws IOException {
+        Trace.info("RM::newCustomer(" + xid + ") called");
+        try {
+            Stack txOps = this.txMap.get(xid);
+            if (txOps == null) {
+                System.out.println("null!");
+                return -1;
+            }
+
+            int cid = Integer.parseInt(String.valueOf(xid) +
+            String.valueOf(Calendar.getInstance().get(Calendar.MILLISECOND)) +
+            String.valueOf(Math.round(Math.random() * 100 + 1)));
+
+            Customer customer = new Customer(cid);
+
+            lockManager.Lock(xid, customer.getKey(), LockType.LOCK_WRITE);
+            txOps.push(new Operation(OperationType.AddCustomer,
+                customer.getKey(),
+                customer));
+            writeData(xid, customer.getKey(), customer);
+            Trace.info("RM::newCustomer(" + xid + ") OK: " + cid);
+            return cid;
+        } catch(Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
+    @Override 
+    public boolean newCustomer(int xid, int cid) throws IOException {
+        Trace.info("INFO: RM::newCustomer(" + xid + ", " + cid + ") called.");
+        try {
+            Stack txOps = txMap.get(xid);
+            if(txOps == null)
+                return false;
+
+            Customer customer = (Customer) readData(xid, Customer.getKey(cid));
+
+            if (customer == null) {
+                if(lockManager.Lock(xid, Customer.getKey(cid), LockType.LOCK_WRITE)){
+                    customer = new Customer(cid);
+                    txOps.push(new Operation(OperationType.AddCustomerID, 
+                        customer.getKey(), 
+                        null));
+                    writeData(xid, customer.getKey(), customer);
+                    Trace.info("INFO: RM::newCustomer(" + xid + ", " + cid + ") OK.");
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                Trace.info("INFO: RM::newCustomer(" + xid + ", " +
+                        cid + ") failed: customer already exists.");
+                return false;
+            }
+        } catch(Exception e) {
+            return false;
         }
     }
 }
