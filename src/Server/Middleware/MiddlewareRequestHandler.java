@@ -76,18 +76,15 @@ public class MiddlewareRequestHandler implements RequestHandler {
                         this.flightClient.send(request);
                         Response flightResponse = this.flightClient.receive();
                         commitSuccess = commitSuccess && flightResponse.getStatus().booleanValue();
-                        System.out.println("SENDING to " + server);
                         continue;
                     } else if(server.equals(CAR)) {
                         this.carClient.send(request);
                         Response carResponse = this.carClient.receive();
                         commitSuccess = commitSuccess && carResponse.getStatus().booleanValue();
-                        System.out.println("SENDING to " + server);
                         continue;
                     } else if (server.equals(ROOM)) {
                         this.roomClient.send(request);
                         Response roomResponse = this.roomClient.receive();
-                        System.out.println("SENDING to " + server);
                         commitSuccess = commitSuccess && roomResponse.getStatus().booleanValue();
                         continue;
                     }
@@ -102,13 +99,41 @@ public class MiddlewareRequestHandler implements RequestHandler {
                         .addStatus(false)
                         .addMessage("Transaction " + xId + " not committed.");
                 }
+                break;
             }
             case Abort: {
                 Integer xId = data.getXId();
                 this.coordinator.abort(xId.intValue());
-                response.addCurrentTimeStamp()
-                    .addStatus(true)
-                    .addMessage("Transaction " + xId + " aborted.");
+                Set<String> servers = this.coordinator.getTransactionRms(xId);
+                boolean abortSuccess = true;
+                for (String server: servers) {
+                    if (server.equals(FLIGHT)) {
+                        this.flightClient.send(request);
+                        Response flightResponse = this.flightClient.receive();
+                        abortSuccess = abortSuccess && flightResponse.getStatus().booleanValue();
+                        continue;
+                    } else if(server.equals(CAR)) {
+                        this.carClient.send(request);
+                        Response carResponse = this.carClient.receive();
+                        abortSuccess = abortSuccess && carResponse.getStatus().booleanValue();
+                        continue;
+                    } else if (server.equals(ROOM)) {
+                        this.roomClient.send(request);
+                        Response roomResponse = this.roomClient.receive();
+                        abortSuccess = abortSuccess && roomResponse.getStatus().booleanValue();
+                        continue;
+                    }
+                }
+                if (abortSuccess) {
+                    response.addCurrentTimeStamp()
+                        .addStatus(true)
+                        .addMessage("Transaction " + xId + " aborted.");
+                } else {
+                    response.addCurrentTimeStamp()
+                        .addStatus(false)
+                        .addMessage("Transaction " + xId + " not aborted.");
+                }
+                break;
             }
             /**
              * Read only operations

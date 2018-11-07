@@ -59,8 +59,11 @@ public class ServerRequestHandler implements RequestHandler {
             }
 
             case Commit: {
-                System.out.println("committing!");
                 return new Boolean(resourceManager.commit(xId.intValue()));
+            }
+
+            case Abort: {
+                return new Boolean(resourceManager.abort(xId.intValue()));
             }
 
             case AddFlight: {

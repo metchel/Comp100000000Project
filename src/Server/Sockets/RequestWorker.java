@@ -10,26 +10,27 @@ public class RequestWorker implements Runnable {
     private final Request request;
     private final RequestHandler handler;
 
-    volatile boolean active;
+    volatile Boolean active;
 
     public void run() {
         Trace.info("RequestWorker is working...");
-        while(active) {
-            try {
-                synchronized(this.request) {
+        synchronized(this.active) {
+            while(this.active.booleanValue()) {
+                try {
                     this.response = this.handler.handle(this.request);
-                    active = false;
+                } catch(Exception e) {
+                    e.printStackTrace();
+                    this.response = null;
+                    this.active = new Boolean(false);
                 }
-            } catch(Exception e) {
-                e.printStackTrace();
-                this.response = null;
-                active = false;
+                this.active = new Boolean(false);
             }
+
         }
     }
 
     public RequestWorker(Request request, RequestHandler handler) {
-        active = true;
+        active = new Boolean(true);
         this.request = request;
         this.handler = handler;
     }
