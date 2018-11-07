@@ -325,6 +325,67 @@ public class TransactionResourceManager extends SocketResourceManager {
     }
 
     @Override 
+    public boolean deleteFlight(int xid, int flightNum) throws IOException {
+        try {
+            Stack txOps = this.txMap.get(xid);
+            if (txOps == null) {
+                return false;
+            }
+
+            lockManager.Lock(xid, Integer.toString(flightNum), LockType.LOCK_WRITE);
+            txOps.push(new Operation(OperationType.DeleteFlight, 
+                Flight.getKey(flightNum),
+                readData(xid, Flight.getKey(flightNum))));
+            
+            return deleteItem(xid, Flight.getKey(flightNum));
+        } catch(Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override 
+    public boolean deleteCars(int xid, String location) throws IOException {
+        try {
+            Stack txOps = this.txMap.get(xid);
+            if (txOps == null) {
+                return false;
+            }
+
+            lockManager.Lock(xid,location, LockType.LOCK_WRITE);
+            txOps.push(new Operation(OperationType.DeleteCars, 
+                Car.getKey(location),
+                readData(xid, Car.getKey(location))));
+            
+            return deleteItem(xid, Car.getKey(location));
+        } catch(Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    
+    @Override 
+    public boolean deleteRooms(int xid, String location) throws IOException {
+        try {
+            Stack txOps = this.txMap.get(xid);
+            if (txOps == null) {
+                return false;
+            }
+
+            lockManager.Lock(xid,location, LockType.LOCK_WRITE);
+            txOps.push(new Operation(OperationType.DeleteRooms, 
+                Room.getKey(location),
+                readData(xid, Room.getKey(location))));
+            
+            return deleteItem(xid, Room.getKey(location));
+        } catch(Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override 
     public int queryFlight(int xid, int flightNum) throws IOException {
         try {
             Stack txOps = this.txMap.get(xid);
@@ -435,6 +496,47 @@ public class TransactionResourceManager extends SocketResourceManager {
                 return false;
             }
         } catch(Exception e) {
+            return false;
+        }
+    }
+
+    @Override 
+    public boolean deleteCustomer(int xid, int cid) throws IOException {
+        try {
+            Trace.info("RM::deleteCustomer(" + xid + ", " + cid + ") called.");
+            Customer customer = (Customer) readData(xid, Customer.getKey(cid));
+
+            Stack txOps = txMap.get(xid);
+            if (txOps == null) {
+                return false;
+            }
+
+            if (customer == null) {
+                Trace.warn("RM::deleteCustomer(" + xid + ", "
+                + cid + ") failed: customer doesn't exist.");
+                return false;
+            } else {
+                lockManager.Lock(xid, Customer.getKey(cid), LockType.LOCK_WRITE);
+                txOps.push(new Operation(OperationType.DeleteCustomer,
+                    customer.getKey(),
+                    customer));
+                RMHashMap reservations = customer.getReservations();
+                for (String reservedKey : reservations.keySet()) {        
+                    ReservedItem reserveditem = customer.getReservedItem(reservedKey);
+                    Trace.info("RM::deleteCustomer(" + xid + ", " + cid + ") has reserved " + reserveditem.getKey() + " " +  reserveditem.getCount() +  " times");
+                    ReservableItem item  = (ReservableItem)readData(xid, reserveditem.getKey());
+                    Trace.info("RM::deleteCustomer(" + xid + ", " + cid + ") has reserved " + reserveditem.getKey() + " which is reserved " +  item.getReserved() +  " times and is still available " + item.getCount() + " times");
+                    item.setReserved(item.getReserved() - reserveditem.getCount());
+                    item.setCount(item.getCount() + reserveditem.getCount());
+                    writeData(xid, item.getKey(), item);
+                }
+                removeData(xid, customer.getKey());
+                Trace.info("RM::deleteCustomer(" + xid + ", " + cid + ") OK.");
+                return true;
+            }
+
+        } catch(Exception e) {
+            e.printStackTrace();
             return false;
         }
     }

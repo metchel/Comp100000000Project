@@ -336,9 +336,20 @@ public class MiddlewareRequestHandler implements RequestHandler {
             case DeleteCustomer: {
                 Integer xId = data.getXId();
                 this.coordinator.addOperation(xId, CUSTOMER);
+                this.coordinator.addOperation(xId, FLIGHT);
+                this.coordinator.addOperation(xId, CAR);
+                this.coordinator.addOperation(xId, ROOM);
 
                 Integer cId = (Integer)data.getCommandArgs().get("cId");
                 boolean resStatus = this.customerResourceManager.deleteCustomer(xId, cId);
+
+                this.flightClient.send(request);
+                Response flightResponse = this.flightClient.receive();
+                this.carClient.send(request);
+                Response carResponse = this.carClient.receive();
+                this.roomClient.send(request);
+                Response roomResponse = this.roomClient.receive();
+
                 Boolean resStatusBoolean = new Boolean(resStatus);
                 response.addCurrentTimeStamp()
                     .addStatus(resStatusBoolean)
@@ -351,6 +362,7 @@ public class MiddlewareRequestHandler implements RequestHandler {
              */
             case ReserveFlight: {
                 Integer xId = data.getXId();
+                this.coordinator.addOperation(xId, CUSTOMER);
                 this.coordinator.addOperation(xId, FLIGHT);
 
                 Integer cId = (Integer)data.getCommandArgs().get("cId");
@@ -368,6 +380,7 @@ public class MiddlewareRequestHandler implements RequestHandler {
 
             case ReserveCar: {
                 Integer xId = data.getXId();
+                this.coordinator.addOperation(xId, CUSTOMER);
                 this.coordinator.addOperation(xId, CAR);
                 
                 Integer cId = (Integer)data.getCommandArgs().get("cId");
@@ -384,6 +397,7 @@ public class MiddlewareRequestHandler implements RequestHandler {
             }
             case ReserveRoom: {
                 Integer xId = data.getXId();
+                this.coordinator.addOperation(xId, CUSTOMER);
                 this.coordinator.addOperation(xId, ROOM);
 
                 Integer cId = (Integer)data.getCommandArgs().get("cId");
