@@ -1,3 +1,0 @@
-grant codebase "file:/Users/matthewetchells/Project/src/Server/" {
-permission java.security.AllPermission;
-};

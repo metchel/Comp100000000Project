@@ -20,9 +20,10 @@ public class SocketResourceManager implements IResourceManager {
 	{
 		m_name = p_name;
 		this.lockManager = new LockManager();
+		// each transaction gets a local set of objects 
+		// mostly important for write operations
 	}
 
-	// Reads a data item
 	protected RMItem readData(int xid, String key)
 	{
 		synchronized(m_data) {

@@ -2,6 +2,7 @@ package Server.Middleware;
 
 import Server.Common.Constants;
 import Server.Common.Command;
+import Server.Common.RMItem;
 
 import java.util.Queue;
 import java.util.LinkedList;
@@ -14,12 +15,20 @@ public class Transaction {
     private final Set clients;
     private Status status;
     private final Queue commands;
+    private final Set<RMItem> localData;
 
     public Transaction() {
-        this.id = nextTransactionId;
-        nextTransactionId++;
+        this.id = this.getNextTransactionId();
         this.clients = new HashSet<MiddlewareClient>();
         this.commands = new LinkedList<Command>();
+        this.localData = new HashSet<RMItem>();
+    }
+
+    public static int getNextTransactionId() {
+        synchronized(Transaction.class) {
+            Transaction.nextTransactionId++;
+            return Transaction.nextTransactionId;
+        }
     }
 
     public int start() {

@@ -12,29 +12,37 @@ expires then the transaction should be aborted
 */
 
 import java.util.Set;
+
+import Server.Middleware.Transaction.Status;
+
 import java.util.Map;
 import java.util.HashMap;
 
 public class MiddlewareCoordinator implements TransactionManager {
-    public static int nextTransactionId = 0;
     private final Map<Integer, Transaction> transactionMap;
+    private final Map<Integer, Status> transactionStatusMap;
 
     public MiddlewareCoordinator() {
         this.transactionMap = new HashMap<Integer, Transaction>();
+        this.transactionStatusMap = new HashMap<Integer, Status>();
     }
 
     public int start() {
-        int nextT = MiddlewareCoordinator.nextTransactionId + 1;
         Transaction t = new Transaction();
         t.start();
-        this.transactionMap.put(new Integer(nextT), t);
-        MiddlewareCoordinator.nextTransactionId++;
-        return nextT;
+        int id = t.getId();
+        this.transactionMap.put(id, t);
+        this.transactionStatusMap.put(id, Status.STARTED);
+        return id;
     }
 
     public boolean commit(int transactionId) {
         Transaction t = (Transaction)this.transactionMap.get(transactionId);
-        return t.commit();
+        boolean commitSuccess = t.commit();
+        if (commitSuccess) {
+            this.transactionStatusMap.put(transactionId, Status.COMMITTED);
+        }
+        return commitSuccess;
     }
 
     public void abort(int transactionId) {

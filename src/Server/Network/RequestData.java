@@ -52,13 +52,13 @@ public class RequestData implements Serializable {
 
     public String toString() {
         final String delim = "|";
-        if (!this.commandArgs.isEmpty()) {
-            return this.xId.toString() + delim
-                + this.command.toString() + delim
-                + this.commandArgs.toString();
-        } else {
+        if (this.commandArgs == null || this.commandArgs.isEmpty()) {
             return this.xId.toString() + delim
             + this.command.toString();
+        } else {
+            return this.xId.toString() + delim
+            + this.command.toString() + delim
+            + this.commandArgs.toString();
         }
     }
 }
