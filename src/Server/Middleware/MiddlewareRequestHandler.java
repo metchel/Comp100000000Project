@@ -14,6 +14,7 @@ import java.util.Queue;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
+import java.util.ArrayList;
 
 import Server.Sockets.RequestHandler;
 
@@ -420,22 +421,64 @@ public class MiddlewareRequestHandler implements RequestHandler {
 
                 Integer cId = (Integer)data.getCommandArgs().get("cId");
                 ArrayList<Integer> flightNumList = (ArrayList)data.getCommandArgs().get("flightNumList");
-                String location = data.getCommandArgs().get("location");
-                String car = data.getCommandArgs.get("car");
-                String room = data.getCommandArgs.get("room");
+                String location = (String)data.getCommandArgs().get("location");
+                String car = (String)data.getCommandArgs().get("car");
+                String room = (String)data.getCommandArgs().get("room");
 
+                boolean successResponse = true;
                 // reserve flights
-                for (Integer flight: flightNumList) {
-
+                final ArrayList<Response> flightReserveResponses = new ArrayList<Response>();
+                for (Integer flightNum: flightNumList) {
+                    Request req = generateReservationRequest(xId, Command.ReserveFlight, cId, "flightNum", flightNum);
+                    this.flightClient.send(req);
+                    Response reserveResponse = this.flightClient.receive();
+                    flightReserveResponses.add(response);
+                    successResponse = successResponse && reserveResponse.getStatus().booleanValue();
                 }
 
                 // reserve car
+                if (car.equals("1")) {
+                    final Request carReservation = generateReservationRequest(xId, Command.ReserveCar, cId, "location", location);
+                    this.carClient.send(carReservation);
+                    final Response carResponse = this.carClient.receive();
+                    successResponse = successResponse && carResponse.getStatus().booleanValue();
+                }
 
                 //reserve room
+                if (room.equals("1")) {
+                    final Request roomReservation = generateReservationRequest(xId, Command.ReserveRoom, cId, "location", location);
+                    this.roomClient.send(roomReservation);
+                    final Response roomResponse = this.roomClient.receive();
+                    successResponse = successResponse && roomResponse.getStatus().booleanValue();
+                }
+
+                if(successResponse) {
+                    response.addCurrentTimeStamp()
+                        .addStatus(new Boolean(true))
+                        .addMessage("Bundle successfully reserved.");
+                } else {
+                    response.addCurrentTimeStamp()
+                        .addStatus(new Boolean(false))
+                        .addMessage("Bundle reservation failed.");
+                }
+
                 break;
             }
         }
 
         return response;
+    }
+
+    public Request generateReservationRequest(Integer xId, Command command, Integer cId, String key, Object value) {
+        Request reservation = new Request();
+        RequestData data = new RequestData();
+        data.addXId(xId.intValue())
+            .addCommand(command)
+            .addArgument("cId", cId)
+            .addArgument(key, value);
+        reservation.addCurrentTimeStamp()
+            .addData(data);
+
+        return reservation;
     }
 }
