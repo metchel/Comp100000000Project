@@ -758,21 +758,36 @@ public abstract class ClientAlt
                 String commandName = arguments.elementAt(0);
                 String id = arguments.elementAt(1);
                 String customerID = arguments.elementAt(2);
-                String packet = commandName+","+id+","+customerID;
 
+                ArrayList<Integer> flightNumList = new ArrayList<Integer>();
                 for (int i = 0; i < arguments.size() - 6; ++i)
                 {
-                    packet = packet+","+arguments.elementAt(3+i);
+                    flightNumList.add(Integer.parseInt(arguments.elementAt(3+i)));
                 }
                 String location = arguments.elementAt(arguments.size()-3);
                 String car = arguments.elementAt(arguments.size()-2);
                 String room = arguments.elementAt(arguments.size()-1);
 
-                packet = packet+","+location+","+car+","+room;
-                out.println(packet+"\n");
-                String response = in.readLine();
-                //System.out.println(response);
-                if (response.equals("true")){
+                RequestData data = new RequestData();
+                data.addXId(Integer.parseInt(id))
+                    .addCommand(cmd)
+                    .addArgument("cId", Integer.parseInt(customerID))
+                    .addArgument("flightNumList", flightNumList)
+                    .addArgument("location", location)
+                    .addArgument("car", car)
+                    .addArgument("room", room);
+
+                Request request = new Request();
+                request.addCurrentTimeStamp()
+                    .addData(data);
+
+                oos.writeObject(request);
+                
+                Response response = (Response) ois.readObject();
+
+                System.out.println("RESPONSE: " + response.toString());
+
+                if (response.getStatus()) {
                     System.out.println("Bundle Reserved");
                 }else{
                     System.out.println("Bundle could not be reserved");

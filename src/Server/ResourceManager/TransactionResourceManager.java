@@ -7,6 +7,7 @@ import Server.LockManager.TransactionLockObject.LockType;
 import Server.Middleware.TransactionManager;
 import Server.Transactions.Operation;
 import Server.Transactions.Operation.OperationType;
+import Server.Transactions.ReserveOperation;
 
 import java.io.IOException;
 import java.util.Stack;
@@ -82,83 +83,108 @@ public class TransactionResourceManager extends SocketResourceManager {
         return false;
     }
 
-    public void undo(int xId, Operation operation) {
+    public void undo(int xid, Operation operation) {
         OperationType type = operation.getOperationType();
 
         switch(type) {
 
             case AddFlight: {
+                Trace.info("RM::undo AddFlight");
                 RMItem value = operation.getValue();
                 if (value == null) {
-                    removeData(xId, operation.getKey());
+                    removeData(xid, operation.getKey());
                 } else {
-                    writeData(xId, operation.getKey(), operation.getValue());
+                    writeData(xid, operation.getKey(), operation.getValue());
                 }
                 break;
             }
 
             case AddCars: {
+                Trace.info("RM::undo AddCars");
                 RMItem value = operation.getValue();
                 if (value == null) {
-                    removeData(xId, operation.getKey());
+                    removeData(xid, operation.getKey());
                 } else {
-                    writeData(xId, operation.getKey(), operation.getValue());
+                    writeData(xid, operation.getKey(), operation.getValue());
                 }
                 break;
             }
 
             case AddRooms: {
+                Trace.info("RM::undo AddRooms");
                 RMItem value = operation.getValue();
                 if (value == null) {
-                    removeData(xId, operation.getKey());
+                    removeData(xid, operation.getKey());
                 } else {
-                    writeData(xId, operation.getKey(), operation.getValue());
+                    writeData(xid, operation.getKey(), operation.getValue());
                 }
                 break;
             }
 
             case AddCustomer: {
+                Trace.info("RM::undo AddCustomer");
                 RMItem value = operation.getValue();
-                removeData(xId, operation.getKey());
+                removeData(xid, operation.getKey());
                 break;
             }
 
             case AddCustomerID: {
+                Trace.info("RM::undo AddCustomerID");
                 RMItem value = operation.getValue();
                 if (value == null) {
-                    removeData(xId, operation.getKey());
+                    removeData(xid, operation.getKey());
                 } else {
-                    writeData(xId, operation.getKey(), operation.getValue());
+                    writeData(xid, operation.getKey(), operation.getValue());
                 }
                 break;
             }
 
             case DeleteFlight: {
+                Trace.info("RM::undo DeleteFlight");
+                writeData(xid, operation.getKey(), operation.getValue());
                 break;
             }
 
             case DeleteCars: {
+                Trace.info("RM::undo DeleteCars");
+                writeData(xid, operation.getKey(), operation.getValue());
                 break;
             }
 
             case DeleteRooms: {
+                Trace.info("RM::undo DeleteRooms");
+                writeData(xid, operation.getKey(), operation.getValue());
                 break;
             }
 
 
             case DeleteCustomer: {
+                Trace.info("RM::undo DeleteCustomer");
+                writeData(xid, operation.getKey(), operation.getValue());
                 break;
             }
 
             case ReserveFlight: {
+                Trace.info("RM::undo ReserveFlight");
+                ReserveOperation reserveOp = (ReserveOperation) operation;
+                writeData(xid, reserveOp.getCustomerId(), reserveOp.getCustomer());
+                writeData(xid, reserveOp.getKey(), reserveOp.getValue());
                 break;
             }
 
             case ReserveCar: {
+                Trace.info("RM::undo ReserveCar");
+                ReserveOperation reserveOp = (ReserveOperation) operation;
+                writeData(xid, reserveOp.getCustomerId(), reserveOp.getCustomer());
+                writeData(xid, reserveOp.getKey(), reserveOp.getValue());
                 break;
             }
 
             case ReserveRoom: {
+                Trace.info("RM::undo ReserveRoom");
+                ReserveOperation reserveOp = (ReserveOperation) operation;
+                writeData(xid, reserveOp.getCustomerId(), reserveOp.getCustomer());
+                writeData(xid, reserveOp.getKey(), reserveOp.getValue());
                 break;
             }   
             
@@ -440,6 +466,54 @@ public class TransactionResourceManager extends SocketResourceManager {
     }
 
     @Override
+    public int queryFlightPrice(int xid, int flightNum) throws IOException {
+        try {
+            Stack txOps = this.txMap.get(xid);
+            if (txOps == null) {
+                return -1;
+            }
+
+            lockManager.Lock(xid, Integer.toString(flightNum), LockType.LOCK_READ);
+            return queryPrice(xid, Flight.getKey(flightNum));
+        } catch(Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
+    @Override
+    public int queryCarsPrice(int xid, String location) throws IOException {
+        try {
+            Stack txOps = this.txMap.get(xid);
+            if (txOps == null) {
+                return -1;
+            }
+
+            lockManager.Lock(xid, location, LockType.LOCK_READ);
+            return queryPrice(xid, Car.getKey(location));
+        } catch(Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
+    @Override
+    public int queryRoomsPrice(int xid, String location) throws IOException {
+        try {
+            Stack txOps = this.txMap.get(xid);
+            if (txOps == null) {
+                return -1;
+            }
+
+            lockManager.Lock(xid, location, LockType.LOCK_READ);
+            return queryPrice(xid, Room.getKey(location));
+        } catch(Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
+    @Override
     public int newCustomer(int xid) throws IOException {
         Trace.info("RM::newCustomer(" + xid + ") called");
         try {
@@ -535,6 +609,117 @@ public class TransactionResourceManager extends SocketResourceManager {
                 return true;
             }
 
+        } catch(Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public String queryCustomerInfo(int xid, int cid) {
+        try {
+            Trace.info("RM::queryCustomerInfo(" + xid + ", " + cid + ") called.");
+
+            Stack txOps = txMap.get(xid);
+            if (txOps == null) {
+                return "";
+            }
+
+            Customer customer = (Customer) readData(xid, Customer.getKey(cid));
+
+            if (customer == null) {
+                Trace.warn("RM::queryCustomerInfo(" + xid + ", "
+                + cid + ") failed: customer doesn't exist.");
+                return "";
+            } else {
+                if (lockManager.Lock(xid, customer.getKey(), LockType.LOCK_READ)) {
+                    Trace.info("RM::queryCustomerInfo(" + xid + ", " + cid + "): \n");
+                    return customer.getBill();
+                } else {
+                    return "";
+                }
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+    @Override
+    public boolean reserveFlight(int xid, int cid, int flightNum) {
+        try{
+            Stack txOps = txMap.get(xid);
+            if (txOps == null) {
+                return false;
+            }
+            Customer customer = (Customer) readData(xid, Customer.getKey(cid));
+            Flight curObj = (Flight)readData(xid, Flight.getKey(flightNum));
+
+            if(lockManager.Lock(xid, Flight.getKey(flightNum), LockType.LOCK_WRITE)){
+                txOps.push(new ReserveOperation(OperationType.ReserveFlight, 
+                    Customer.getKey(cid), 
+                    customer,
+                    Flight.getKey(flightNum),
+                    curObj));
+                return reserveItem(xid, cid,
+                        Flight.getKey(flightNum), String.valueOf(flightNum));
+            } else {
+                return false;
+            }
+        }catch(Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public boolean reserveCar(int xid, int cid, String location) {
+        try{
+            Stack txOps = txMap.get(xid);
+            if (txOps == null) {
+                return false;
+            }
+            Customer customer = (Customer) readData(xid, Customer.getKey(cid));
+            Car curObj = (Car)readData(xid, Car.getKey(location));
+
+            if(lockManager.Lock(xid, Car.getKey(location), LockType.LOCK_WRITE)){
+                txOps.push(new ReserveOperation(OperationType.ReserveCar, 
+                    Customer.getKey(cid), 
+                    customer,
+                    Car.getKey(location),
+                    curObj));
+                return reserveItem(xid, cid,
+                        Car.getKey(location), location);
+            } else {
+                return false;
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public boolean reserveRoom(int xid, int cid, String location) {
+        try{
+            Stack txOps = txMap.get(xid);
+            if (txOps == null) {
+                return false;
+            }
+            Customer customer = (Customer) readData(xid, Customer.getKey(cid));
+            Room curObj = (Room)readData(xid, Room.getKey(location));
+
+            if(lockManager.Lock(xid, Room.getKey(location), LockType.LOCK_WRITE)){
+                txOps.push(new ReserveOperation(OperationType.ReserveRoom, 
+                    Customer.getKey(cid), 
+                    customer,
+                    Room.getKey(location),
+                    curObj));
+                return reserveItem(xid, cid,
+                        Room.getKey(location), location);
+            } else {
+                return false;
+            }
         } catch(Exception e) {
             e.printStackTrace();
             return false;

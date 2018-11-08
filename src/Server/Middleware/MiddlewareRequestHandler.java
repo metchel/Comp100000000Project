@@ -134,6 +134,8 @@ public class MiddlewareRequestHandler implements RequestHandler {
                     } else if (server.equals(CUSTOMER)) {
                         boolean customerResponse = this.customerResourceManager.abort(xId);
                         abortSuccess = abortSuccess && customerResponse;
+                    } else {
+                        System.out.println("Something has gone terribly wrong.");
                     }
                 }
                 if (abortSuccess) {
@@ -362,7 +364,6 @@ public class MiddlewareRequestHandler implements RequestHandler {
              */
             case ReserveFlight: {
                 Integer xId = data.getXId();
-                this.coordinator.addOperation(xId, CUSTOMER);
                 this.coordinator.addOperation(xId, FLIGHT);
 
                 Integer cId = (Integer)data.getCommandArgs().get("cId");
@@ -380,7 +381,6 @@ public class MiddlewareRequestHandler implements RequestHandler {
 
             case ReserveCar: {
                 Integer xId = data.getXId();
-                this.coordinator.addOperation(xId, CUSTOMER);
                 this.coordinator.addOperation(xId, CAR);
                 
                 Integer cId = (Integer)data.getCommandArgs().get("cId");
@@ -397,7 +397,6 @@ public class MiddlewareRequestHandler implements RequestHandler {
             }
             case ReserveRoom: {
                 Integer xId = data.getXId();
-                this.coordinator.addOperation(xId, CUSTOMER);
                 this.coordinator.addOperation(xId, ROOM);
 
                 Integer cId = (Integer)data.getCommandArgs().get("cId");
@@ -413,7 +412,26 @@ public class MiddlewareRequestHandler implements RequestHandler {
                 break;
             }
             case Bundle: {
-                // to do
+                Integer xId = data.getXId();
+                this.coordinator.addOperation(xId, CUSTOMER);
+                this.coordinator.addOperation(xId, FLIGHT);
+                this.coordinator.addOperation(xId, CAR);
+                this.coordinator.addOperation(xId, ROOM);
+
+                Integer cId = (Integer)data.getCommandArgs().get("cId");
+                ArrayList<Integer> flightNumList = (ArrayList)data.getCommandArgs().get("flightNumList");
+                String location = data.getCommandArgs().get("location");
+                String car = data.getCommandArgs.get("car");
+                String room = data.getCommandArgs.get("room");
+
+                // reserve flights
+                for (Integer flight: flightNumList) {
+
+                }
+
+                // reserve car
+
+                //reserve room
                 break;
             }
         }
