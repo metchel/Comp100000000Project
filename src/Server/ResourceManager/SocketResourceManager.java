@@ -85,7 +85,7 @@ public class SocketResourceManager implements IResourceManager {
 	{
 		Trace.info("RM::queryNum(" + xid + ", " + key + ") called");
 		ReservableItem curObj = (ReservableItem)readData(xid, key);
-		int value = 0;  
+		int value = -1;  
 		if (curObj != null)
 		{
 			value = curObj.getCount();
@@ -357,24 +357,6 @@ public class SocketResourceManager implements IResourceManager {
 			Trace.info("RM::deleteCustomer(" + xid + ", " + customerID + ") succeeded");
 			return true;
 		}
-	}
-
-	// Adds flight reservation to this customer
-	public boolean reserveFlight(int xid, int customerID, int flightNum) throws IOException
-	{
-		return reserveItem(xid, customerID, Flight.getKey(flightNum), String.valueOf(flightNum));
-	}
-
-	// Adds car reservation to this customer
-	public boolean reserveCar(int xid, int customerID, String location) throws IOException
-	{
-		return reserveItem(xid, customerID, Car.getKey(location), location);
-	}
-
-	// Adds room reservation to this customer
-	public boolean reserveRoom(int xid, int customerID, String location) throws IOException
-	{
-		return reserveItem(xid, customerID, Room.getKey(location), location);
 	}
 
 	// Reserve bundle 

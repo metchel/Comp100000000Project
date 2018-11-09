@@ -13,21 +13,14 @@ import java.io.*;
 
 public class TCPClient extends ClientAlt
 {
-    private static String serverHost = "localhost";
-    private static int serverPort = 9094;
+    private static String serverHost;
+    private static int serverPort;
 
     public static void main(String args[])
     {
-
-        if (args.length > 0)
-        {
-            serverHost = args[0];
-        }
-        if (args.length > 1)
-        {
-            serverPort = toInt(args[1]);
-        }
-        if (args.length > 2)
+        serverHost = args[0];
+        serverPort = toInt(args[1]);
+        if (args.length != 2)
         {
             System.err.println((char)27 + "[31;1mClient exception: " + (char)27 + "[0mUsage: java client.RMIClient [server_hostname [server_rmiobject]]");
             System.exit(1);

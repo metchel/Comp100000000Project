@@ -6,6 +6,7 @@ public enum Command {
 	Start("Start a transaction", "<xid>"),
 	Commit("Commit a transaction", "<xid>"),
 	Abort("Abort a transaction", "<xid>"),
+	Shutdown("Gracefull shutdown all servers", "<xid>"),
 
 	AddFlight("Add a new flight number", "<xid>,<FlightNumber>,<NumberOfSeats>,<PricePerSeat>"),
 	AddCars("Add a new car location", "<xid>,<Location>,<NumberOfCar>,<Price>"),

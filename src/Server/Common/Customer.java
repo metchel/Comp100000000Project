@@ -46,6 +46,21 @@ public class Customer extends RMItem
 		m_reservations.put(reservedItem.getKey(), reservedItem);
 	}
 
+	public void unReserve(String key) {
+		System.out.println("unreserving....");
+		ReservedItem item = this.getReservedItem(key);
+
+		if (item != null) {
+			int number = item.getCount();
+			if (number > 1) {
+				item.setCount(number - 1);
+				this.m_reservations.put(item.getKey(), item);
+			} else {
+				m_reservations.remove(item.getKey());
+			}
+		}
+	}
+
 	public ReservedItem getReservedItem(String key)
 	{
 		return (ReservedItem)m_reservations.get(key);
@@ -92,6 +107,14 @@ public class Customer extends RMItem
 		obj.m_ID = m_ID;
 		obj.m_reservations = (RMHashMap)m_reservations.clone();
 		return obj;
+	}
+
+	public void mergeReservationData(RMHashMap data) {
+		Set<String> keys = data.keySet();
+
+		for (String key: keys) {
+			this.m_reservations.put(key, data.get(key));
+		}
 	}
 }
 

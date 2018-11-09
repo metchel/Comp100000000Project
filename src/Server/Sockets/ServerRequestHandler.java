@@ -4,6 +4,8 @@ import Server.Interface.IResourceManager;
 import Server.Common.Command;
 import Server.Network.*;
 import Server.ResourceManager.TransactionResourceManager;
+import Server.Common.RMHashMap;
+import Server.Common.Trace;
 
 import java.io.IOException;
 import java.util.Vector;
@@ -24,26 +26,41 @@ public class ServerRequestHandler implements RequestHandler {
         Command cmd = data.getCommand();
         Integer xId = data.getXId();
 
-        System.out.println(req.toString());
+        Trace.info(req.toString());
 
         Object result = execute(xId, cmd, arguments);
         Boolean resStatus = null;
         String message = null;
         if (result instanceof Integer) {
-            resStatus = new Boolean(true);
+            if(((Integer)result).intValue() == -1) {
+                resStatus = new Boolean(false);
+            } else {
+                resStatus = new Boolean(true);
+            }
             message = result.toString();
         }
         if (result instanceof Boolean) {
             resStatus = (Boolean)result;
             message = result.toString();
         }
+        if (result instanceof RMHashMap) {
+            resStatus = new Boolean(true);
+            message = "Reservation booked.";
+        }
+        
+        if (result == null) {
+            resStatus = new Boolean(false);
+            message = "Reservation failed";
+        }
 
         Response response = new Response();
         response.addCurrentTimeStamp()
             .addStatus(resStatus)
             .addMessage(message);
-
-        System.out.println(response.toString());
+        
+        if (result instanceof RMHashMap) {
+            response.addReservationData(result);
+        }
 
         return response;
     }
@@ -64,6 +81,16 @@ public class ServerRequestHandler implements RequestHandler {
 
             case Abort: {
                 return new Boolean(resourceManager.abort(xId.intValue()));
+            }
+
+            case Shutdown: {
+                System.out.println("Gracefully shutting down...");
+                try {
+                    Thread.sleep(2000);
+                } catch(InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.exit(0);
             }
 
             case AddFlight: {
@@ -165,23 +192,25 @@ public class ServerRequestHandler implements RequestHandler {
             case ReserveFlight: {
                 Integer cId = (Integer)arguments.get("cId");
                 Integer flightNum = (Integer)arguments.get("flightNum");
-                return new Boolean(resourceManager.reserveFlight(xId.intValue(), cId.intValue(), flightNum.intValue()));
+                return resourceManager.reserveFlight(xId.intValue(), cId.intValue(), flightNum.intValue());
             }
 
             case ReserveCar: {
                 Integer cId = (Integer)arguments.get("cId");
                 String carLoc = (String)arguments.get("carLoc");
-                return new Boolean(resourceManager.reserveCar(xId.intValue(), cId.intValue(), carLoc));
+                return resourceManager.reserveCar(xId.intValue(), cId.intValue(), carLoc);
             }
 
             case ReserveRoom: {
                 Integer cId = (Integer)arguments.get("cId");
                 String roomLoc = (String)arguments.get("roomLoc");
-                return new Boolean(resourceManager.reserveRoom(xId.intValue(), cId.intValue(), roomLoc));
+                return resourceManager.reserveRoom(xId.intValue(), cId.intValue(), roomLoc);
             }
 
             case Bundle: {
-                return new Boolean(false);
+                Integer cId = (Integer)arguments.get("cId");
+                resourceManager.undoLastReservation(xId, cId);
+                return new Boolean(true);
             }
 
             case Quit: {

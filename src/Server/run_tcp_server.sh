@@ -1,1 +1,1 @@
-java -Djava.security.policy=java.policy Server.TCP.TCPServer
+java -Djava.security.policy=java.policy Server.Sockets.Server localhost 8080
