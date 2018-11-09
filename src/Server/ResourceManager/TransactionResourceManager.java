@@ -25,7 +25,7 @@ public class TransactionResourceManager extends SocketResourceManager {
         this.txMap = new HashMap<Integer, Stack<Operation>>();
     }
 
-    public boolean start(int xId) {
+    public synchronized boolean start(int xId) {
         try {
             Stack txOps = this.txMap.get(xId);
             if (txOps != null) {
@@ -39,11 +39,11 @@ public class TransactionResourceManager extends SocketResourceManager {
         }
     }
 
-    public boolean commit(int xId) {
+    public synchronized boolean commit(int xId) {
         try {
             Trace.info("Committing transaction " + xId);
             Stack txOps = this.txMap.get(xId);
-            if (txOps == null) {
+            if (txOps == null || txOps.isEmpty()) {
                 Trace.info("No operations for transaction " + xId);
                 return false;
             }
@@ -56,7 +56,7 @@ public class TransactionResourceManager extends SocketResourceManager {
         }
     }
 
-    public boolean abort(int xId){
+    public synchronized boolean abort(int xId){
         try {
             System.out.println("Aborting transaction " + xId);
             Stack txOps = txMap.get(xId);

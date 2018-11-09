@@ -7,6 +7,7 @@ import Server.ResourceManager.SocketResourceManager;
 import Server.ResourceManager.TransactionResourceManager;
 import Server.Common.Command;
 import Server.Common.Constants;
+import Server.Common.Trace;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -75,6 +76,10 @@ public class MiddlewareRequestHandler implements RequestHandler {
             }
             case Commit: {
                 Integer xId = data.getXId();
+                if (!this.coordinator.hasStarted(xId)) {
+                    Trace.info("Transaction hasn't started.");
+                    break;
+                }
                 Set<String> servers = this.coordinator.getTransactionRms(xId);
                 boolean commitSuccess = true;
                 for (String server: servers) {
@@ -113,6 +118,10 @@ public class MiddlewareRequestHandler implements RequestHandler {
             }
             case Abort: {
                 Integer xId = data.getXId();
+                if (!this.coordinator.hasStarted(xId)) {
+                    Trace.info("Transaction hasn't started.");
+                    break;
+                }
                 this.coordinator.abort(xId.intValue());
                 Set<String> servers = this.coordinator.getTransactionRms(xId);
                 boolean abortSuccess = true;
@@ -156,6 +165,10 @@ public class MiddlewareRequestHandler implements RequestHandler {
              */
             case QueryFlight: {
                 Integer xId = data.getXId();
+                if (!this.coordinator.hasStarted(xId)) {
+                    Trace.info("Transaction hasn't started.");
+                    break;
+                }
                 this.coordinator.addOperation(xId, FLIGHT);
                 this.flightClient.send(request);
                 response = this.flightClient.receive();
@@ -163,6 +176,10 @@ public class MiddlewareRequestHandler implements RequestHandler {
             }
             case QueryCars: {
                 Integer xId = data.getXId();
+                if (!this.coordinator.hasStarted(xId)) {
+                    Trace.info("Transaction hasn't started.");
+                    break;
+                }
                 this.coordinator.addOperation(xId, CAR);
                 this.carClient.send(request);
                 response = this.carClient.receive();
@@ -170,6 +187,10 @@ public class MiddlewareRequestHandler implements RequestHandler {
             }
             case QueryRooms: {
                 Integer xId = data.getXId();
+                if (!this.coordinator.hasStarted(xId)) {
+                    Trace.info("Transaction hasn't started.");
+                    break;
+                }
                 this.coordinator.addOperation(xId, ROOM);
                 this.roomClient.send(request);
                 response = this.roomClient.receive();
@@ -177,6 +198,10 @@ public class MiddlewareRequestHandler implements RequestHandler {
             }
             case QueryCustomer: {
                 Integer xId = data.getXId();
+                if (!this.coordinator.hasStarted(xId)) {
+                    Trace.info("Transaction hasn't started.");
+                    break;
+                }
                 this.coordinator.addOperation(xId, CUSTOMER);
 
                 Integer cId = (Integer)data.getCommandArgs().get("cId");
@@ -194,6 +219,10 @@ public class MiddlewareRequestHandler implements RequestHandler {
             }
             case QueryFlightPrice: {
                 Integer xId = data.getXId();
+                if (!this.coordinator.hasStarted(xId)) {
+                    Trace.info("Transaction hasn't started.");
+                    break;
+                }
                 this.coordinator.addOperation(xId, FLIGHT);
 
                 this.flightClient.send(request);
@@ -202,6 +231,10 @@ public class MiddlewareRequestHandler implements RequestHandler {
             }
             case QueryCarsPrice: {
                 Integer xId = data.getXId();
+                if (!this.coordinator.hasStarted(xId)) {
+                    Trace.info("Transaction hasn't started.");
+                    break;
+                }
                 this.coordinator.addOperation(xId, CAR);
 
                 this.carClient.send(request);
@@ -210,6 +243,10 @@ public class MiddlewareRequestHandler implements RequestHandler {
             }
             case QueryRoomsPrice: {
                 Integer xId = data.getXId();
+                if (!this.coordinator.hasStarted(xId)) {
+                    Trace.info("Transaction hasn't started.");
+                    break;
+                }
                 this.coordinator.addOperation(xId, CAR);
 
                 this.roomClient.send(request);
@@ -222,6 +259,10 @@ public class MiddlewareRequestHandler implements RequestHandler {
              */
             case AddFlight: {
                 Integer xId = data.getXId();
+                if (!this.coordinator.hasStarted(xId)) {
+                    Trace.info("Transaction hasn't started.");
+                    break;
+                }
                 this.coordinator.addOperation(xId, FLIGHT);
 
                 this.flightClient.send(request);
@@ -231,6 +272,10 @@ public class MiddlewareRequestHandler implements RequestHandler {
 
             case AddCars: {
                 Integer xId = data.getXId();
+                if (!this.coordinator.hasStarted(xId)) {
+                    Trace.info("Transaction hasn't started.");
+                    break;
+                }
                 this.coordinator.addOperation(xId, CAR);
 
                 this.carClient.send(request);
@@ -240,6 +285,10 @@ public class MiddlewareRequestHandler implements RequestHandler {
 
             case AddRooms: {
                 Integer xId = data.getXId();
+                if (!this.coordinator.hasStarted(xId)) {
+                    Trace.info("Transaction hasn't started.");
+                    break;
+                }
                 this.coordinator.addOperation(xId, ROOM);
 
                 this.roomClient.send(request);
@@ -250,6 +299,10 @@ public class MiddlewareRequestHandler implements RequestHandler {
 
             case AddCustomer: {
                 Integer xId = data.getXId();
+                if (!this.coordinator.hasStarted(xId)) {
+                    Trace.info("Transaction hasn't started.");
+                    break;
+                }
                 this.coordinator.addOperation(xId, CUSTOMER);
                 this.coordinator.addOperation(xId, FLIGHT);
                 this.coordinator.addOperation(xId, CAR);
@@ -284,6 +337,10 @@ public class MiddlewareRequestHandler implements RequestHandler {
             }
             case AddCustomerID: {
                 Integer xId = data.getXId();
+                if (!this.coordinator.hasStarted(xId)) {
+                    Trace.info("Transaction hasn't started.");
+                    break;
+                }
                 this.coordinator.addOperation(xId, CUSTOMER);
                 this.coordinator.addOperation(xId, FLIGHT);
                 this.coordinator.addOperation(xId, CAR);
@@ -314,6 +371,10 @@ public class MiddlewareRequestHandler implements RequestHandler {
             }
             case DeleteFlight: {
                 Integer xId = data.getXId();
+                if (!this.coordinator.hasStarted(xId)) {
+                    Trace.info("Transaction hasn't started.");
+                    break;
+                }
                 this.coordinator.addOperation(xId, FLIGHT);
 
                 this.flightClient.send(request);
@@ -322,6 +383,10 @@ public class MiddlewareRequestHandler implements RequestHandler {
             }
             case DeleteCars: {
                 Integer xId = data.getXId();
+                if (!this.coordinator.hasStarted(xId)) {
+                    Trace.info("Transaction hasn't started.");
+                    break;
+                }
                 this.coordinator.addOperation(xId, CAR);
 
                 this.carClient.send(request);
@@ -330,6 +395,10 @@ public class MiddlewareRequestHandler implements RequestHandler {
             }
             case DeleteRooms: {
                 Integer xId = data.getXId();
+                if (!this.coordinator.hasStarted(xId)) {
+                    Trace.info("Transaction hasn't started.");
+                    break;
+                }
                 this.coordinator.addOperation(xId, ROOM);
 
                 this.roomClient.send(request);
@@ -338,6 +407,10 @@ public class MiddlewareRequestHandler implements RequestHandler {
             }
             case DeleteCustomer: {
                 Integer xId = data.getXId();
+                if (!this.coordinator.hasStarted(xId)) {
+                    Trace.info("Transaction hasn't started.");
+                    break;
+                }
                 this.coordinator.addOperation(xId, CUSTOMER);
                 this.coordinator.addOperation(xId, FLIGHT);
                 this.coordinator.addOperation(xId, CAR);
@@ -365,6 +438,10 @@ public class MiddlewareRequestHandler implements RequestHandler {
              */
             case ReserveFlight: {
                 Integer xId = data.getXId();
+                if (!this.coordinator.hasStarted(xId)) {
+                    Trace.info("Transaction hasn't started.");
+                    break;
+                }
                 this.coordinator.addOperation(xId, FLIGHT);
 
                 Integer cId = (Integer)data.getCommandArgs().get("cId");
@@ -382,6 +459,10 @@ public class MiddlewareRequestHandler implements RequestHandler {
 
             case ReserveCar: {
                 Integer xId = data.getXId();
+                if (!this.coordinator.hasStarted(xId)) {
+                    Trace.info("Transaction hasn't started.");
+                    break;
+                }
                 this.coordinator.addOperation(xId, CAR);
                 
                 Integer cId = (Integer)data.getCommandArgs().get("cId");
@@ -398,6 +479,10 @@ public class MiddlewareRequestHandler implements RequestHandler {
             }
             case ReserveRoom: {
                 Integer xId = data.getXId();
+                if (!this.coordinator.hasStarted(xId)) {
+                    Trace.info("Transaction hasn't started.");
+                    break;
+                }
                 this.coordinator.addOperation(xId, ROOM);
 
                 Integer cId = (Integer)data.getCommandArgs().get("cId");
@@ -414,6 +499,10 @@ public class MiddlewareRequestHandler implements RequestHandler {
             }
             case Bundle: {
                 Integer xId = data.getXId();
+                if (!this.coordinator.hasStarted(xId)) {
+                    Trace.info("Transaction hasn't started.");
+                    break;
+                }
                 this.coordinator.addOperation(xId, CUSTOMER);
                 this.coordinator.addOperation(xId, FLIGHT);
                 this.coordinator.addOperation(xId, CAR);

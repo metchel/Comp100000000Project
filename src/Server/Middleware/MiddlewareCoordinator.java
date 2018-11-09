@@ -13,6 +13,7 @@ expires then the transaction should be aborted
 
 import Server.Common.Command;
 import Server.Common.Constants;
+import Server.Common.Trace;
 import Server.Middleware.Transaction.Status;
 
 import java.util.Map;
@@ -45,6 +46,10 @@ public class MiddlewareCoordinator implements TransactionManager {
         return id;
     }
 
+    public synchronized boolean hasStarted(Integer xid) {
+        return transactionMap.get(xid) != null;
+    }
+
     public synchronized boolean commit(int transactionId) {
         Transaction t = (Transaction)this.transactionMap.get(transactionId);
         boolean commitSuccess = t.commit();
@@ -65,9 +70,13 @@ public class MiddlewareCoordinator implements TransactionManager {
     }
 
     public void addOperation(int transactionId, String rm) {
-        HashSet<String> transactionRMs = (HashSet)this.rmMap.get(transactionId);
-        if (!transactionRMs.contains(rm)) {
-            transactionRMs.add(rm);
+        try {
+            HashSet<String> transactionRMs = (HashSet)this.rmMap.get(transactionId);
+            if (!transactionRMs.contains(rm)) {
+                    transactionRMs.add(rm);
+            }
+        } catch(NullPointerException e) {
+            Trace.info("Transaction " + transactionId + " has not started.");
         }
     }
 
