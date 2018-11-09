@@ -67,7 +67,7 @@ public class PerformanceClient extends TCPClient {
             addCustomer.add(String.valueOf(i));
 
             Vector<String> addCustomerId = new Vector<String>();
-            addCustomerId.add("AddCustomer");
+            addCustomerId.add("AddCustomerID");
             addCustomerId.add(String.valueOf(i));
             addCustomerId.add(String.valueOf(i));
 

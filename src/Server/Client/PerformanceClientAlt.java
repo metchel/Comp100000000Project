@@ -69,9 +69,27 @@ public class PerformanceClientAlt extends TCPClient {
             addCustomer.add(String.valueOf(i));
 
             Vector<String> addCustomerId = new Vector<String>();
-            addCustomerId.add("AddCustomer");
+            addCustomerId.add("AddCustomerID");
             addCustomerId.add(String.valueOf(i));
             addCustomerId.add(String.valueOf(i));
+
+            Vector<String> reserveFlight = new Vector<String>();
+            reserveFlight.add("ReserveFlight");
+            reserveFlight.add(String.valueOf(i));
+            reserveFlight.add(String.valueOf(i));
+            reserveFlight.add(String.valueOf(i));
+
+            Vector<String> reserveCar = new Vector<String>();
+            reserveFlight.add("ReserveCar");
+            reserveFlight.add(String.valueOf(i));
+            reserveFlight.add(String.valueOf(i));
+            reserveFlight.add(String.valueOf(i));
+
+            Vector<String> reserveRoom = new Vector<String>();
+            reserveFlight.add("ReserveRoom");
+            reserveFlight.add(String.valueOf(i));
+            reserveFlight.add(String.valueOf(i));
+            reserveFlight.add(String.valueOf(i));
 
             Vector<String> commit = new Vector<String>();
             commit.add(String.valueOf(i));
@@ -85,9 +103,14 @@ public class PerformanceClientAlt extends TCPClient {
                 execute(Command.AddFlight, addFlight);
                 execute(Command.AddCars, addCars);
                 execute(Command.AddRooms, addRooms);
-                execute(Command.AddCustomer, addCustomer);
+                //execute(Command.AddCustomer, addCustomer);
                 execute(Command.AddCustomerID, addCustomerId);
+                execute(Command.ReserveFlight, reserveFlight);
+                execute(Command.ReserveCar, reserveCar);
+                execute(Command.ReserveFlight, reserveRooms);
+                
                 execute(Command.Commit, commit);
+
                 long finishTime = System.currentTimeMillis();
                 writer.writeNext({String.valueOf(i),
                                     Long.toString(finishTime-startTime)});
@@ -96,7 +119,7 @@ public class PerformanceClientAlt extends TCPClient {
                 e.printStackTrace();
             }
         }
-        
+
         writer.close();
     }
 

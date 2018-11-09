@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="fac91074-0f2a-4523-b9c7-2fbb72ff4dbe" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Server/Client/PerformanceClient.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Server/Client/PerformanceClientAlt.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Server/java.policy" afterPath="$PROJECT_DIR$/src/Server/java.policy" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Server/Client/PerformanceClient.java" afterPath="$PROJECT_DIR$/src/Server/Client/PerformanceClient.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Server/Client/PerformanceClientAlt.java" afterPath="$PROJECT_DIR$/src/Server/Client/PerformanceClientAlt.java" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -31,8 +29,8 @@
       <file leaf-file-name="PerformanceClient.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Server/Client/PerformanceClient.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="5676">
-              <caret line="402" column="37" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="759" selection-end-column="1" />
+            <state relative-caret-position="576">
+              <caret line="69" column="44" lean-forward="false" selection-start-line="69" selection-start-column="44" selection-end-line="69" selection-end-column="44" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -43,8 +41,8 @@
       <file leaf-file-name="PerformanceClientAlt.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Server/Client/PerformanceClientAlt.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="952">
-              <caret line="98" column="8" lean-forward="false" selection-start-line="98" selection-start-column="8" selection-end-line="98" selection-end-column="8" />
+            <state relative-caret-position="646">
+              <caret line="110" column="16" lean-forward="false" selection-start-line="110" selection-start-column="16" selection-end-line="110" selection-end-column="16" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -67,7 +65,13 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="0">
               <caret line="0" column="22" lean-forward="false" selection-start-line="0" selection-start-column="22" selection-end-line="0" selection-end-column="22" />
-              <folding />
+              <folding>
+                <marker date="1541802697998" expanded="true" signature="520:1153" ph="{...}" />
+                <marker date="1541802697998" expanded="true" signature="1232:1286" ph="{...}" />
+                <marker date="1541802697998" expanded="true" signature="1398:1830" ph="{...}" />
+                <marker date="1541802697998" expanded="false" signature="1854:1869" ph=" { " />
+                <marker date="1541802697998" expanded="false" signature="1877:1883" ph=" }" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -76,8 +80,11 @@
         <entry file="file://$PROJECT_DIR$/src/Server/Client/ClientAlt.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="136">
-              <caret line="71" column="0" lean-forward="false" selection-start-line="71" selection-start-column="0" selection-end-line="788" selection-end-column="0" />
-              <folding />
+              <caret line="71" column="0" lean-forward="false" selection-start-line="71" selection-start-column="0" selection-end-line="798" selection-end-column="0" />
+              <folding>
+                <marker date="1541802697982" expanded="true" signature="30923:31298" ph="{...}" />
+                <marker date="1541802697982" expanded="true" signature="31413:31679" ph="{...}" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -85,8 +92,8 @@
       <file leaf-file-name="Response.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Server/Network/Response.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="153">
-              <caret line="10" column="0" lean-forward="false" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
+            <state relative-caret-position="221">
+              <caret line="14" column="0" lean-forward="false" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -97,7 +104,13 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="0">
               <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
+              <folding>
+                <marker date="1541802698010" expanded="true" signature="2115:2171" ph="{...}" />
+                <marker date="1541802698010" expanded="true" signature="2223:2418" ph="{...}" />
+                <marker date="1541802698010" expanded="true" signature="2457:2679" ph="{...}" />
+                <marker date="1541802698010" expanded="false" signature="2706:2712" ph=" { " />
+                <marker date="1541802698010" expanded="false" signature="2726:2729" ph=" }" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -442,7 +455,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="115081000" />
+    <option name="totallyTimeSpent" value="115315000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1456" height="1056" extended-state="6" />
@@ -647,8 +660,11 @@
     <entry file="file://$PROJECT_DIR$/src/Server/Client/ClientAlt.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="136">
-          <caret line="71" column="0" lean-forward="false" selection-start-line="71" selection-start-column="0" selection-end-line="788" selection-end-column="0" />
-          <folding />
+          <caret line="71" column="0" lean-forward="false" selection-start-line="71" selection-start-column="0" selection-end-line="798" selection-end-column="0" />
+          <folding>
+            <marker date="1541802697982" expanded="true" signature="30923:31298" ph="{...}" />
+            <marker date="1541802697982" expanded="true" signature="31413:31679" ph="{...}" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -656,14 +672,20 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="22" lean-forward="false" selection-start-line="0" selection-start-column="22" selection-end-line="0" selection-end-column="22" />
-          <folding />
+          <folding>
+            <marker date="1541802697998" expanded="true" signature="520:1153" ph="{...}" />
+            <marker date="1541802697998" expanded="true" signature="1232:1286" ph="{...}" />
+            <marker date="1541802697998" expanded="true" signature="1398:1830" ph="{...}" />
+            <marker date="1541802697998" expanded="false" signature="1854:1869" ph=" { " />
+            <marker date="1541802697998" expanded="false" signature="1877:1883" ph=" }" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Server/Network/Response.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="10" column="0" lean-forward="false" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
+        <state relative-caret-position="221">
+          <caret line="14" column="0" lean-forward="false" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -680,7 +702,13 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
+          <folding>
+            <marker date="1541802698010" expanded="true" signature="2115:2171" ph="{...}" />
+            <marker date="1541802698010" expanded="true" signature="2223:2418" ph="{...}" />
+            <marker date="1541802698010" expanded="true" signature="2457:2679" ph="{...}" />
+            <marker date="1541802698010" expanded="false" signature="2706:2712" ph=" { " />
+            <marker date="1541802698010" expanded="false" signature="2726:2729" ph=" }" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -694,8 +722,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Server/Client/PerformanceClient.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5676">
-          <caret line="402" column="37" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="759" selection-end-column="1" />
+        <state relative-caret-position="576">
+          <caret line="69" column="44" lean-forward="false" selection-start-line="69" selection-start-column="44" selection-end-line="69" selection-end-column="44" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -704,8 +732,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Server/Client/PerformanceClientAlt.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="952">
-          <caret line="98" column="8" lean-forward="false" selection-start-line="98" selection-start-column="8" selection-end-line="98" selection-end-column="8" />
+        <state relative-caret-position="646">
+          <caret line="110" column="16" lean-forward="false" selection-start-line="110" selection-start-column="16" selection-end-line="110" selection-end-column="16" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
