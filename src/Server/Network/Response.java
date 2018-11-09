@@ -1,6 +1,9 @@
 package Server.Network;
 
 import java.util.Date;
+
+import Server.Common.RMHashMap;
+
 import java.io.Serializable;
 
 public class Response implements Serializable {
@@ -8,6 +11,7 @@ public class Response implements Serializable {
     private Date timeStamp;
     private Boolean status;
     private String message;
+    private RMHashMap reservationData;
 
     public Response() {}
 
@@ -26,6 +30,11 @@ public class Response implements Serializable {
         return this;
     }
 
+    public Response addReservationData(Object data) {
+        this.reservationData = (RMHashMap)data;
+        return this;
+    }
+
     public Date getTimeStamp() {
         return this.timeStamp;
     }
@@ -36,6 +45,10 @@ public class Response implements Serializable {
 
     public String getMessage() {
         return this.message;
+    }
+
+    public RMHashMap getReservationData() {
+        return this.reservationData;
     }
 
     public String toString() {

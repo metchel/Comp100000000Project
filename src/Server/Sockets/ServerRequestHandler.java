@@ -4,6 +4,7 @@ import Server.Interface.IResourceManager;
 import Server.Common.Command;
 import Server.Network.*;
 import Server.ResourceManager.TransactionResourceManager;
+import Server.Common.RMHashMap;
 
 import java.io.IOException;
 import java.util.Vector;
@@ -30,18 +31,35 @@ public class ServerRequestHandler implements RequestHandler {
         Boolean resStatus = null;
         String message = null;
         if (result instanceof Integer) {
-            resStatus = new Boolean(true);
+            if(((Integer)result).intValue() == -1) {
+                resStatus = new Boolean(false);
+            } else {
+                resStatus = new Boolean(true);
+            }
             message = result.toString();
         }
         if (result instanceof Boolean) {
             resStatus = (Boolean)result;
             message = result.toString();
         }
+        if (result instanceof RMHashMap) {
+            resStatus = new Boolean(true);
+            message = "Reservation booked.";
+        }
+        
+        if (result == null) {
+            resStatus = new Boolean(false);
+            message = "Reservation failed";
+        }
 
         Response response = new Response();
         response.addCurrentTimeStamp()
             .addStatus(resStatus)
             .addMessage(message);
+        
+        if (result instanceof RMHashMap) {
+            response.addReservationData(result);
+        }
 
         System.out.println(response.toString());
 
@@ -165,19 +183,19 @@ public class ServerRequestHandler implements RequestHandler {
             case ReserveFlight: {
                 Integer cId = (Integer)arguments.get("cId");
                 Integer flightNum = (Integer)arguments.get("flightNum");
-                return new Boolean(resourceManager.reserveFlight(xId.intValue(), cId.intValue(), flightNum.intValue()));
+                return resourceManager.reserveFlight(xId.intValue(), cId.intValue(), flightNum.intValue());
             }
 
             case ReserveCar: {
                 Integer cId = (Integer)arguments.get("cId");
                 String carLoc = (String)arguments.get("carLoc");
-                return new Boolean(resourceManager.reserveCar(xId.intValue(), cId.intValue(), carLoc));
+                return resourceManager.reserveCar(xId.intValue(), cId.intValue(), carLoc);
             }
 
             case ReserveRoom: {
                 Integer cId = (Integer)arguments.get("cId");
                 String roomLoc = (String)arguments.get("roomLoc");
-                return new Boolean(resourceManager.reserveRoom(xId.intValue(), cId.intValue(), roomLoc));
+                return resourceManager.reserveRoom(xId.intValue(), cId.intValue(), roomLoc);
             }
 
             case Bundle: {

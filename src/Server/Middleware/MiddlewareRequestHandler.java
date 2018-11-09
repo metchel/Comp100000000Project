@@ -7,6 +7,7 @@ import Server.ResourceManager.SocketResourceManager;
 import Server.ResourceManager.TransactionResourceManager;
 import Server.Common.Command;
 import Server.Common.Constants;
+import Server.Common.RMHashMap;
 import Server.Common.Trace;
 
 import java.io.IOException;
@@ -192,8 +193,11 @@ public class MiddlewareRequestHandler implements RequestHandler {
                     break;
                 }
                 this.coordinator.addOperation(xId, ROOM);
+
                 this.roomClient.send(request);
                 response = this.roomClient.receive();
+
+                System.out.println(response.toString());
                 break;
             }
             case QueryCustomer: {
@@ -442,13 +446,17 @@ public class MiddlewareRequestHandler implements RequestHandler {
                     Trace.info("Transaction hasn't started.");
                     break;
                 }
+                this.coordinator.addOperation(xId, CUSTOMER);
                 this.coordinator.addOperation(xId, FLIGHT);
 
                 Integer cId = (Integer)data.getCommandArgs().get("cId");
                 String info = this.customerResourceManager.queryCustomerInfo(xId, cId);
                 if (info != null && info != "") {
+                    this.customerResourceManager.addReserveRoomOp(xId.intValue(), cId.intValue());
                     this.flightClient.send(request);
                     response = this.flightClient.receive();
+                    final RMHashMap reservationData = response.getReservationData();
+                    this.customerResourceManager.updateReservationData(xId, cId, reservationData);
                 } else {
                     response.addCurrentTimeStamp()
                         .addStatus(new Boolean(false))
@@ -463,13 +471,17 @@ public class MiddlewareRequestHandler implements RequestHandler {
                     Trace.info("Transaction hasn't started.");
                     break;
                 }
+                this.coordinator.addOperation(xId, CUSTOMER);
                 this.coordinator.addOperation(xId, CAR);
                 
                 Integer cId = (Integer)data.getCommandArgs().get("cId");
                 String info = this.customerResourceManager.queryCustomerInfo(xId, cId);
                 if (info != null && info != "") {
+                    this.customerResourceManager.addReserveRoomOp(xId.intValue(), cId.intValue());
                     this.carClient.send(request);
                     response = this.carClient.receive();
+                    final RMHashMap reservationData = response.getReservationData();
+                    this.customerResourceManager.updateReservationData(xId, cId, reservationData);
                 } else {
                     response.addCurrentTimeStamp()
                         .addStatus(new Boolean(false))
@@ -483,13 +495,17 @@ public class MiddlewareRequestHandler implements RequestHandler {
                     Trace.info("Transaction hasn't started.");
                     break;
                 }
+                this.coordinator.addOperation(xId, CUSTOMER);
                 this.coordinator.addOperation(xId, ROOM);
 
                 Integer cId = (Integer)data.getCommandArgs().get("cId");
                 String info = this.customerResourceManager.queryCustomerInfo(xId, cId);
                 if (info != null && info != "") {
+                    this.customerResourceManager.addReserveRoomOp(xId.intValue(), cId.intValue());
                     this.roomClient.send(request);
                     response = this.roomClient.receive();
+                    final RMHashMap reservationData = response.getReservationData();
+                    this.customerResourceManager.updateReservationData(xId, cId, reservationData);
                 } else {
                     response.addCurrentTimeStamp()
                         .addStatus(new Boolean(false))
@@ -518,26 +534,42 @@ public class MiddlewareRequestHandler implements RequestHandler {
                 // reserve flights
                 final ArrayList<Response> flightReserveResponses = new ArrayList<Response>();
                 for (Integer flightNum: flightNumList) {
+                    this.customerResourceManager.addReserveFlightOp(xId.intValue(), cId.intValue());
+
                     Request req = generateReservationRequest(xId, Command.ReserveFlight, cId, "flightNum", flightNum);
                     this.flightClient.send(req);
                     Response reserveResponse = this.flightClient.receive();
+                    final RMHashMap reservationData = reserveResponse.getReservationData();
+                    this.customerResourceManager.updateReservationData(xId, cId, reservationData);
+
                     flightReserveResponses.add(response);
                     successResponse = successResponse && reserveResponse.getStatus().booleanValue();
                 }
 
                 // reserve car
                 if (car.equals("1")) {
-                    final Request carReservation = generateReservationRequest(xId, Command.ReserveCar, cId, "location", location);
+                    this.customerResourceManager.addReserveCarOp(xId.intValue(), cId.intValue());
+                    final Request carReservation = generateReservationRequest(xId, Command.ReserveCar, cId, "carLoc", location);
                     this.carClient.send(carReservation);
                     final Response carResponse = this.carClient.receive();
+
+                    final RMHashMap reservationData = carResponse.getReservationData();
+                    this.customerResourceManager.updateReservationData(xId, cId, reservationData);
+
                     successResponse = successResponse && carResponse.getStatus().booleanValue();
                 }
 
                 //reserve room
                 if (room.equals("1")) {
-                    final Request roomReservation = generateReservationRequest(xId, Command.ReserveRoom, cId, "location", location);
+                    this.customerResourceManager.addReserveCarOp(xId.intValue(), cId.intValue());
+
+                    final Request roomReservation = generateReservationRequest(xId, Command.ReserveRoom, cId, "roomLoc", location);
                     this.roomClient.send(roomReservation);
                     final Response roomResponse = this.roomClient.receive();
+
+                    final RMHashMap reservationData = roomResponse.getReservationData();
+                    this.customerResourceManager.updateReservationData(xId, cId, reservationData);
+
                     successResponse = successResponse && roomResponse.getStatus().booleanValue();
                 }
 

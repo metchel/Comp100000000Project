@@ -43,8 +43,8 @@ public class TransactionResourceManager extends SocketResourceManager {
         try {
             Trace.info("Committing transaction " + xId);
             Stack txOps = this.txMap.get(xId);
-            if (txOps == null || txOps.isEmpty()) {
-                Trace.info("No operations for transaction " + xId);
+            if (txOps == null) {
+                Trace.info("Could not commit " + xId);
                 return false;
             }
 
@@ -62,6 +62,7 @@ public class TransactionResourceManager extends SocketResourceManager {
             Stack txOps = txMap.get(xId);
 
             if(txOps == null) {
+                Trace.warn("null operations!");
                 return false;
             }
 
@@ -75,6 +76,7 @@ public class TransactionResourceManager extends SocketResourceManager {
             return true;
         } catch(Exception e) {
             e.printStackTrace();
+            Trace.warn("Exception during abort!");
             return false;
         }
     }
@@ -124,7 +126,11 @@ public class TransactionResourceManager extends SocketResourceManager {
             case AddCustomer: {
                 Trace.info("RM::undo AddCustomer");
                 RMItem value = operation.getValue();
-                removeData(xid, operation.getKey());
+                if (value == null) {
+                    removeData(xid, operation.getKey());
+                } else {
+                    writeData(xid, operation.getKey(), operation.getValue());
+                }
                 break;
             }
 
@@ -157,7 +163,6 @@ public class TransactionResourceManager extends SocketResourceManager {
                 break;
             }
 
-
             case DeleteCustomer: {
                 Trace.info("RM::undo DeleteCustomer");
                 writeData(xid, operation.getKey(), operation.getValue());
@@ -167,6 +172,7 @@ public class TransactionResourceManager extends SocketResourceManager {
             case ReserveFlight: {
                 Trace.info("RM::undo ReserveFlight");
                 ReserveOperation reserveOp = (ReserveOperation) operation;
+                System.out.println(reserveOp.getCustomer().getBill());
                 writeData(xid, reserveOp.getCustomerId(), reserveOp.getCustomer());
                 writeData(xid, reserveOp.getKey(), reserveOp.getValue());
                 break;
@@ -188,6 +194,9 @@ public class TransactionResourceManager extends SocketResourceManager {
                 break;
             }   
             
+            /**
+             * Read only
+             */
             case QueryFlight: {
                 break;
             }
@@ -342,7 +351,7 @@ public class TransactionResourceManager extends SocketResourceManager {
                             + "rooms = " + curObj.getCount() + ", price = $" + roomPrice);
                 }
                 return true;
-            } else{
+            } else {
                 return false;
             }
         } catch(Exception e) {
@@ -615,7 +624,6 @@ public class TransactionResourceManager extends SocketResourceManager {
         }
     }
 
-    @Override
     public String queryCustomerInfo(int xid, int cid) {
         try {
             Trace.info("RM::queryCustomerInfo(" + xid + ", " + cid + ") called.");
@@ -645,12 +653,12 @@ public class TransactionResourceManager extends SocketResourceManager {
         }
     }
 
-    @Override
-    public boolean reserveFlight(int xid, int cid, int flightNum) {
+    public RMHashMap reserveFlight(int xid, int cid, int flightNum) {
+        boolean success;
         try{
             Stack txOps = txMap.get(xid);
             if (txOps == null) {
-                return false;
+                success = false;
             }
             Customer customer = (Customer) readData(xid, Customer.getKey(cid));
             Flight curObj = (Flight)readData(xid, Flight.getKey(flightNum));
@@ -661,23 +669,30 @@ public class TransactionResourceManager extends SocketResourceManager {
                     customer,
                     Flight.getKey(flightNum),
                     curObj));
-                return reserveItem(xid, cid,
+                success = reserveItem(xid, cid,
                         Flight.getKey(flightNum), String.valueOf(flightNum));
             } else {
-                return false;
+                success = false;
+            }
+
+            if (success) {
+                Customer updatedCustomer = (Customer) readData(xid, Customer.getKey(cid));
+                return updatedCustomer.getReservations();
+            } else {
+                return null;
             }
         }catch(Exception e) {
             e.printStackTrace();
-            return false;
+            return null;
         }
     }
 
-    @Override
-    public boolean reserveCar(int xid, int cid, String location) {
+    public RMHashMap reserveCar(int xid, int cid, String location) {
+        boolean success;
         try{
             Stack txOps = txMap.get(xid);
             if (txOps == null) {
-                return false;
+                success =  false;
             }
             Customer customer = (Customer) readData(xid, Customer.getKey(cid));
             Car curObj = (Car)readData(xid, Car.getKey(location));
@@ -688,23 +703,30 @@ public class TransactionResourceManager extends SocketResourceManager {
                     customer,
                     Car.getKey(location),
                     curObj));
-                return reserveItem(xid, cid,
+                success = reserveItem(xid, cid,
                         Car.getKey(location), location);
             } else {
-                return false;
+                success = false;
+            }
+
+            if (success) {
+                Customer updatedCustomer = (Customer) readData(xid, Customer.getKey(cid));
+                return updatedCustomer.getReservations();
+            } else {
+                return null;
             }
         } catch(Exception e) {
             e.printStackTrace();
-            return false;
+            return null;
         }
     }
 
-    @Override
-    public boolean reserveRoom(int xid, int cid, String location) {
+    public RMHashMap reserveRoom(int xid, int cid, String location) {
+        boolean success;
         try{
             Stack txOps = txMap.get(xid);
             if (txOps == null) {
-                return false;
+                success = false;
             }
             Customer customer = (Customer) readData(xid, Customer.getKey(cid));
             Room curObj = (Room)readData(xid, Room.getKey(location));
@@ -715,14 +737,62 @@ public class TransactionResourceManager extends SocketResourceManager {
                     customer,
                     Room.getKey(location),
                     curObj));
-                return reserveItem(xid, cid,
+                success = reserveItem(xid, cid,
                         Room.getKey(location), location);
             } else {
-                return false;
+                success =  false;
+            }
+
+            if (success) {
+                Customer updatedCustomer = (Customer) readData(xid, Customer.getKey(cid));
+                return updatedCustomer.getReservations();
+            } else {
+                return null;
             }
         } catch(Exception e) {
             e.printStackTrace();
-            return false;
+            return null;
         }
+    }
+
+    public void updateReservationData(Integer xid, Integer cid, RMHashMap data) {
+        if (data == null) {
+            return;
+        } else {
+            Customer customer = (Customer) readData(xid.intValue(), Customer.getKey(cid.intValue()));
+            customer.mergeReservationData(data);
+
+            this.m_data.put(customer.getKey(cid.intValue()), customer);
+        }
+    }
+
+    public void addReserveFlightOp(int xid, int cid) {
+        Stack txOps = txMap.get(xid);
+        Customer customer = (Customer) readData(xid, Customer.getKey(cid));
+        txOps.push(new ReserveOperation(OperationType.ReserveFlight, 
+                    Customer.getKey(cid), 
+                    customer,
+                    null,
+                    null));
+    }
+
+    public void addReserveCarOp(int xid, int cid) {
+        Stack txOps = txMap.get(xid);
+        Customer customer = (Customer) readData(xid, Customer.getKey(cid));
+        txOps.push(new ReserveOperation(OperationType.ReserveCar, 
+                    Customer.getKey(cid), 
+                    customer,
+                    null,
+                    null));
+    }
+
+    public void addReserveRoomOp(int xid, int cid) {
+        Stack txOps = txMap.get(xid);
+        Customer customer = (Customer) readData(xid, Customer.getKey(cid));
+        txOps.push(new ReserveOperation(OperationType.ReserveRoom, 
+                    Customer.getKey(cid), 
+                    customer,
+                    null,
+                    null));
     }
 }

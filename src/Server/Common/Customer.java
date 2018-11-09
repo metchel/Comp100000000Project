@@ -93,5 +93,14 @@ public class Customer extends RMItem
 		obj.m_reservations = (RMHashMap)m_reservations.clone();
 		return obj;
 	}
+
+	public void mergeReservationData(RMHashMap data) {
+		Set<String> keys = data.keySet();
+
+		for (String key: keys) {
+			System.out.println("merging..");
+			this.m_reservations.put(key, data.get(key));
+		}
+	}
 }
 

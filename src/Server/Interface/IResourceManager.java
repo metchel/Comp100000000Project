@@ -169,30 +169,6 @@ public interface IResourceManager
 	throws IOException; 
 
     /**
-     * Reserve a seat on this flight.
-     *
-     * @return Success
-     */
-    public boolean reserveFlight(int id, int customerID, int flightNumber) 
-	throws IOException; 
-
-    /**
-     * Reserve a car at this location.
-     *
-     * @return Success
-     */
-    public boolean reserveCar(int id, int customerID, String location) 
-	throws IOException; 
-
-    /**
-     * Reserve a room at this location.
-     *
-     * @return Success
-     */
-    public boolean reserveRoom(int id, int customerID, String location) 
-	throws IOException; 
-
-    /**
      * Reserve a bundle for the trip.
      *
      * @return Success

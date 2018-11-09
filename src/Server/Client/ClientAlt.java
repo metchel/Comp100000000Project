@@ -103,8 +103,6 @@ public abstract class ClientAlt
                 oos.writeObject(req);
                 Response response = (Response) ois.readObject();
 
-                System.out.println("RESPONSE: " + response.toString());
-
                 if (response.getStatus()) {
                     System.out.println("Transaction started with xid " + response.getMessage());
                 } else {
@@ -131,8 +129,6 @@ public abstract class ClientAlt
                 oos.writeObject(req);
                 Response response = (Response) ois.readObject();
 
-                System.out.println("RESPONSE: " + response.toString());
-
                 if (response.getStatus()) {
                     System.out.println("Transaction committed." + response.getMessage());
                 } else {
@@ -157,8 +153,6 @@ public abstract class ClientAlt
 
                 oos.writeObject(req);
                 Response response = (Response) ois.readObject();
-
-                System.out.println("RESPONSE: " + response.toString());
 
                 if (response.getStatus()) {
                     System.out.println("Transaction aborted." + response.getMessage());
@@ -196,8 +190,6 @@ public abstract class ClientAlt
                 
                 Response response = (Response) ois.readObject();
 
-                System.out.println("RESPONSE: " + response.toString());
-
                 if (response.getStatus()) {
                     System.out.println("Flight added");
                 } else {
@@ -234,8 +226,6 @@ public abstract class ClientAlt
                 
                 Response response = (Response) ois.readObject();
 
-                System.out.println("RESPONSE: " + response.toString());
-
                 if (response.getStatus()) {
                     System.out.println("Car added");
                 } else {
@@ -271,8 +261,6 @@ public abstract class ClientAlt
                 
                 Response response = (Response) ois.readObject();
 
-                System.out.println("RESPONSE: " + response.toString());
-
                 if (response.getStatus()) {
                     System.out.println("Room added");
                 } else {
@@ -299,7 +287,11 @@ public abstract class ClientAlt
                 
                 Response response = (Response) ois.readObject();
 
-                System.out.println("RESPONSE: " + response.toString());
+                if (response.getStatus().booleanValue()) {
+                    System.out.println("Customer added");
+                } else {
+                    System.out.println("Customer could not be added");
+                }
                 break;
             }
             case AddCustomerID: {
@@ -323,8 +315,6 @@ public abstract class ClientAlt
                 oos.writeObject(req);
                 
                 Response response = (Response) ois.readObject();
-
-                System.out.println("RESPONSE: " + response.toString());
 
                 if (response.getStatus()) {
                     System.out.println("Add customer ID: " + cId);
@@ -356,9 +346,7 @@ public abstract class ClientAlt
                 
                 Response response = (Response) ois.readObject();
 
-                System.out.println("RESPONSE: " + response.toString());
-
-                if (response.getStatus()){
+                if (response.getStatus().booleanValue()){
                     System.out.println("Flight Deleted");
                 }else{
                     System.out.println("Flight could not be deleted");
@@ -386,8 +374,6 @@ public abstract class ClientAlt
                 oos.writeObject(req);
                 
                 Response response = (Response) ois.readObject();
-
-                System.out.println("RESPONSE: " + response.toString());
 
                 if (response.getStatus()){
                     System.out.println("Cars Deleted");
@@ -418,8 +404,6 @@ public abstract class ClientAlt
                 
                 Response response = (Response) ois.readObject();
 
-                System.out.println("RESPONSE: " + response.toString());
-
                 if (response.getStatus()){
                     System.out.println("Rooms Deleted");
                 }else{
@@ -448,8 +432,6 @@ public abstract class ClientAlt
                 oos.writeObject(req);
                 
                 Response response = (Response) ois.readObject();
-
-                System.out.println("RESPONSE: " + response.toString());
 
                 if (response.getStatus()){
                     System.out.println("Customer Deleted");
@@ -480,8 +462,11 @@ public abstract class ClientAlt
                 
                 Response response = (Response) ois.readObject();
 
-                System.out.println("RESPONSE: " + response.toString());
-                System.out.println("Number of seats available: " + response.toString());
+                if (response.getStatus().booleanValue()) {
+                    System.out.println("Number of seats available: " + response.getMessage());
+                } else {
+                    System.out.println("Flight doesn't exist.");
+                }
                 break;
             }
             case QueryCars: {
@@ -506,8 +491,11 @@ public abstract class ClientAlt
                 
                 Response response = (Response) ois.readObject();
 
-                System.out.println("RESPONSE: " + response.toString());
-                System.out.println("Number of cars at this location: " + response.toString());
+                if (response.getStatus().booleanValue()) {
+                    System.out.println("Number of cars available: " + response.getMessage());
+                } else {
+                    System.out.println("Cars don't exist.");
+                }
                 break;
             }
             case QueryRooms: {
@@ -532,8 +520,11 @@ public abstract class ClientAlt
                 
                 Response response = (Response) ois.readObject();
 
-                System.out.println("RESPONSE: " + response.toString());
-                System.out.println("Number of rooms at this location: " + response.toString());
+                if (response.getStatus().booleanValue()) {
+                    System.out.println("Number of rooms available: " + response.getMessage());
+                } else {
+                    System.out.println("Rooms don't exist.");
+                }
                 break;
             }
             case QueryCustomer: {
@@ -583,7 +574,6 @@ public abstract class ClientAlt
                 
                 Response response = (Response) ois.readObject();
 
-                System.out.println("RESPONSE: " + response.toString());
                 System.out.println("Price of a seat: " + response.toString());
                 break;
             }
@@ -608,7 +598,6 @@ public abstract class ClientAlt
                 
                 Response response = (Response) ois.readObject();
 
-                System.out.println("RESPONSE: " + response.toString());
                 System.out.println("Price of cars at this location: " + response.toString());
                 break;
             }
@@ -634,7 +623,6 @@ public abstract class ClientAlt
                 
                 Response response = (Response) ois.readObject();
 
-                System.out.println("RESPONSE: " + response.toString());
                 System.out.println("Price of rooms at this location: " + response.toString());
                 break;
             }
@@ -662,8 +650,6 @@ public abstract class ClientAlt
                 oos.writeObject(req);
                 
                 Response response = (Response) ois.readObject();
-
-                System.out.println("RESPONSE: " + response.toString());
 
                 if (response.getStatus()) {
                     System.out.println("Flight Reserved");
@@ -697,8 +683,6 @@ public abstract class ClientAlt
                 
                 Response response = (Response) ois.readObject();
 
-                System.out.println("RESPONSE: " + response.toString());
-
                 if (response.getStatus()) {
                     System.out.println("Car Reserved");
                 }else{
@@ -730,8 +714,6 @@ public abstract class ClientAlt
                 oos.writeObject(req);
                 
                 Response response = (Response) ois.readObject();
-
-                System.out.println("RESPONSE: " + response.toString());
 
                 if (response.getStatus()) {
                     System.out.println("Room Reserved");
@@ -784,8 +766,6 @@ public abstract class ClientAlt
                 oos.writeObject(request);
                 
                 Response response = (Response) ois.readObject();
-
-                System.out.println("RESPONSE: " + response.toString());
 
                 if (response.getStatus()) {
                     System.out.println("Bundle Reserved");
