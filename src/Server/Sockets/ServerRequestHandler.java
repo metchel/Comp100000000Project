@@ -208,7 +208,9 @@ public class ServerRequestHandler implements RequestHandler {
             }
 
             case Bundle: {
-                return new Boolean(false);
+                Integer cId = (Integer)arguments.get("cId");
+                resourceManager.undoLastReservation(xId, cId);
+                return new Boolean(true);
             }
 
             case Quit: {

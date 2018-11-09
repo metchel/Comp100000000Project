@@ -94,7 +94,7 @@ public class TransactionResourceManager extends SocketResourceManager {
                 Trace.info("RM::undo AddFlight");
                 RMItem value = operation.getValue();
                 if (value == null) {
-                    removeData(xid, operation.getKey());
+                    deleteItem(xid, operation.getKey());
                 } else {
                     writeData(xid, operation.getKey(), operation.getValue());
                 }
@@ -105,7 +105,7 @@ public class TransactionResourceManager extends SocketResourceManager {
                 Trace.info("RM::undo AddCars");
                 RMItem value = operation.getValue();
                 if (value == null) {
-                    removeData(xid, operation.getKey());
+                    deleteItem(xid, operation.getKey());
                 } else {
                     writeData(xid, operation.getKey(), operation.getValue());
                 }
@@ -116,7 +116,7 @@ public class TransactionResourceManager extends SocketResourceManager {
                 Trace.info("RM::undo AddRooms");
                 RMItem value = operation.getValue();
                 if (value == null) {
-                    removeData(xid, operation.getKey());
+                    deleteItem(xid, operation.getKey());
                 } else {
                     writeData(xid, operation.getKey(), operation.getValue());
                 }
@@ -172,9 +172,8 @@ public class TransactionResourceManager extends SocketResourceManager {
             case ReserveFlight: {
                 Trace.info("RM::undo ReserveFlight");
                 ReserveOperation reserveOp = (ReserveOperation) operation;
-                System.out.println(reserveOp.getCustomer().getBill());
                 writeData(xid, reserveOp.getCustomerId(), reserveOp.getCustomer());
-                writeData(xid, reserveOp.getKey(), reserveOp.getValue());
+                writeData(xid, operation.getKey(), operation.getValue());
                 break;
             }
 
@@ -182,7 +181,7 @@ public class TransactionResourceManager extends SocketResourceManager {
                 Trace.info("RM::undo ReserveCar");
                 ReserveOperation reserveOp = (ReserveOperation) operation;
                 writeData(xid, reserveOp.getCustomerId(), reserveOp.getCustomer());
-                writeData(xid, reserveOp.getKey(), reserveOp.getValue());
+                writeData(xid, operation.getKey(), operation.getValue());
                 break;
             }
 
@@ -190,7 +189,7 @@ public class TransactionResourceManager extends SocketResourceManager {
                 Trace.info("RM::undo ReserveRoom");
                 ReserveOperation reserveOp = (ReserveOperation) operation;
                 writeData(xid, reserveOp.getCustomerId(), reserveOp.getCustomer());
-                writeData(xid, reserveOp.getKey(), reserveOp.getValue());
+                writeData(xid, operation.getKey(), operation.getValue());
                 break;
             }   
             
@@ -264,6 +263,9 @@ public class TransactionResourceManager extends SocketResourceManager {
                 return false;
             }
         } catch (Exception e) {
+            if (e instanceof DeadlockException) {
+                abort(xid);
+            }
             return false;
         }
     }
@@ -310,6 +312,9 @@ public class TransactionResourceManager extends SocketResourceManager {
                 return false;
             }
         }catch(Exception e) {
+            if (e instanceof DeadlockException) {
+                abort(xid);
+            }
             return false;
         }
     }
@@ -355,6 +360,9 @@ public class TransactionResourceManager extends SocketResourceManager {
                 return false;
             }
         } catch(Exception e) {
+            if (e instanceof DeadlockException) {
+                abort(xid);
+            }
             return false;
         }
     }
@@ -375,6 +383,9 @@ public class TransactionResourceManager extends SocketResourceManager {
             return deleteItem(xid, Flight.getKey(flightNum));
         } catch(Exception e) {
             e.printStackTrace();
+            if (e instanceof DeadlockException) {
+                abort(xid);
+            }
             return false;
         }
     }
@@ -395,6 +406,9 @@ public class TransactionResourceManager extends SocketResourceManager {
             return deleteItem(xid, Car.getKey(location));
         } catch(Exception e) {
             e.printStackTrace();
+            if (e instanceof DeadlockException) {
+                abort(xid);
+            }
             return false;
         }
     }
@@ -416,6 +430,9 @@ public class TransactionResourceManager extends SocketResourceManager {
             return deleteItem(xid, Room.getKey(location));
         } catch(Exception e) {
             e.printStackTrace();
+            if (e instanceof DeadlockException) {
+                abort(xid);
+            }
             return false;
         }
     }
@@ -429,11 +446,19 @@ public class TransactionResourceManager extends SocketResourceManager {
             }
 
             if(lockManager.Lock(xid, Integer.toString(flightNum), LockType.LOCK_READ)) {
+                txOps.push(
+                    new Operation(OperationType.QueryFlight,
+                    Flight.getKey(flightNum),
+                    readData(xid, Flight.getKey(flightNum))
+                ));
                 return queryNum(xid, Flight.getKey(flightNum));
             } else {
                 return -1;
             }
         } catch(Exception e) {
+            if (e instanceof DeadlockException) {
+                abort(xid);
+            }
             return -1;
         }
     }
@@ -447,11 +472,19 @@ public class TransactionResourceManager extends SocketResourceManager {
             }
 
             if(lockManager.Lock(xid, location, LockType.LOCK_READ)) {
+                txOps.push(
+                    new Operation(OperationType.QueryCars,
+                    Car.getKey(location),
+                    readData(xid, Car.getKey(location))
+                ));
                 return queryNum(xid, Car.getKey(location));
             } else {
                 return -1;
             }
         } catch(Exception e) {
+            if (e instanceof DeadlockException) {
+                abort(xid);
+            }
             return -1;
         }
     }
@@ -465,11 +498,19 @@ public class TransactionResourceManager extends SocketResourceManager {
             }
 
             if(lockManager.Lock(xid, location, LockType.LOCK_READ)) {
+                txOps.push(
+                    new Operation(OperationType.QueryRooms,
+                    Room.getKey(location),
+                    readData(xid, Room.getKey(location))
+                ));
                 return queryNum(xid, Room.getKey(location));
             } else {
                 return -1;
             }
         } catch(Exception e) {
+            if (e instanceof DeadlockException) {
+                abort(xid);
+            }
             return -1;
         }
     }
@@ -482,10 +523,21 @@ public class TransactionResourceManager extends SocketResourceManager {
                 return -1;
             }
 
-            lockManager.Lock(xid, Integer.toString(flightNum), LockType.LOCK_READ);
+            if (lockManager.Lock(xid, Integer.toString(flightNum), LockType.LOCK_READ)) {
+                txOps.push(
+                    new Operation(OperationType.QueryFlightPrice,
+                    Flight.getKey(flightNum),
+                    readData(xid, Flight.getKey(flightNum)))
+                );
+            } else {
+                return -1;
+            }
             return queryPrice(xid, Flight.getKey(flightNum));
         } catch(Exception e) {
             e.printStackTrace();
+            if (e instanceof DeadlockException) {
+                abort(xid);
+            }
             return -1;
         }
     }
@@ -498,10 +550,21 @@ public class TransactionResourceManager extends SocketResourceManager {
                 return -1;
             }
 
-            lockManager.Lock(xid, location, LockType.LOCK_READ);
-            return queryPrice(xid, Car.getKey(location));
+            if (lockManager.Lock(xid, location, LockType.LOCK_READ)) {
+                txOps.push(
+                    new Operation(OperationType.QueryCars,
+                    Car.getKey(location),
+                    readData(xid, Car.getKey(location))
+                ));
+                return queryPrice(xid, Car.getKey(location));
+            } else {
+                return -1;
+            }
         } catch(Exception e) {
             e.printStackTrace();
+            if (e instanceof DeadlockException) {
+                abort(xid);
+            }
             return -1;
         }
     }
@@ -514,10 +577,21 @@ public class TransactionResourceManager extends SocketResourceManager {
                 return -1;
             }
 
-            lockManager.Lock(xid, location, LockType.LOCK_READ);
-            return queryPrice(xid, Room.getKey(location));
+            if (lockManager.Lock(xid, location, LockType.LOCK_READ)) {
+                txOps.push(
+                    new Operation(OperationType.QueryRooms,
+                    Room.getKey(location),
+                    readData(xid, Room.getKey(location))
+                ));
+                return queryPrice(xid, Room.getKey(location));
+            } else {
+                return -1;
+            }
         } catch(Exception e) {
             e.printStackTrace();
+            if (e instanceof DeadlockException) {
+                abort(xid);
+            }
             return -1;
         }
     }
@@ -547,6 +621,9 @@ public class TransactionResourceManager extends SocketResourceManager {
             return cid;
         } catch(Exception e) {
             e.printStackTrace();
+            if (e instanceof DeadlockException) {
+                abort(xid);
+            }
             return -1;
         }
     }
@@ -579,6 +656,9 @@ public class TransactionResourceManager extends SocketResourceManager {
                 return false;
             }
         } catch(Exception e) {
+            if (e instanceof DeadlockException) {
+                abort(xid);
+            }
             return false;
         }
     }
@@ -620,6 +700,9 @@ public class TransactionResourceManager extends SocketResourceManager {
 
         } catch(Exception e) {
             e.printStackTrace();
+            if (e instanceof DeadlockException) {
+                abort(xid);
+            }
             return false;
         }
     }
@@ -640,21 +723,29 @@ public class TransactionResourceManager extends SocketResourceManager {
                 + cid + ") failed: customer doesn't exist.");
                 return "";
             } else {
-                if (lockManager.Lock(xid, customer.getKey(), LockType.LOCK_READ)) {
-                    Trace.info("RM::queryCustomerInfo(" + xid + ", " + cid + "): \n");
-                    return customer.getBill();
-                } else {
+                try {
+                    if (lockManager.Lock(xid, customer.getKey(), LockType.LOCK_READ)) {
+                        Trace.info("RM::queryCustomerInfo(" + xid + ", " + cid + "): \n");
+                        return customer.getBill();
+                    } else {
+                        return "";
+                    }
+                } catch (DeadlockException e) {
+                    abort(xid);
                     return "";
                 }
             }
         } catch(Exception e) {
             e.printStackTrace();
+            if (e instanceof DeadlockException) {
+                abort(xid);
+            }
             return "";
         }
     }
 
     public RMHashMap reserveFlight(int xid, int cid, int flightNum) {
-        boolean success;
+        boolean success = false;
         try{
             Stack txOps = txMap.get(xid);
             if (txOps == null) {
@@ -663,16 +754,20 @@ public class TransactionResourceManager extends SocketResourceManager {
             Customer customer = (Customer) readData(xid, Customer.getKey(cid));
             Flight curObj = (Flight)readData(xid, Flight.getKey(flightNum));
 
-            if(lockManager.Lock(xid, Flight.getKey(flightNum), LockType.LOCK_WRITE)){
-                txOps.push(new ReserveOperation(OperationType.ReserveFlight, 
-                    Customer.getKey(cid), 
-                    customer,
-                    Flight.getKey(flightNum),
-                    curObj));
-                success = reserveItem(xid, cid,
-                        Flight.getKey(flightNum), String.valueOf(flightNum));
-            } else {
-                success = false;
+            try {
+                if(lockManager.Lock(xid, Flight.getKey(flightNum), LockType.LOCK_WRITE) && lockManager.Lock(xid, Customer.getKey(cid), LockType.LOCK_WRITE)){
+                    txOps.push(new ReserveOperation(OperationType.ReserveFlight, 
+                        Customer.getKey(cid), 
+                        customer,
+                        Flight.getKey(flightNum),
+                        curObj));
+                    success = reserveItem(xid, cid,
+                            Flight.getKey(flightNum), String.valueOf(flightNum));
+                } else {
+                    success = false;
+                }
+            } catch(DeadlockException e) {
+                abort(xid);
             }
 
             if (success) {
@@ -681,14 +776,17 @@ public class TransactionResourceManager extends SocketResourceManager {
             } else {
                 return null;
             }
-        }catch(Exception e) {
+        } catch(Exception e) {
             e.printStackTrace();
+            if (e instanceof DeadlockException) {
+                abort(xid);
+            }
             return null;
         }
     }
 
     public RMHashMap reserveCar(int xid, int cid, String location) {
-        boolean success;
+        boolean success = false;
         try{
             Stack txOps = txMap.get(xid);
             if (txOps == null) {
@@ -697,16 +795,20 @@ public class TransactionResourceManager extends SocketResourceManager {
             Customer customer = (Customer) readData(xid, Customer.getKey(cid));
             Car curObj = (Car)readData(xid, Car.getKey(location));
 
-            if(lockManager.Lock(xid, Car.getKey(location), LockType.LOCK_WRITE)){
-                txOps.push(new ReserveOperation(OperationType.ReserveCar, 
-                    Customer.getKey(cid), 
-                    customer,
-                    Car.getKey(location),
-                    curObj));
-                success = reserveItem(xid, cid,
-                        Car.getKey(location), location);
-            } else {
-                success = false;
+            try {
+                if(lockManager.Lock(xid, Car.getKey(location), LockType.LOCK_WRITE) && lockManager.Lock(xid, Customer.getKey(cid), LockType.LOCK_WRITE)){
+                    txOps.push(new ReserveOperation(OperationType.ReserveCar, 
+                        Customer.getKey(cid), 
+                        customer,
+                        Car.getKey(location),
+                        curObj));
+                    success = reserveItem(xid, cid,
+                            Car.getKey(location), location);
+                } else {
+                    success = false;
+                }
+            } catch(DeadlockException e) {
+                abort(xid);
             }
 
             if (success) {
@@ -717,12 +819,15 @@ public class TransactionResourceManager extends SocketResourceManager {
             }
         } catch(Exception e) {
             e.printStackTrace();
+            if (e instanceof DeadlockException) {
+                abort(xid);
+            }
             return null;
         }
     }
 
     public RMHashMap reserveRoom(int xid, int cid, String location) {
-        boolean success;
+        boolean success = false;
         try{
             Stack txOps = txMap.get(xid);
             if (txOps == null) {
@@ -731,16 +836,20 @@ public class TransactionResourceManager extends SocketResourceManager {
             Customer customer = (Customer) readData(xid, Customer.getKey(cid));
             Room curObj = (Room)readData(xid, Room.getKey(location));
 
-            if(lockManager.Lock(xid, Room.getKey(location), LockType.LOCK_WRITE)){
-                txOps.push(new ReserveOperation(OperationType.ReserveRoom, 
-                    Customer.getKey(cid), 
-                    customer,
-                    Room.getKey(location),
-                    curObj));
-                success = reserveItem(xid, cid,
-                        Room.getKey(location), location);
-            } else {
-                success =  false;
+            try {
+                if(lockManager.Lock(xid, Room.getKey(location), LockType.LOCK_WRITE) && lockManager.Lock(xid, Customer.getKey(cid), LockType.LOCK_WRITE)){
+                    txOps.push(new ReserveOperation(OperationType.ReserveRoom, 
+                        Customer.getKey(cid), 
+                        customer,
+                        Room.getKey(location),
+                        curObj));
+                    success = reserveItem(xid, cid,
+                            Room.getKey(location), location);
+                } else {
+                    success =  false;
+                }
+            } catch(DeadlockException e) {
+                abort(xid);
             }
 
             if (success) {
@@ -751,6 +860,9 @@ public class TransactionResourceManager extends SocketResourceManager {
             }
         } catch(Exception e) {
             e.printStackTrace();
+            if (e instanceof DeadlockException) {
+                abort(xid);
+            }
             return null;
         }
     }
@@ -767,32 +879,59 @@ public class TransactionResourceManager extends SocketResourceManager {
     }
 
     public void addReserveFlightOp(int xid, int cid) {
-        Stack txOps = txMap.get(xid);
-        Customer customer = (Customer) readData(xid, Customer.getKey(cid));
-        txOps.push(new ReserveOperation(OperationType.ReserveFlight, 
-                    Customer.getKey(cid), 
-                    customer,
-                    null,
-                    null));
+        try {
+            Stack txOps = txMap.get(xid);
+            Customer customer = (Customer) readData(xid, Customer.getKey(cid));
+            txOps.push(new ReserveOperation(OperationType.ReserveFlight, 
+                        Customer.getKey(cid), 
+                        customer,
+                        null,
+                        null));
+        } catch(NullPointerException e) {
+            return;
+        }
     }
 
     public void addReserveCarOp(int xid, int cid) {
-        Stack txOps = txMap.get(xid);
-        Customer customer = (Customer) readData(xid, Customer.getKey(cid));
-        txOps.push(new ReserveOperation(OperationType.ReserveCar, 
-                    Customer.getKey(cid), 
-                    customer,
-                    null,
-                    null));
+        try {
+            Stack txOps = txMap.get(xid);
+            Customer customer = (Customer) readData(xid, Customer.getKey(cid));
+            txOps.push(new ReserveOperation(OperationType.ReserveCar, 
+                        Customer.getKey(cid), 
+                        customer,
+                        null,
+                        null));
+        } catch(NullPointerException e) {
+            return;
+        }
     }
 
     public void addReserveRoomOp(int xid, int cid) {
+        try {
+            Stack txOps = txMap.get(xid);
+            Customer customer = (Customer) readData(xid, Customer.getKey(cid));
+            txOps.push(new ReserveOperation(OperationType.ReserveRoom, 
+                        Customer.getKey(cid), 
+                        customer,
+                        null,
+                        null));
+        } catch(NullPointerException e) {
+            return;
+        }
+    }
+
+    public synchronized boolean lockCustomer(int xid, int cid) {
+        try {
+            return this.lockManager.Lock(xid, Customer.getKey(cid), LockType.LOCK_WRITE);
+        } catch(DeadlockException e) {
+            return this.abort(xid);
+        }
+    }
+
+    public synchronized void undoLastReservation(int xid, int cid) {
         Stack txOps = txMap.get(xid);
-        Customer customer = (Customer) readData(xid, Customer.getKey(cid));
-        txOps.push(new ReserveOperation(OperationType.ReserveRoom, 
-                    Customer.getKey(cid), 
-                    customer,
-                    null,
-                    null));
+        while (!txOps.isEmpty() && txOps.peek() instanceof ReserveOperation) {
+            undo(xid, (Operation)txOps.pop());
+        }
     }
 }
