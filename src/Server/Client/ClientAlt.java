@@ -130,9 +130,9 @@ public abstract class ClientAlt
                 Response response = (Response) ois.readObject();
 
                 if (response.getStatus()) {
-                    System.out.println("Transaction committed." + response.getMessage());
+                    System.out.println("Transaction " + id + " committed.");
                 } else {
-                    System.out.println("Transaction could not commit.");
+                    System.out.println("Transaction " + id + " could not commit.");
                 }
 
                 break;
@@ -155,9 +155,9 @@ public abstract class ClientAlt
                 Response response = (Response) ois.readObject();
 
                 if (response.getStatus()) {
-                    System.out.println("Transaction aborted." + response.getMessage());
+                    System.out.println("Transaction " + id + " aborted. ");
                 } else {
-                    System.out.println("Transaction could not abort. Shutting down.");
+                    System.out.println("Transaction" + id + " could not abort.");
                 }
 
                 break;
@@ -193,7 +193,7 @@ public abstract class ClientAlt
                 if (response.getStatus()) {
                     System.out.println("Flight added");
                 } else {
-                    System.out.println("Flight could not be added");
+                    System.out.println("Flight could not be added " + response.getMessage());
                 }
 
                 break;
@@ -229,7 +229,7 @@ public abstract class ClientAlt
                 if (response.getStatus()) {
                     System.out.println("Car added");
                 } else {
-                    System.out.println("Car could not be added");
+                    System.out.println("Car could not be added " + response.getMessage());
                 }
                 break;
             }
@@ -264,7 +264,7 @@ public abstract class ClientAlt
                 if (response.getStatus()) {
                     System.out.println("Room added");
                 } else {
-                    System.out.println("Room could not be added");
+                    System.out.println("Room could not be added " + response.getMessage());
                 }
                 break;
             }
@@ -288,7 +288,7 @@ public abstract class ClientAlt
                 Response response = (Response) ois.readObject();
 
                 if (response.getStatus().booleanValue()) {
-                    System.out.println("Customer added");
+                    System.out.println("Customer added with id " + response.getMessage());
                 } else {
                     System.out.println("Customer could not be added");
                 }
@@ -549,7 +549,7 @@ public abstract class ClientAlt
                 
                 Response response = (Response) ois.readObject();
 
-                System.out.println("RESPONSE: " + response.toString());
+                System.out.println(response.getMessage());
                 break;
             }
             case QueryFlightPrice: {
@@ -574,7 +574,7 @@ public abstract class ClientAlt
                 
                 Response response = (Response) ois.readObject();
 
-                System.out.println("Price of a seat: " + response.toString());
+                System.out.println("Price of a seat: " + response.getMessage());
                 break;
             }
             case QueryCarsPrice: {
@@ -598,7 +598,7 @@ public abstract class ClientAlt
                 
                 Response response = (Response) ois.readObject();
 
-                System.out.println("Price of cars at this location: " + response.toString());
+                System.out.println("Price of cars at this location: " + response.getMessage());
                 break;
             }
             case QueryRoomsPrice: {
@@ -623,7 +623,7 @@ public abstract class ClientAlt
                 
                 Response response = (Response) ois.readObject();
 
-                System.out.println("Price of rooms at this location: " + response.toString());
+                System.out.println("Price of rooms at this location: " + response.getMessage());
                 break;
             }
             case ReserveFlight: {
@@ -654,7 +654,7 @@ public abstract class ClientAlt
                 if (response.getStatus()) {
                     System.out.println("Flight Reserved");
                 }else{
-                    System.out.println("Flight could not be reserved");
+                    System.out.println("Flight could not be reserved " + response.getMessage());
                 }
                 break;
             }
@@ -686,7 +686,7 @@ public abstract class ClientAlt
                 if (response.getStatus()) {
                     System.out.println("Car Reserved");
                 }else{
-                    System.out.println("Car could not be reserved");
+                    System.out.println("Car could not be reserved " + response.getMessage());
                 }
                 break;
             }
@@ -718,7 +718,7 @@ public abstract class ClientAlt
                 if (response.getStatus()) {
                     System.out.println("Room Reserved");
                 }else{
-                    System.out.println("Room could not be reserved");
+                    System.out.println("Room could not be reserved " + response.getMessage());
                 }
                 break;
             }
@@ -770,7 +770,7 @@ public abstract class ClientAlt
                 if (response.getStatus()) {
                     System.out.println("Bundle Reserved");
                 }else{
-                    System.out.println("Bundle could not be reserved");
+                    System.out.println("Bundle could not be reserved " + response.getMessage());
                 }
                 break;
             }
@@ -779,6 +779,21 @@ public abstract class ClientAlt
 
                 System.out.println("Quitting client");
                 System.exit(0);
+            
+            case Shutdown:
+                checkArgumentsCount(1, arguments.size());
+
+                System.out.println("Shutting down...");
+
+                RequestData data = new RequestData();
+                data.addXId(new Integer(-1))
+                    .addCommand(cmd);
+
+                Request request = new Request();
+                request.addCurrentTimeStamp()
+                    .addData(data);
+
+                oos.writeObject(request);
         }
     }
 

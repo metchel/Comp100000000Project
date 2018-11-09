@@ -46,7 +46,19 @@ public class MiddlewareCoordinator implements TransactionManager {
         return id;
     }
 
+    public synchronized boolean hasCommited(Integer xid) {
+        return this.transactionStatusMap.get(xid) == Status.COMMITTED;
+    }
+
+    public synchronized boolean hasAborted(Integer xid) {
+        return this.transactionStatusMap.get(xid) == Status.ABORTED;
+    }
+
     public synchronized boolean hasStarted(Integer xid) {
+        return transactionStatusMap.get(xid) == Status.STARTED;
+    }
+    
+    public synchronized boolean exists(Integer xid) {
         return transactionMap.get(xid) != null;
     }
 

@@ -27,7 +27,7 @@ public class ClientWorker implements Runnable {
 
     public void run() {
 
-        Trace.info("ClientWorker is working...");
+        Trace.info("New Client Connection");
         String line;
         BufferedReader in = null;
         PrintWriter out = null;

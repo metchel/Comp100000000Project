@@ -94,7 +94,7 @@ public class TransactionResourceManager extends SocketResourceManager {
                 Trace.info("RM::undo AddFlight");
                 RMItem value = operation.getValue();
                 if (value == null) {
-                    removeData(xid, operation.getKey());
+                    deleteItem(xid, operation.getKey());
                 } else {
                     writeData(xid, operation.getKey(), operation.getValue());
                 }
@@ -105,7 +105,7 @@ public class TransactionResourceManager extends SocketResourceManager {
                 Trace.info("RM::undo AddCars");
                 RMItem value = operation.getValue();
                 if (value == null) {
-                    removeData(xid, operation.getKey());
+                    deleteItem(xid, operation.getKey());
                 } else {
                     writeData(xid, operation.getKey(), operation.getValue());
                 }
@@ -116,7 +116,7 @@ public class TransactionResourceManager extends SocketResourceManager {
                 Trace.info("RM::undo AddRooms");
                 RMItem value = operation.getValue();
                 if (value == null) {
-                    removeData(xid, operation.getKey());
+                    deleteItem(xid, operation.getKey());
                 } else {
                     writeData(xid, operation.getKey(), operation.getValue());
                 }
@@ -127,7 +127,7 @@ public class TransactionResourceManager extends SocketResourceManager {
                 Trace.info("RM::undo AddCustomer");
                 RMItem value = operation.getValue();
                 if (value == null) {
-                    removeData(xid, operation.getKey());
+                    deleteItem(xid, operation.getKey());
                 } else {
                     writeData(xid, operation.getKey(), operation.getValue());
                 }
@@ -138,7 +138,7 @@ public class TransactionResourceManager extends SocketResourceManager {
                 Trace.info("RM::undo AddCustomerID");
                 RMItem value = operation.getValue();
                 if (value == null) {
-                    removeData(xid, operation.getKey());
+                    deleteItem(xid, operation.getKey());
                 } else {
                     writeData(xid, operation.getKey(), operation.getValue());
                 }

@@ -46,6 +46,10 @@ public class MiddlewareRequestHandler implements RequestHandler {
         final Command command = data.getCommand();
         Response response = new Response();
 
+        Trace.info(request.toString());
+
+        final int xid = request.getData().getXId();
+
         switch (command) {
             case Help: {
                 break;
@@ -77,10 +81,18 @@ public class MiddlewareRequestHandler implements RequestHandler {
             }
             case Commit: {
                 Integer xId = data.getXId();
+                if (!this.coordinator.exists(xId)) {
+                    Trace.info("Transaction " + xId + " doesn't exist.");
+                    response.addStatus(new Boolean(false));
+                    response.addMessage("Transaction " + xId + " doesn't exist.");
+                    break;
+                }
+
                 if (!this.coordinator.hasStarted(xId)) {
                     Trace.info("Transaction hasn't started.");
                     break;
                 }
+
                 Set<String> servers = this.coordinator.getTransactionRms(xId);
                 boolean commitSuccess = true;
                 for (String server: servers) {
@@ -119,8 +131,10 @@ public class MiddlewareRequestHandler implements RequestHandler {
             }
             case Abort: {
                 Integer xId = data.getXId();
-                if (!this.coordinator.hasStarted(xId)) {
-                    Trace.info("Transaction hasn't started.");
+                if (!this.coordinator.exists(xId)) {
+                    Trace.info("Transaction " + xId + " doesn't exist.");
+                    response.addStatus(new Boolean(false));
+                    response.addMessage("Transaction " + xId + " doesn't exist.");
                     break;
                 }
                 this.coordinator.abort(xId.intValue());
@@ -161,13 +175,29 @@ public class MiddlewareRequestHandler implements RequestHandler {
                 }
                 break;
             }
+
+            case Shutdown: {
+                this.flightClient.send(request);
+                this.carClient.send(request);
+                this.roomClient.send(request);
+                
+                System.out.println("Gracefully shutting down...");
+                try {
+                    Thread.sleep(1000);
+                } catch(InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.exit(0);
+            }
             /**
              * Read only operations
              */
             case QueryFlight: {
                 Integer xId = data.getXId();
-                if (!this.coordinator.hasStarted(xId)) {
-                    Trace.info("Transaction hasn't started.");
+                if (!this.coordinator.exists(xId)) {
+                    Trace.info("Transaction " + xId + " doesn't exist.");
+                    response.addStatus(new Boolean(false));
+                    response.addMessage("Transaction " + xId + " doesn't exist.");
                     break;
                 }
                 this.coordinator.addOperation(xId, FLIGHT);
@@ -177,8 +207,10 @@ public class MiddlewareRequestHandler implements RequestHandler {
             }
             case QueryCars: {
                 Integer xId = data.getXId();
-                if (!this.coordinator.hasStarted(xId)) {
-                    Trace.info("Transaction hasn't started.");
+                if (!this.coordinator.exists(xId)) {
+                    Trace.info("Transaction " + xId + " doesn't exist.");
+                    response.addStatus(new Boolean(false));
+                    response.addMessage("Transaction " + xId + " doesn't exist.");
                     break;
                 }
                 this.coordinator.addOperation(xId, CAR);
@@ -188,8 +220,10 @@ public class MiddlewareRequestHandler implements RequestHandler {
             }
             case QueryRooms: {
                 Integer xId = data.getXId();
-                if (!this.coordinator.hasStarted(xId)) {
-                    Trace.info("Transaction hasn't started.");
+                if (!this.coordinator.exists(xId)) {
+                    Trace.info("Transaction " + xId + " doesn't exist.");
+                    response.addStatus(new Boolean(false));
+                    response.addMessage("Transaction " + xId + " doesn't exist.");
                     break;
                 }
                 this.coordinator.addOperation(xId, ROOM);
@@ -202,8 +236,10 @@ public class MiddlewareRequestHandler implements RequestHandler {
             }
             case QueryCustomer: {
                 Integer xId = data.getXId();
-                if (!this.coordinator.hasStarted(xId)) {
-                    Trace.info("Transaction hasn't started.");
+                if (!this.coordinator.exists(xId)) {
+                    Trace.info("Transaction " + xId + " doesn't exist.");
+                    response.addStatus(new Boolean(false));
+                    response.addMessage("Transaction " + xId + " doesn't exist.");
                     break;
                 }
                 this.coordinator.addOperation(xId, CUSTOMER);
@@ -223,8 +259,10 @@ public class MiddlewareRequestHandler implements RequestHandler {
             }
             case QueryFlightPrice: {
                 Integer xId = data.getXId();
-                if (!this.coordinator.hasStarted(xId)) {
-                    Trace.info("Transaction hasn't started.");
+                if (!this.coordinator.exists(xId)) {
+                    Trace.info("Transaction " + xId + " doesn't exist.");
+                    response.addStatus(new Boolean(false));
+                    response.addMessage("Transaction " + xId + " doesn't exist.");
                     break;
                 }
                 this.coordinator.addOperation(xId, FLIGHT);
@@ -235,8 +273,10 @@ public class MiddlewareRequestHandler implements RequestHandler {
             }
             case QueryCarsPrice: {
                 Integer xId = data.getXId();
-                if (!this.coordinator.hasStarted(xId)) {
-                    Trace.info("Transaction hasn't started.");
+                if (!this.coordinator.exists(xId)) {
+                    Trace.info("Transaction " + xId + " doesn't exist.");
+                    response.addStatus(new Boolean(false));
+                    response.addMessage("Transaction " + xId + " doesn't exist.");
                     break;
                 }
                 this.coordinator.addOperation(xId, CAR);
@@ -247,8 +287,10 @@ public class MiddlewareRequestHandler implements RequestHandler {
             }
             case QueryRoomsPrice: {
                 Integer xId = data.getXId();
-                if (!this.coordinator.hasStarted(xId)) {
-                    Trace.info("Transaction hasn't started.");
+                if (!this.coordinator.exists(xId)) {
+                    Trace.info("Transaction " + xId + " doesn't exist.");
+                    response.addStatus(new Boolean(false));
+                    response.addMessage("Transaction " + xId + " doesn't exist.");
                     break;
                 }
                 this.coordinator.addOperation(xId, CAR);
@@ -263,8 +305,10 @@ public class MiddlewareRequestHandler implements RequestHandler {
              */
             case AddFlight: {
                 Integer xId = data.getXId();
-                if (!this.coordinator.hasStarted(xId)) {
-                    Trace.info("Transaction hasn't started.");
+                if (!this.coordinator.exists(xId)) {
+                    Trace.info("Transaction " + xId + " doesn't exist.");
+                    response.addStatus(new Boolean(false));
+                    response.addMessage("Transaction " + xId + " doesn't exist.");
                     break;
                 }
                 this.coordinator.addOperation(xId, FLIGHT);
@@ -276,8 +320,10 @@ public class MiddlewareRequestHandler implements RequestHandler {
 
             case AddCars: {
                 Integer xId = data.getXId();
-                if (!this.coordinator.hasStarted(xId)) {
-                    Trace.info("Transaction hasn't started.");
+                if (!this.coordinator.exists(xId)) {
+                    Trace.info("Transaction " + xId + " doesn't exist.");
+                    response.addStatus(new Boolean(false));
+                    response.addMessage("Transaction " + xId + " doesn't exist.");
                     break;
                 }
                 this.coordinator.addOperation(xId, CAR);
@@ -289,8 +335,10 @@ public class MiddlewareRequestHandler implements RequestHandler {
 
             case AddRooms: {
                 Integer xId = data.getXId();
-                if (!this.coordinator.hasStarted(xId)) {
-                    Trace.info("Transaction hasn't started.");
+                if (!this.coordinator.exists(xId)) {
+                    Trace.info("Transaction " + xId + " doesn't exist.");
+                    response.addStatus(new Boolean(false));
+                    response.addMessage("Transaction " + xId + " doesn't exist.");
                     break;
                 }
                 this.coordinator.addOperation(xId, ROOM);
@@ -303,8 +351,10 @@ public class MiddlewareRequestHandler implements RequestHandler {
 
             case AddCustomer: {
                 Integer xId = data.getXId();
-                if (!this.coordinator.hasStarted(xId)) {
-                    Trace.info("Transaction hasn't started.");
+                if (!this.coordinator.exists(xId)) {
+                    Trace.info("Transaction " + xId + " doesn't exist.");
+                    response.addStatus(new Boolean(false));
+                    response.addMessage("Transaction " + xId + " doesn't exist.");
                     break;
                 }
                 this.coordinator.addOperation(xId, CUSTOMER);
@@ -341,8 +391,10 @@ public class MiddlewareRequestHandler implements RequestHandler {
             }
             case AddCustomerID: {
                 Integer xId = data.getXId();
-                if (!this.coordinator.hasStarted(xId)) {
-                    Trace.info("Transaction hasn't started.");
+                if (!this.coordinator.exists(xId)) {
+                    Trace.info("Transaction " + xId + " doesn't exist.");
+                    response.addStatus(new Boolean(false));
+                    response.addMessage("Transaction " + xId + " doesn't exist.");
                     break;
                 }
                 this.coordinator.addOperation(xId, CUSTOMER);
@@ -375,8 +427,10 @@ public class MiddlewareRequestHandler implements RequestHandler {
             }
             case DeleteFlight: {
                 Integer xId = data.getXId();
-                if (!this.coordinator.hasStarted(xId)) {
-                    Trace.info("Transaction hasn't started.");
+                if (!this.coordinator.exists(xId)) {
+                    Trace.info("Transaction " + xId + " doesn't exist.");
+                    response.addStatus(new Boolean(false));
+                    response.addMessage("Transaction " + xId + " doesn't exist.");
                     break;
                 }
                 this.coordinator.addOperation(xId, FLIGHT);
@@ -387,8 +441,10 @@ public class MiddlewareRequestHandler implements RequestHandler {
             }
             case DeleteCars: {
                 Integer xId = data.getXId();
-                if (!this.coordinator.hasStarted(xId)) {
-                    Trace.info("Transaction hasn't started.");
+                if (!this.coordinator.exists(xId)) {
+                    Trace.info("Transaction " + xId + " doesn't exist.");
+                    response.addStatus(new Boolean(false));
+                    response.addMessage("Transaction " + xId + " doesn't exist.");
                     break;
                 }
                 this.coordinator.addOperation(xId, CAR);
@@ -399,8 +455,10 @@ public class MiddlewareRequestHandler implements RequestHandler {
             }
             case DeleteRooms: {
                 Integer xId = data.getXId();
-                if (!this.coordinator.hasStarted(xId)) {
-                    Trace.info("Transaction hasn't started.");
+                if (!this.coordinator.exists(xId)) {
+                    Trace.info("Transaction " + xId + " doesn't exist.");
+                    response.addStatus(new Boolean(false));
+                    response.addMessage("Transaction " + xId + " doesn't exist.");
                     break;
                 }
                 this.coordinator.addOperation(xId, ROOM);
@@ -411,8 +469,10 @@ public class MiddlewareRequestHandler implements RequestHandler {
             }
             case DeleteCustomer: {
                 Integer xId = data.getXId();
-                if (!this.coordinator.hasStarted(xId)) {
-                    Trace.info("Transaction hasn't started.");
+                if (!this.coordinator.exists(xId)) {
+                    Trace.info("Transaction " + xId + " doesn't exist.");
+                    response.addStatus(new Boolean(false));
+                    response.addMessage("Transaction " + xId + " doesn't exist.");
                     break;
                 }
                 this.coordinator.addOperation(xId, CUSTOMER);
@@ -442,8 +502,10 @@ public class MiddlewareRequestHandler implements RequestHandler {
              */
             case ReserveFlight: {
                 Integer xId = data.getXId();
-                if (!this.coordinator.hasStarted(xId)) {
-                    Trace.info("Transaction hasn't started.");
+                if (!this.coordinator.exists(xId)) {
+                    Trace.info("Transaction " + xId + " doesn't exist.");
+                    response.addStatus(new Boolean(false));
+                    response.addMessage("Transaction " + xId + " doesn't exist.");
                     break;
                 }
                 this.coordinator.addOperation(xId, CUSTOMER);
@@ -467,8 +529,10 @@ public class MiddlewareRequestHandler implements RequestHandler {
 
             case ReserveCar: {
                 Integer xId = data.getXId();
-                if (!this.coordinator.hasStarted(xId)) {
-                    Trace.info("Transaction hasn't started.");
+                if (!this.coordinator.exists(xId)) {
+                    Trace.info("Transaction " + xId + " doesn't exist.");
+                    response.addStatus(new Boolean(false));
+                    response.addMessage("Transaction " + xId + " doesn't exist.");
                     break;
                 }
                 this.coordinator.addOperation(xId, CUSTOMER);
@@ -491,8 +555,10 @@ public class MiddlewareRequestHandler implements RequestHandler {
             }
             case ReserveRoom: {
                 Integer xId = data.getXId();
-                if (!this.coordinator.hasStarted(xId)) {
-                    Trace.info("Transaction hasn't started.");
+                if (!this.coordinator.exists(xId)) {
+                    Trace.info("Transaction " + xId + " doesn't exist.");
+                    response.addStatus(new Boolean(false));
+                    response.addMessage("Transaction " + xId + " doesn't exist.");
                     break;
                 }
                 this.coordinator.addOperation(xId, CUSTOMER);
@@ -515,8 +581,10 @@ public class MiddlewareRequestHandler implements RequestHandler {
             }
             case Bundle: {
                 Integer xId = data.getXId();
-                if (!this.coordinator.hasStarted(xId)) {
-                    Trace.info("Transaction hasn't started.");
+                if (!this.coordinator.exists(xId)) {
+                    Trace.info("Transaction " + xId + " doesn't exist.");
+                    response.addStatus(new Boolean(false));
+                    response.addMessage("Transaction " + xId + " doesn't exist.");
                     break;
                 }
                 this.coordinator.addOperation(xId, CUSTOMER);

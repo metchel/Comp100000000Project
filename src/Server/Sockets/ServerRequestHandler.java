@@ -5,6 +5,7 @@ import Server.Common.Command;
 import Server.Network.*;
 import Server.ResourceManager.TransactionResourceManager;
 import Server.Common.RMHashMap;
+import Server.Common.Trace;
 
 import java.io.IOException;
 import java.util.Vector;
@@ -25,7 +26,7 @@ public class ServerRequestHandler implements RequestHandler {
         Command cmd = data.getCommand();
         Integer xId = data.getXId();
 
-        System.out.println(req.toString());
+        Trace.info(req.toString());
 
         Object result = execute(xId, cmd, arguments);
         Boolean resStatus = null;
@@ -61,8 +62,6 @@ public class ServerRequestHandler implements RequestHandler {
             response.addReservationData(result);
         }
 
-        System.out.println(response.toString());
-
         return response;
     }
 
@@ -82,6 +81,16 @@ public class ServerRequestHandler implements RequestHandler {
 
             case Abort: {
                 return new Boolean(resourceManager.abort(xId.intValue()));
+            }
+
+            case Shutdown: {
+                System.out.println("Gracefully shutting down...");
+                try {
+                    Thread.sleep(2000);
+                } catch(InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.exit(0);
             }
 
             case AddFlight: {

@@ -13,7 +13,6 @@ public class RequestWorker implements Runnable {
     volatile Boolean active;
 
     public void run() {
-        Trace.info("RequestWorker is working...");
         synchronized(this.active) {
             while(this.active.booleanValue()) {
                 try {
