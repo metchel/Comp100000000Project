@@ -98,7 +98,6 @@ public class Customer extends RMItem
 		Set<String> keys = data.keySet();
 
 		for (String key: keys) {
-			System.out.println("merging..");
 			this.m_reservations.put(key, data.get(key));
 		}
 	}
