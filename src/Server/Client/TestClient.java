@@ -38,7 +38,7 @@ public class TestClient extends TCPClient implements Runnable{
 
     public static void main(String[] a) {
         try {
-            Thread[] threads = new Thread[1];
+            Thread[] threads = new Thread[32];
             for (int i = 0; i < threads.length; i++) {
                 try {
                     TimeUnit.SECONDS.sleep(10);
