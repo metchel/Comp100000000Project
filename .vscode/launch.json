@@ -2,6 +2,16 @@
     "configurations": [
         {
             "type": "java",
+            "name": "CodeLens (Launch) - TestClient",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "stopOnEntry": false,
+            "mainClass": "Server.Client.TestClient",
+            "args": ""
+        },
+        {
+            "type": "java",
             "name": "CodeLens (Launch) - Middleware",
             "request": "launch",
             "cwd": "${workspaceFolder}",
