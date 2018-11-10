@@ -1,6 +1,8 @@
 package Server.Client;
 
 import java.util.Vector;
+import java.util.concurrent.TimeUnit;
+
 import java.util.Timer;
 
 import java.io.PrintWriter;
@@ -17,12 +19,15 @@ import Server.Common.Command;
 
 public class TestClient extends TCPClient implements Runnable{
 
-    private static volatile int transactionCount;
+    boolean TEST_RESPONSE_TIME = true;
+    boolean TEST_THROUGHPUT = false;
+
+    private static int transactionCount;
     private static String serverHost;
     private static int serverPort;
-    private static volatile int numClients = 1;
-    private final FileWriter writer;
-    private final File file = new File("result.csv");
+    private static int numClients = 0;
+    final FileWriter writer;
+    final static File file = new File("result.csv");
 
     public TestClient(String host, int port) throws IOException {
         super();
@@ -33,9 +38,26 @@ public class TestClient extends TCPClient implements Runnable{
 
     public static void main(String[] a) {
         try {
-            TestClient test = new TestClient(a[0], Integer.parseInt(a[1]));
-            Thread t0 = new Thread(test);
-            t0.start();
+            Thread[] threads = new Thread[1];
+            for (int i = 0; i < threads.length; i++) {
+                try {
+                    TimeUnit.SECONDS.sleep(10);
+                } catch(InterruptedException e) {
+                    e.printStackTrace();
+                }
+                TestClient test = new TestClient(a[0], Integer.parseInt(a[1]));
+                threads[i] = new Thread(test);
+                threads[i].start();
+            }
+
+            for (int i = 0; i < threads.length; i++) {
+
+                try {
+                    threads[i].join();
+                } catch(InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         } catch(IOException e) {
             System.exit(-1);
         }
@@ -55,7 +77,7 @@ public class TestClient extends TCPClient implements Runnable{
             }
 
             long startTime = System.currentTimeMillis();
-            for (int i = 1; i < 1000; i++ ) {
+            for (int i = 1; i < 500; i++ ) {
                 Vector<String> start = new Vector<String>();
                 start.add("Start");
 
@@ -107,25 +129,32 @@ public class TestClient extends TCPClient implements Runnable{
                 commit.add("Commit");
                 commit.add(String.valueOf(transactionCount));
 
-                try {
-                    execute(Command.Start, start);
-                    writeResponseTime(Command.AddFlight, addFlight);
-                    writeResponseTime(Command.AddCars, addCars);
-                    writeResponseTime(Command.AddRooms, addRooms);
-                    writeResponseTime(Command.AddCustomerID, addCustomerId);
-                    writeResponseTime(Command.ReserveFlight, reserveFlight);
-                    writeResponseTime(Command.ReserveCar, reserveCar);
-                    writeResponseTime(Command.ReserveRoom, reserveRoom);
-                    execute(Command.Commit, commit);
-                    transactionCount++;
-                } catch(Exception e) {
-                    transactionCount++;
-                    continue;
+                if (TEST_RESPONSE_TIME) {
+                    try {
+                        execute(Command.Start, start);
+                        writeResponseTime(Command.AddFlight, addFlight);
+                        writeResponseTime(Command.AddCars, addCars);
+                        writeResponseTime(Command.AddRooms, addRooms);
+                        writeResponseTime(Command.AddCustomerID, addCustomerId);
+                        writeResponseTime(Command.ReserveFlight, reserveFlight);
+                        writeResponseTime(Command.ReserveCar, reserveCar);
+                        writeResponseTime(Command.ReserveRoom, reserveRoom);
+                        execute(Command.Commit, commit);
+                        transactionCount++;
+                    } catch(Exception e) {
+                        transactionCount++;
+                        continue;
+                    }
+                }
+
+                if (TEST_THROUGHPUT) {
+
                 }
             }
         long endTime = System.currentTimeMillis();
         System.out.println(endTime - startTime);
         }
+        numClients--;
     }
 
     @Override
@@ -145,16 +174,16 @@ public class TestClient extends TCPClient implements Runnable{
         long responseT = endT - startT;
 
         synchronized(this.writer) {
-            writer.write(c.toString() + ", " + numClients + ", " + responseT);
+            writer.write(endT + ", " + c.toString() + ", " + numClients + ", " + responseT);
             writer.write("\n");
         }
 
-        delayHalfSec();
+        delay();
     }
 
-    public void delayHalfSec() {
+    public void delay() {
         try {
-            Thread.sleep(333);
+            Thread.sleep(100);
         } catch(InterruptedException e) {
             return;
         }
