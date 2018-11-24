@@ -10,7 +10,7 @@ import java.util.Set;
 import java.util.HashSet;
 
 public class Transaction {
-    private final static int DEFAULT_TTL = 1000;
+    private final static long DEFAULT_TTL = 10000;
     private static int nextTransactionId;
     private final int id;
     private final Set clients;
@@ -21,7 +21,7 @@ public class Transaction {
 
     public Transaction() {
         this.id = getNextTransactionId();
-        this.ttl = DEFAULT_TTL;
+        this.ttl = System.currentTimeMillis() + DEFAULT_TTL;
         this.clients = new HashSet<MiddlewareClient>();
         this.commands = new LinkedList<Command>();
         this.localData = new HashSet<RMItem>();
@@ -49,7 +49,8 @@ public class Transaction {
     }
 
     public void updateTtl() {
-        this.ttl = this.ttl - System.currentTimeMillis() + DEFAULT_TTL;
+        this.ttl = this.ttl + DEFAULT_TTL;
+        System.out.println(this.ttl);
     }
 
     public long getTtl() {
