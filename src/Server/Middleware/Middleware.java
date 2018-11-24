@@ -64,6 +64,7 @@ public class Middleware {
 
             serverSocket = new ServerSocket(middleware.getPort());
             RequestHandler handler = new MiddlewareRequestHandler(customerResourceManager, coordinator, flightClient, carClient, roomClient);
+            coordinator.setHandler(handler);
             Socket client = new Socket();
             while(true) {
                 try {

@@ -15,6 +15,11 @@ import Server.Common.Command;
 import Server.Common.Constants;
 import Server.Common.Trace;
 import Server.Middleware.Transaction.Status;
+import Server.Sockets.RequestHandler;
+
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -22,6 +27,8 @@ import java.util.Set;
 import java.util.HashSet;
 
 public class MiddlewareCoordinator implements TransactionManager {
+    private RequestHandler handler;
+    private final ScheduledExecutorService ttlWorkerPool;
     private final Map<Integer, Transaction> transactionMap;
     private final Map<Integer, Status> transactionStatusMap;
     private final Map<Integer, Set<String>> rmMap;
@@ -34,16 +41,29 @@ public class MiddlewareCoordinator implements TransactionManager {
         this.transactionMap = new HashMap<Integer, Transaction>();
         this.transactionStatusMap = new HashMap<Integer, Status>();
         this.rmMap = new HashMap<Integer, Set<String>>();
+        this.ttlWorkerPool = Executors.newScheduledThreadPool(2);
     }
 
-    public synchronized int start() {
+    public void setHandler(RequestHandler handler) {
+        this.handler = handler;
+    }
+
+    public int start() {
         Transaction t = new Transaction();
         t.start();
         int id = t.getId();
         this.transactionMap.put(id, t);
         this.transactionStatusMap.put(id, Status.STARTED);
         this.rmMap.put(id, new HashSet<String>());
+
+        this.ttlWorkerPool.schedule(new TtlWorker(t), t.getTtl(), TimeUnit.MILLISECONDS);
         return id;
+    }
+
+    public void updateTransactionTtl(int transactionId) {
+        Transaction t = this.transactionMap.get(transactionId);
+        t.updateTtl();
+        this.ttlWorkerPool.schedule(new TtlWorker(t), t.getTtl(), TimeUnit.MILLISECONDS);
     }
 
     public synchronized boolean hasCommited(Integer xid) {
@@ -95,5 +115,26 @@ public class MiddlewareCoordinator implements TransactionManager {
     public Set<String> getTransactionRms(int transactionId) {
         Integer xId = new Integer(transactionId);
         return this.rmMap.get(xId);
+    }
+
+    private class TtlWorker implements Runnable {
+        final Transaction tx;
+
+        public TtlWorker(Transaction tx) {
+            this.tx = tx;
+        }
+
+        @Override
+        public void run() {
+            synchronized(this.tx) {
+                if (tx.getStatus() != Transaction.Status.STARTED) {
+                    return;
+                }
+                long ttl = this.tx.getTtl();
+                if (ttl <= 0) {
+                    Trace.info("Reached time to live for transaction " + this.tx.getId() + " IT SHOULD ABORT NOW BUT SHITTY DESIGN PREVENTS THIS FROM BEING EASY");
+                }
+            }
+        }
     }
 }

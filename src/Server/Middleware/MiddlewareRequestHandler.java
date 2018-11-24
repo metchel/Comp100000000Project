@@ -204,6 +204,7 @@ public class MiddlewareRequestHandler implements RequestHandler {
                     response.addMessage("Transaction " + xId + " doesn't exist.");
                     break;
                 }
+                this.coordinator.updateTransactionTtl(xId);
                 this.coordinator.addOperation(xId, FLIGHT);
                 this.flightClient.send(request);
                 response = this.flightClient.receive();
@@ -211,6 +212,7 @@ public class MiddlewareRequestHandler implements RequestHandler {
             }
             case QueryCars: {
                 Integer xId = data.getXId();
+                this.coordinator.updateTransactionTtl(xId);
                 if (!this.coordinator.exists(xId)) {
                     Trace.info("Transaction " + xId + " doesn't exist.");
                     response.addStatus(new Boolean(false));
@@ -224,6 +226,7 @@ public class MiddlewareRequestHandler implements RequestHandler {
             }
             case QueryRooms: {
                 Integer xId = data.getXId();
+                this.coordinator.updateTransactionTtl(xId);
                 if (!this.coordinator.exists(xId)) {
                     Trace.info("Transaction " + xId + " doesn't exist.");
                     response.addStatus(new Boolean(false));
@@ -246,6 +249,7 @@ public class MiddlewareRequestHandler implements RequestHandler {
                     response.addMessage("Transaction " + xId + " doesn't exist.");
                     break;
                 }
+                this.coordinator.updateTransactionTtl(xId);
                 this.coordinator.addOperation(xId, CUSTOMER);
                 this.coordinator.addOperation(xId, FLIGHT);
                 this.coordinator.addOperation(xId, CAR);
@@ -279,6 +283,7 @@ public class MiddlewareRequestHandler implements RequestHandler {
                     response.addMessage("Transaction " + xId + " doesn't exist.");
                     break;
                 }
+                this.coordinator.updateTransactionTtl(xId);
                 this.coordinator.addOperation(xId, FLIGHT);
 
                 this.flightClient.send(request);
@@ -293,6 +298,7 @@ public class MiddlewareRequestHandler implements RequestHandler {
                     response.addMessage("Transaction " + xId + " doesn't exist.");
                     break;
                 }
+                this.coordinator.updateTransactionTtl(xId);
                 this.coordinator.addOperation(xId, CAR);
 
                 this.carClient.send(request);
@@ -307,6 +313,7 @@ public class MiddlewareRequestHandler implements RequestHandler {
                     response.addMessage("Transaction " + xId + " doesn't exist.");
                     break;
                 }
+                this.coordinator.updateTransactionTtl(xId);
                 this.coordinator.addOperation(xId, CAR);
 
                 this.roomClient.send(request);
@@ -325,6 +332,7 @@ public class MiddlewareRequestHandler implements RequestHandler {
                     response.addMessage("Transaction " + xId + " doesn't exist.");
                     break;
                 }
+                this.coordinator.updateTransactionTtl(xId);
                 this.coordinator.addOperation(xId, FLIGHT);
 
                 this.flightClient.send(request);
@@ -340,6 +348,7 @@ public class MiddlewareRequestHandler implements RequestHandler {
                     response.addMessage("Transaction " + xId + " doesn't exist.");
                     break;
                 }
+                this.coordinator.updateTransactionTtl(xId);
                 this.coordinator.addOperation(xId, CAR);
 
                 this.carClient.send(request);
@@ -355,6 +364,7 @@ public class MiddlewareRequestHandler implements RequestHandler {
                     response.addMessage("Transaction " + xId + " doesn't exist.");
                     break;
                 }
+                this.coordinator.updateTransactionTtl(xId);
                 this.coordinator.addOperation(xId, ROOM);
 
                 this.roomClient.send(request);
@@ -371,6 +381,7 @@ public class MiddlewareRequestHandler implements RequestHandler {
                     response.addMessage("Transaction " + xId + " doesn't exist.");
                     break;
                 }
+                this.coordinator.updateTransactionTtl(xId);
                 this.coordinator.addOperation(xId, CUSTOMER);
                 this.coordinator.addOperation(xId, FLIGHT);
                 this.coordinator.addOperation(xId, CAR);
@@ -411,6 +422,7 @@ public class MiddlewareRequestHandler implements RequestHandler {
                     response.addMessage("Transaction " + xId + " doesn't exist.");
                     break;
                 }
+                this.coordinator.updateTransactionTtl(xId);
                 this.coordinator.addOperation(xId, CUSTOMER);
                 this.coordinator.addOperation(xId, FLIGHT);
                 this.coordinator.addOperation(xId, CAR);
@@ -447,6 +459,7 @@ public class MiddlewareRequestHandler implements RequestHandler {
                     response.addMessage("Transaction " + xId + " doesn't exist.");
                     break;
                 }
+                this.coordinator.updateTransactionTtl(xId);
                 this.coordinator.addOperation(xId, FLIGHT);
 
                 this.flightClient.send(request);
@@ -461,6 +474,7 @@ public class MiddlewareRequestHandler implements RequestHandler {
                     response.addMessage("Transaction " + xId + " doesn't exist.");
                     break;
                 }
+                this.coordinator.updateTransactionTtl(xId);
                 this.coordinator.addOperation(xId, CAR);
 
                 this.carClient.send(request);
@@ -475,6 +489,7 @@ public class MiddlewareRequestHandler implements RequestHandler {
                     response.addMessage("Transaction " + xId + " doesn't exist.");
                     break;
                 }
+                this.coordinator.updateTransactionTtl(xId);
                 this.coordinator.addOperation(xId, ROOM);
 
                 this.roomClient.send(request);
@@ -489,6 +504,7 @@ public class MiddlewareRequestHandler implements RequestHandler {
                     response.addMessage("Transaction " + xId + " doesn't exist.");
                     break;
                 }
+                this.coordinator.updateTransactionTtl(xId);
                 this.coordinator.addOperation(xId, CUSTOMER);
                 this.coordinator.addOperation(xId, FLIGHT);
                 this.coordinator.addOperation(xId, CAR);
@@ -522,6 +538,7 @@ public class MiddlewareRequestHandler implements RequestHandler {
                     response.addMessage("Transaction " + xId + " doesn't exist.");
                     break;
                 }
+                this.coordinator.updateTransactionTtl(xId);
                 this.coordinator.addOperation(xId, CUSTOMER);
                 this.coordinator.addOperation(xId, FLIGHT);
 
@@ -548,6 +565,7 @@ public class MiddlewareRequestHandler implements RequestHandler {
                     response.addMessage("Transaction " + xId + " doesn't exist.");
                     break;
                 }
+                this.coordinator.updateTransactionTtl(xId);
                 this.coordinator.addOperation(xId, CUSTOMER);
                 this.coordinator.addOperation(xId, CAR);
                 
@@ -573,6 +591,7 @@ public class MiddlewareRequestHandler implements RequestHandler {
                     response.addMessage("Transaction " + xId + " doesn't exist.");
                     break;
                 }
+                this.coordinator.updateTransactionTtl(xId);
                 this.coordinator.addOperation(xId, CUSTOMER);
                 this.coordinator.addOperation(xId, ROOM);
 
@@ -598,6 +617,7 @@ public class MiddlewareRequestHandler implements RequestHandler {
                     response.addMessage("Transaction " + xId + " doesn't exist.");
                     break;
                 }
+                this.coordinator.updateTransactionTtl(xId);
                 this.coordinator.addOperation(xId, CUSTOMER);
                 this.coordinator.addOperation(xId, FLIGHT);
                 this.coordinator.addOperation(xId, CAR);

@@ -10,15 +10,18 @@ import java.util.Set;
 import java.util.HashSet;
 
 public class Transaction {
+    private final static int DEFAULT_TTL = 1000;
     private static int nextTransactionId;
     private final int id;
     private final Set clients;
     private Status status;
     private final Queue commands;
     private final Set<RMItem> localData;
+    private long ttl;
 
     public Transaction() {
-        this.id = this.getNextTransactionId();
+        this.id = getNextTransactionId();
+        this.ttl = DEFAULT_TTL;
         this.clients = new HashSet<MiddlewareClient>();
         this.commands = new LinkedList<Command>();
         this.localData = new HashSet<RMItem>();
@@ -43,6 +46,16 @@ public class Transaction {
 
     public void abort() {
         this.status = Status.ABORTED;
+    }
+
+    public void updateTtl() {
+        this.ttl = this.ttl - System.currentTimeMillis() + DEFAULT_TTL;
+    }
+
+    public long getTtl() {
+        final long now = System.currentTimeMillis();
+
+        return (this.ttl - now);
     }
 
     public int getId () {
