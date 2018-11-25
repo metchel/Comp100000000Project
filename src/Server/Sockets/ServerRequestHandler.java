@@ -83,11 +83,15 @@ public class ServerRequestHandler implements RequestHandler {
                 return new Boolean(resourceManager.abort(xId.intValue()));
             }
             case Vote: {
-                //try and write to log
+                //success = try and write to log
                 //if(success){
-                //vote yes
+                    //Write undo/redo information in log, Write a YES record in log, Send YES to coordinator
+                    //wait for decision message from coordinator:
+                         //On timeout (initiate termination protocol)
+                         //If decision message is COMMIT -> (commit transaction),write COMMIT record in log
+                         //Else -> (abort transaction), write ABORT record in log
                 //}else {
-                //vote no
+                    //Abort transaction, Write ABORT record in log , Send NO to coordinator
                 //}
 
             }

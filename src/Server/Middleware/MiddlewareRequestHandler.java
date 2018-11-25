@@ -103,9 +103,11 @@ public class MiddlewareRequestHandler implements RequestHandler {
                 voteRequest.addData(voteData);
 
                 Set<String> servers = this.coordinator.getTransactionRms(xId);
+                Set<String> yesServers = this.coordinator.getTransactionRms(xId);
 
                 // VOTING PHASE (Phase 1)
                 boolean voteStatus = true;
+                this.coordinator.prepare(xId.intValue());
                 for (String server: servers) {
                     if (server.equals(FLIGHT)) {
                         this.flightClient.send(voteRequest);
@@ -114,6 +116,7 @@ public class MiddlewareRequestHandler implements RequestHandler {
                         if (!voteStatus) {
                             break;
                         } else {
+                            yesServers.add(FLIGHT);
                             continue;
                         }
                     } else if(server.equals(CAR)) {
@@ -123,6 +126,7 @@ public class MiddlewareRequestHandler implements RequestHandler {
                         if (!voteStatus) {
                             break;
                         } else {
+                            yesServers.add(CAR);
                             continue;
                         }
                     } else if(server.equals(ROOM)) {
@@ -132,6 +136,7 @@ public class MiddlewareRequestHandler implements RequestHandler {
                         if (!voteStatus) {
                             break;
                         } else {
+                            yesServers.add(ROOM);
                             continue;
                         }
                     } else if(server.equals(CUSTOMER)) {
@@ -139,20 +144,37 @@ public class MiddlewareRequestHandler implements RequestHandler {
                     }
                 }
                 //if someone voted no
+                //ABORT
+                //write ABORT record in log
+                //Send ABORT decision to all processes from which YES was received
                 if(!voteStatus){
-                    // TELL the people to ABORT
-                    // Make an abort request
-                    // this.handle(abortRequest);
+                    //ABORT
+                    this.coordinator.abort(xId.intValue());
+                    //write ABORT record in log
+
                     Request abortRequest = new Request();
                     RequestData abortData = new RequestData();
                     abortData.addXId(xId).addCommand(Command.Abort);
                     abortRequest.addData(abortData);
+                    //Send ABORT decision to all processes from which YES was received
+                    for (String server : yesServers){
+
+                    }
+                    //Respond to Client
                     response.addCurrentTimeStamp()
                             .addStatus(false)
                             .addMessage("Transaction " + xId + " not committed (PHASE 1)");
                 }
                 //everyone voted yes - phase 2
+                //COMMIT
+                //write COMMIT record to log
+                //Send COMMIT decision to all participa
                 else {
+                    //COMMIT
+                    this.coordinator.commit(xId.intValue());
+                    //write COMMIT record to log
+
+                    //Send COMMIT decision to all participa
                     boolean commitSuccess = true;
                     for (String server : servers) {
                         if (server.equals(FLIGHT)) {
@@ -177,7 +199,7 @@ public class MiddlewareRequestHandler implements RequestHandler {
                     }
 
                     if (commitSuccess) {
-                        this.coordinator.commit(xId.intValue());
+                        //this.coordinator.commit(xId.intValue());
                         response.addCurrentTimeStamp()
                                 .addStatus(true)
                                 .addMessage("Transaction " + xId + " committed.");
@@ -189,6 +211,7 @@ public class MiddlewareRequestHandler implements RequestHandler {
                 }
                 break;
             }
+
             case Abort: {
                 Integer xId = data.getXId();
                 if (!this.coordinator.exists(xId)) {

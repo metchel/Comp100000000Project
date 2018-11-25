@@ -39,9 +39,8 @@ public class Transaction {
         return id;
     }
 
-    public boolean voting(){
-        this.status = Status.VOTING;
-        return true;
+    public void prepare(){
+        this.status = Status.PREPARING;
     }
 
     public boolean commit() {
@@ -91,6 +90,6 @@ public class Transaction {
         STARTED,
         COMMITTED,
         ABORTED,
-        VOTING
+        PREPARED
     }
 }

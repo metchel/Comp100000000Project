@@ -95,6 +95,13 @@ public class MiddlewareCoordinator implements TransactionManager {
         Transaction t = (Transaction)this.transactionMap.get(transactionId);
         this.transactionStatusMap.put(transactionId, Status.ABORTED);
         t.abort();
+       // t.abort();
+    }
+
+    public synchronized void prepare(int transactionId) {
+        Transaction t = (Transaction)this.transactionMap.get(transactionId);
+        this.transactionStatusMap.put(transactionId, Status.PREPARED);
+        t.prepare();
     }
 
     public synchronized boolean shutdown() {
@@ -136,5 +143,6 @@ public class MiddlewareCoordinator implements TransactionManager {
                 }
             }
         }
+
     }
 }
