@@ -25,6 +25,7 @@ import Server.Transactions.ReserveOperation;
 import Server.Transactions.Operation.OperationType;
 
 public class MiddlewareRequestHandler implements RequestHandler {
+    private final Socket client;
     private final MiddlewareClient flightClient;
     private final MiddlewareClient carClient;
     private final MiddlewareClient roomClient;
@@ -37,7 +38,13 @@ public class MiddlewareRequestHandler implements RequestHandler {
     private static final String ROOM = Constants.ROOM;
     private static final String CAR = Constants.CAR;
 
-    public MiddlewareRequestHandler(TransactionResourceManager customerResourceManager, MiddlewareCoordinator coordinator, MiddlewareClient flightClient, MiddlewareClient carClient, MiddlewareClient roomClient) throws IOException, ClassNotFoundException {
+    public MiddlewareRequestHandler(Socket client,
+    TransactionResourceManager customerResourceManager, 
+    MiddlewareCoordinator coordinator, 
+    MiddlewareClient flightClient, 
+    MiddlewareClient carClient,
+     MiddlewareClient roomClient) throws IOException, ClassNotFoundException {
+        this.client = client;
         this.customerResourceManager = customerResourceManager;
         this.coordinator = coordinator;
         this.flightClient = flightClient;

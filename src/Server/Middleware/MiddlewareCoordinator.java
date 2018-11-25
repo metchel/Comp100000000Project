@@ -118,19 +118,25 @@ public class MiddlewareCoordinator implements TransactionManager {
     public void addOperation(int transactionId, String rm) {
         try {
             HashSet<String> transactionRMs = (HashSet)this.rmMap.get(transactionId);
-            if (!transactionRMs.contains(rm)) {
-                    transactionRMs.add(rm);
-            }
             Transaction t = this.transactionMap.get(transactionId);
-            if (rm.equals(Constants.FLIGHT)) {
-                t.addClient(flightClient);
-            } else if (rm.equals(Constants.CAR)) {
-                t.addClient(carClient);
-            } else if (rm.equals(Constants.ROOM)) {
-                t.addClient(roomClient);
+            if (!transactionRMs.contains(rm)) {
+                transactionRMs.add(rm);
+                t.addClient(rmFromString(rm));
             }
         } catch(NullPointerException e) {
             Trace.info("Transaction " + transactionId + " has not started.");
+        }
+    }
+
+    private MiddlewareClient rmFromString(String rm) {
+        if (rm.equals(Constants.FLIGHT)) {
+            return this.flightClient;
+        } else if (rm.equals(Constants.CAR)) {
+            return this.carClient;
+        } else if (rm.equals(Constants.ROOM)) {
+            return this.roomClient;
+        } else {
+            return null;
         }
     }
 
@@ -155,13 +161,11 @@ public class MiddlewareCoordinator implements TransactionManager {
                 long ttl = this.tx.getTtl();
                 if (ttl <= 0) {
                     Trace.info("Reached time to live for transaction " + this.tx.getId() + " IT SHOULD ABORT NOW BUT SHITTY DESIGN PREVENTS THIS FROM BEING EASY");
-                    for (MiddlewareClient client: tx.getClients()) {  
-                        System.out.println("ABORTING CLIENT"); 
-                        try {
-                            abort(tx.getId());
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                    System.out.println("ABORTING CLIENT"); 
+                    try {
+                        abort(tx.getId());
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
             }
