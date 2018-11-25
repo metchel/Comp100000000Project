@@ -25,6 +25,7 @@ import Server.Transactions.ReserveOperation;
 import Server.Transactions.Operation.OperationType;
 
 public class MiddlewareRequestHandler implements RequestHandler {
+    private final Socket client;
     private final MiddlewareClient flightClient;
     private final MiddlewareClient carClient;
     private final MiddlewareClient roomClient;
@@ -37,7 +38,13 @@ public class MiddlewareRequestHandler implements RequestHandler {
     private static final String ROOM = Constants.ROOM;
     private static final String CAR = Constants.CAR;
 
-    public MiddlewareRequestHandler(TransactionResourceManager customerResourceManager, MiddlewareCoordinator coordinator, MiddlewareClient flightClient, MiddlewareClient carClient, MiddlewareClient roomClient) throws IOException, ClassNotFoundException {
+    public MiddlewareRequestHandler(Socket client,
+    TransactionResourceManager customerResourceManager, 
+    MiddlewareCoordinator coordinator, 
+    MiddlewareClient flightClient, 
+    MiddlewareClient carClient,
+     MiddlewareClient roomClient) throws IOException, ClassNotFoundException {
+        this.client = client;
         this.customerResourceManager = customerResourceManager;
         this.coordinator = coordinator;
         this.flightClient = flightClient;
@@ -49,6 +56,8 @@ public class MiddlewareRequestHandler implements RequestHandler {
         final RequestData data = (RequestData) request.getData();
         final Command command = data.getCommand();
         Response response = new Response();
+
+        MiddlewareClient[] clients = {flightClient, carClient, roomClient};
 
         Trace.info(request.toString());
 
@@ -65,22 +74,19 @@ public class MiddlewareRequestHandler implements RequestHandler {
                 int nextTransactionId = coordinator.start();
 
                 this.customerResourceManager.start(nextTransactionId);
-
-                Request clone = new Request();
-                RequestData informClients = new RequestData();
-                informClients.addXId(new Integer(nextTransactionId))
-                    .addCommand(Command.Start);
-                clone.addData(informClients);
-                this.flightClient.send(clone);
-                Response flightResponse = this.flightClient.receive();
-                this.carClient.send(clone);
-                Response carResponse = this.carClient.receive();
-                this.roomClient.send(clone);
-                Response roomResponse = this.roomClient.receive();
-
-                response.addCurrentTimeStamp()
-                    .addStatus(new Boolean(true))
-                    .addMessage(Integer.toString(nextTransactionId));
+                boolean success = true;
+                for (MiddlewareClient client: clients) {
+                    success = success && client.start(nextTransactionId);
+                }
+                if (success) {
+                    response.addCurrentTimeStamp()
+                        .addStatus(new Boolean(true))
+                        .addMessage(Integer.toString(nextTransactionId));
+                } else {
+                    for (MiddlewareClient client: clients) {
+                        client.abort(nextTransactionId);
+                    }
+                }
                 break;
             }
             case Commit: {
@@ -97,6 +103,7 @@ public class MiddlewareRequestHandler implements RequestHandler {
                     break;
                 }
 
+<<<<<<< HEAD
                 Request voteRequest = new Request();
                 RequestData voteData = new RequestData();
                 voteData.addXId(xId).addCommand(Command.Vote);
@@ -159,6 +166,29 @@ public class MiddlewareRequestHandler implements RequestHandler {
                     //Send ABORT decision to all processes from which YES was received
                     for (String server : yesServers){
 
+=======
+                Set<String> servers = this.coordinator.getTransactionRms(xId);
+                boolean commitSuccess = true;
+                for (String server: servers) {
+                    if (server.equals(FLIGHT)) {
+                        this.flightClient.send(request);
+                        Response flightResponse = this.flightClient.receive();
+                        commitSuccess = commitSuccess && flightResponse.getStatus().booleanValue();
+                        continue;
+                    } else if(server.equals(CAR)) {
+                        this.carClient.send(request);
+                        Response carResponse = this.carClient.receive();
+                        commitSuccess = commitSuccess && carResponse.getStatus().booleanValue();
+                        continue;
+                    } else if (server.equals(ROOM)) {
+                        this.roomClient.send(request);
+                        Response roomResponse = this.roomClient.receive();
+                        commitSuccess = commitSuccess && roomResponse.getStatus().booleanValue();
+                        continue;
+                    } else if (server.equals(CUSTOMER)) {
+                        boolean customerSuccess = this.customerResourceManager.commit(xId);
+                        commitSuccess = commitSuccess && customerSuccess;
+>>>>>>> master
                     }
                     //Respond to Client
                     response.addCurrentTimeStamp()

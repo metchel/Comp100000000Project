@@ -2,11 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="fac91074-0f2a-4523-b9c7-2fbb72ff4dbe" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Server/java.policy" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Server/Middleware/Middleware.java" afterPath="$PROJECT_DIR$/src/Server/Middleware/Middleware.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Server/Middleware/MiddlewareClient.java" afterPath="$PROJECT_DIR$/src/Server/Middleware/MiddlewareClient.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Server/Middleware/MiddlewareCoordinator.java" afterPath="$PROJECT_DIR$/src/Server/Middleware/MiddlewareCoordinator.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Server/Middleware/MiddlewareRequestHandler.java" afterPath="$PROJECT_DIR$/src/Server/Middleware/MiddlewareRequestHandler.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Server/Middleware/Transaction.java" afterPath="$PROJECT_DIR$/src/Server/Middleware/Transaction.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Server/Sockets/ServerRequestHandler.java" afterPath="$PROJECT_DIR$/src/Server/Sockets/ServerRequestHandler.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Server/ResourceManager/TransactionLog.java" afterPath="$PROJECT_DIR$/src/Server/ResourceManager/TransactionLog.java" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -40,8 +42,8 @@
       <file leaf-file-name="MiddlewareRequestHandler.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Server/Middleware/MiddlewareRequestHandler.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-459">
-              <caret line="109" column="57" lean-forward="false" selection-start-line="109" selection-start-column="57" selection-end-line="109" selection-end-column="57" />
+            <state relative-caret-position="-340">
+              <caret line="116" column="57" lean-forward="false" selection-start-line="116" selection-start-column="57" selection-end-line="116" selection-end-column="57" />
               <folding />
             </state>
           </provider>
@@ -50,9 +52,12 @@
       <file leaf-file-name="MiddlewareCoordinator.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Server/Middleware/MiddlewareCoordinator.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="629">
-              <caret line="103" column="20" lean-forward="false" selection-start-line="103" selection-start-column="20" selection-end-line="103" selection-end-column="20" />
-              <folding />
+            <state relative-caret-position="1003">
+              <caret line="117" column="20" lean-forward="false" selection-start-line="117" selection-start-column="20" selection-end-line="117" selection-end-column="20" />
+              <folding>
+                <marker date="1543181078965" expanded="true" signature="6390:6432" ph="{...}" />
+                <marker date="1543181078965" expanded="true" signature="6390:6439" ph="{...}" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -62,7 +67,23 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="-1295">
               <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
+              <folding>
+                <marker date="1543181078892" expanded="true" signature="3417:4903" ph="{...}" />
+                <marker date="1543181078892" expanded="true" signature="3788:3868" ph="{...}" />
+                <marker date="1543181078892" expanded="true" signature="3910:3976" ph="{...}" />
+                <marker date="1543181078892" expanded="true" signature="4073:4177" ph="{...}" />
+                <marker date="1543181078892" expanded="true" signature="4253:4333" ph="{...}" />
+                <marker date="1543181078892" expanded="true" signature="4394:4468" ph="{...}" />
+                <marker date="1543181078892" expanded="true" signature="4523:4897" ph="{...}" />
+                <marker date="1543181078892" expanded="false" signature="4929:4940" ph=" { " />
+                <marker date="1543181078892" expanded="false" signature="4957:4963" ph=" }" />
+                <marker date="1543181078892" expanded="false" signature="5004:5015" ph=" { " />
+                <marker date="1543181078892" expanded="false" signature="5039:5045" ph=" }" />
+                <marker date="1543181078892" expanded="false" signature="5113:5124" ph=" { " />
+                <marker date="1543181078892" expanded="false" signature="5160:5166" ph=" }" />
+                <marker date="1543181078892" expanded="false" signature="5217:5228" ph=" { " />
+                <marker date="1543181078892" expanded="false" signature="5252:5258" ph=" }" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -71,7 +92,7 @@
         <entry file="file://$PROJECT_DIR$/src/Server/Sockets/ServerRequestHandler.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="289">
-              <caret line="84" column="24" lean-forward="true" selection-start-line="84" selection-start-column="24" selection-end-line="84" selection-end-column="24" />
+              <caret line="84" column="24" lean-forward="false" selection-start-line="84" selection-start-column="24" selection-end-line="84" selection-end-column="24" />
               <folding />
             </state>
           </provider>
@@ -114,8 +135,13 @@
               <caret line="41" column="15" lean-forward="false" selection-start-line="41" selection-start-column="15" selection-end-line="41" selection-end-column="15" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#1131#1132#0" expanded="true" />
-                <element signature="e#1177#1178#0" expanded="true" />
+                <marker date="1543181078932" expanded="false" signature="1768:1774" ph=" }" />
+                <marker date="1543181078932" expanded="false" signature="1805:1816" ph=" { " />
+                <marker date="1543181078932" expanded="false" signature="1835:1841" ph=" }" />
+                <marker date="1543181078932" expanded="false" signature="1880:1891" ph=" { " />
+                <marker date="1543181078932" expanded="false" signature="1912:1918" ph=" }" />
+                <marker date="1543181078932" expanded="true" signature="1971:2072" ph="{...}" />
+                <marker date="1543181078932" expanded="true" signature="2090:2167" ph="{...}" />
               </folding>
             </state>
           </provider>
@@ -459,12 +485,12 @@
       <workItem from="1538589415816" duration="173000" />
       <workItem from="1538589780759" duration="14483000" />
       <workItem from="1538607197901" duration="9001000" />
-      <workItem from="1543172279632" duration="8613000" />
+      <workItem from="1543172279632" duration="8913000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="123928000" />
+    <option name="totallyTimeSpent" value="124228000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1456" height="1056" extended-state="6" />
@@ -743,7 +769,7 @@
     <entry file="file://$PROJECT_DIR$/src/Server/Sockets/ServerRequestHandler.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="289">
-          <caret line="84" column="24" lean-forward="true" selection-start-line="84" selection-start-column="24" selection-end-line="84" selection-end-column="24" />
+          <caret line="84" column="24" lean-forward="false" selection-start-line="84" selection-start-column="24" selection-end-line="84" selection-end-column="24" />
           <folding />
         </state>
       </provider>
@@ -752,7 +778,23 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-1295">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
+          <folding>
+            <marker date="1543181078892" expanded="true" signature="3417:4903" ph="{...}" />
+            <marker date="1543181078892" expanded="true" signature="3788:3868" ph="{...}" />
+            <marker date="1543181078892" expanded="true" signature="3910:3976" ph="{...}" />
+            <marker date="1543181078892" expanded="true" signature="4073:4177" ph="{...}" />
+            <marker date="1543181078892" expanded="true" signature="4253:4333" ph="{...}" />
+            <marker date="1543181078892" expanded="true" signature="4394:4468" ph="{...}" />
+            <marker date="1543181078892" expanded="true" signature="4523:4897" ph="{...}" />
+            <marker date="1543181078892" expanded="false" signature="4929:4940" ph=" { " />
+            <marker date="1543181078892" expanded="false" signature="4957:4963" ph=" }" />
+            <marker date="1543181078892" expanded="false" signature="5004:5015" ph=" { " />
+            <marker date="1543181078892" expanded="false" signature="5039:5045" ph=" }" />
+            <marker date="1543181078892" expanded="false" signature="5113:5124" ph=" { " />
+            <marker date="1543181078892" expanded="false" signature="5160:5166" ph=" }" />
+            <marker date="1543181078892" expanded="false" signature="5217:5228" ph=" { " />
+            <marker date="1543181078892" expanded="false" signature="5252:5258" ph=" }" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -762,24 +804,32 @@
           <caret line="41" column="15" lean-forward="false" selection-start-line="41" selection-start-column="15" selection-end-line="41" selection-end-column="15" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#1131#1132#0" expanded="true" />
-            <element signature="e#1177#1178#0" expanded="true" />
+            <marker date="1543181078932" expanded="false" signature="1768:1774" ph=" }" />
+            <marker date="1543181078932" expanded="false" signature="1805:1816" ph=" { " />
+            <marker date="1543181078932" expanded="false" signature="1835:1841" ph=" }" />
+            <marker date="1543181078932" expanded="false" signature="1880:1891" ph=" { " />
+            <marker date="1543181078932" expanded="false" signature="1912:1918" ph=" }" />
+            <marker date="1543181078932" expanded="true" signature="1971:2072" ph="{...}" />
+            <marker date="1543181078932" expanded="true" signature="2090:2167" ph="{...}" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Server/Middleware/MiddlewareCoordinator.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="629">
-          <caret line="103" column="20" lean-forward="false" selection-start-line="103" selection-start-column="20" selection-end-line="103" selection-end-column="20" />
-          <folding />
+        <state relative-caret-position="1003">
+          <caret line="117" column="20" lean-forward="false" selection-start-line="117" selection-start-column="20" selection-end-line="117" selection-end-column="20" />
+          <folding>
+            <marker date="1543181078965" expanded="true" signature="6390:6432" ph="{...}" />
+            <marker date="1543181078965" expanded="true" signature="6390:6439" ph="{...}" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Server/Middleware/MiddlewareRequestHandler.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-459">
-          <caret line="109" column="57" lean-forward="false" selection-start-line="109" selection-start-column="57" selection-end-line="109" selection-end-column="57" />
+        <state relative-caret-position="-340">
+          <caret line="116" column="57" lean-forward="false" selection-start-line="116" selection-start-column="57" selection-end-line="116" selection-end-column="57" />
           <folding />
         </state>
       </provider>

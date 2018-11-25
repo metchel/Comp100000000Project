@@ -26,26 +26,31 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.HashSet;
 
+import java.io.IOException;
+
 public class MiddlewareCoordinator implements TransactionManager {
-    private RequestHandler handler;
     private final ScheduledExecutorService ttlWorkerPool;
     private final Map<Integer, Transaction> transactionMap;
     private final Map<Integer, Status> transactionStatusMap;
     private final Map<Integer, Set<String>> rmMap;
+    private final MiddlewareClient flightClient;
+    private final MiddlewareClient carClient;
+    private final MiddlewareClient roomClient;
     private static final String CUSTOMER = Constants.CUSTOMER;
     private static final String FLIGHT = Constants.FLIGHT;
     private static final String ROOM = Constants.ROOM;
     private static final String CAR = Constants.CAR;
 
-    public MiddlewareCoordinator() {
+    public MiddlewareCoordinator(MiddlewareClient flightClient,
+        MiddlewareClient carClient,
+        MiddlewareClient roomClient) {
         this.transactionMap = new HashMap<Integer, Transaction>();
         this.transactionStatusMap = new HashMap<Integer, Status>();
         this.rmMap = new HashMap<Integer, Set<String>>();
-        this.ttlWorkerPool = Executors.newScheduledThreadPool(2);
-    }
-
-    public void setHandler(RequestHandler handler) {
-        this.handler = handler;
+        this.ttlWorkerPool = Executors.newScheduledThreadPool(1);
+        this.flightClient = flightClient;
+        this.carClient = carClient;
+        this.roomClient = roomClient;
     }
 
     public int start() {
@@ -92,8 +97,17 @@ public class MiddlewareCoordinator implements TransactionManager {
     }
 
     public synchronized void abort(int transactionId) {
+        Trace.info("ABORT " + transactionId);
         Transaction t = (Transaction)this.transactionMap.get(transactionId);
         this.transactionStatusMap.put(transactionId, Status.ABORTED);
+        boolean success = true;
+        for (MiddlewareClient client: t.getClients()) {
+            try {
+                success = success && client.abort(t.getId());
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
+        }
         t.abort();
        // t.abort();
     }
@@ -111,11 +125,25 @@ public class MiddlewareCoordinator implements TransactionManager {
     public void addOperation(int transactionId, String rm) {
         try {
             HashSet<String> transactionRMs = (HashSet)this.rmMap.get(transactionId);
+            Transaction t = this.transactionMap.get(transactionId);
             if (!transactionRMs.contains(rm)) {
-                    transactionRMs.add(rm);
+                transactionRMs.add(rm);
+                t.addClient(rmFromString(rm));
             }
         } catch(NullPointerException e) {
             Trace.info("Transaction " + transactionId + " has not started.");
+        }
+    }
+
+    private MiddlewareClient rmFromString(String rm) {
+        if (rm.equals(Constants.FLIGHT)) {
+            return this.flightClient;
+        } else if (rm.equals(Constants.CAR)) {
+            return this.carClient;
+        } else if (rm.equals(Constants.ROOM)) {
+            return this.roomClient;
+        } else {
+            return null;
         }
     }
 
@@ -140,6 +168,12 @@ public class MiddlewareCoordinator implements TransactionManager {
                 long ttl = this.tx.getTtl();
                 if (ttl <= 0) {
                     Trace.info("Reached time to live for transaction " + this.tx.getId() + " IT SHOULD ABORT NOW BUT SHITTY DESIGN PREVENTS THIS FROM BEING EASY");
+                    System.out.println("ABORTING CLIENT"); 
+                    try {
+                        abort(tx.getId());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
