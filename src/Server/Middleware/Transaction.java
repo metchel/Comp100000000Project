@@ -39,9 +39,15 @@ public class Transaction {
         return id;
     }
 
+    public boolean voting(){
+        this.status = Status.VOTING;
+        return true;
+    }
+
     public boolean commit() {
         this.status = Status.COMMITTED;
-        return false;
+        //changed this below
+        return true;
     }
 
     public void abort() {
@@ -84,6 +90,7 @@ public class Transaction {
     enum Status {
         STARTED,
         COMMITTED,
-        ABORTED
+        ABORTED,
+        VOTING
     }
 }

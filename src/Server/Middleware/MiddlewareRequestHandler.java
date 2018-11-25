@@ -97,7 +97,36 @@ public class MiddlewareRequestHandler implements RequestHandler {
                     break;
                 }
 
+
+
+                Request voteRequest = new Request();
+                RequestData voteData = new RequestData();
+                voteData.addXId(xId).addCommand(Command.Vote);
+                voteRequest.addData(voteData);
+
                 Set<String> servers = this.coordinator.getTransactionRms(xId);
+
+                // VOTING PHASE
+                boolean voteStatus = true;
+                for (String server: servers) {
+                    if (server.equals(FLIGHT)) {
+                        this.flightClient.send(voteRequest);
+                        Response flightVote = this.flightClient.recieve();
+                        voteStatus = voteStatus && flightVote.getStatus().booleanValue();
+                    } else if(server.equals(CAR)) {
+                        this.carClient.send(voteRequest);
+                        Response carVote = this.cartClient.recieve();
+                        voteStatus = voteStatus && carVote.getStatus().booleanValue();
+                    } else if(server.equals(ROOM)) {
+                        this.roomClient.send(voteRequest);
+                        Response roomVote = this.roomClient.recieve();
+                        voteStatus = voteStatus && roomVote.getStatus().booleanValue();
+                    } else if(server.equals(CUSTOMER)) {
+                        //TODO
+                    }
+                }
+
+
                 boolean commitSuccess = true;
                 for (String server: servers) {
                     if (server.equals(FLIGHT)) {
