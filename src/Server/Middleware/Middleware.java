@@ -47,11 +47,10 @@ public class Middleware {
         
         try {
             final TransactionResourceManager customerResourceManager = new TransactionResourceManager(Constants.CUSTOMER);
-            final MiddlewareCoordinator coordinator = new MiddlewareCoordinator();
             final MiddlewareClient flightClient = new MiddlewareClient(Constants.FLIGHT, InetAddress.getByName(inetFlights), portFlights);
             final MiddlewareClient carClient = new MiddlewareClient(Constants.CAR, InetAddress.getByName(inetCars), portCars);
             final MiddlewareClient roomClient = new MiddlewareClient(Constants.ROOM, InetAddress.getByName(inetRooms), portRooms);
-
+            final MiddlewareCoordinator coordinator = new MiddlewareCoordinator(flightClient, carClient, roomClient);
             middleware = new Middleware.Builder()
                 .atInetAddress(InetAddress.getByName(inetMiddleware))
                 .atPort(portMiddleware)
@@ -64,7 +63,6 @@ public class Middleware {
 
             serverSocket = new ServerSocket(middleware.getPort());
             RequestHandler handler = new MiddlewareRequestHandler(customerResourceManager, coordinator, flightClient, carClient, roomClient);
-            coordinator.setHandler(handler);
             Socket client = new Socket();
             while(true) {
                 try {

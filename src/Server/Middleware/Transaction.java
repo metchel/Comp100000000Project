@@ -13,7 +13,7 @@ public class Transaction {
     private final static long DEFAULT_TTL = 10000;
     private static int nextTransactionId;
     private final int id;
-    private final Set clients;
+    private final Set<MiddlewareClient> clients;
     private Status status;
     private final Queue commands;
     private final Set<RMItem> localData;
@@ -63,7 +63,7 @@ public class Transaction {
         return this.id;
     }
 
-    public Set getClients() {
+    public Set<MiddlewareClient> getClients() {
         return this.clients;
     }
 

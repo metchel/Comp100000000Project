@@ -50,6 +50,8 @@ public class MiddlewareRequestHandler implements RequestHandler {
         final Command command = data.getCommand();
         Response response = new Response();
 
+        MiddlewareClient[] clients = {flightClient, carClient, roomClient};
+
         Trace.info(request.toString());
 
         final int xid = request.getData().getXId();
@@ -65,22 +67,19 @@ public class MiddlewareRequestHandler implements RequestHandler {
                 int nextTransactionId = coordinator.start();
 
                 this.customerResourceManager.start(nextTransactionId);
-
-                Request clone = new Request();
-                RequestData informClients = new RequestData();
-                informClients.addXId(new Integer(nextTransactionId))
-                    .addCommand(Command.Start);
-                clone.addData(informClients);
-                this.flightClient.send(clone);
-                Response flightResponse = this.flightClient.receive();
-                this.carClient.send(clone);
-                Response carResponse = this.carClient.receive();
-                this.roomClient.send(clone);
-                Response roomResponse = this.roomClient.receive();
-
-                response.addCurrentTimeStamp()
-                    .addStatus(new Boolean(true))
-                    .addMessage(Integer.toString(nextTransactionId));
+                boolean success = true;
+                for (MiddlewareClient client: clients) {
+                    success = success && client.start(nextTransactionId);
+                }
+                if (success) {
+                    response.addCurrentTimeStamp()
+                        .addStatus(new Boolean(true))
+                        .addMessage(Integer.toString(nextTransactionId));
+                } else {
+                    for (MiddlewareClient client: clients) {
+                        client.abort(nextTransactionId);
+                    }
+                }
                 break;
             }
             case Commit: {

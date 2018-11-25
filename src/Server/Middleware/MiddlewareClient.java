@@ -1,12 +1,15 @@
 package Server.Middleware;
 
 import Server.Network.Request;
+import Server.Network.RequestData;
 import Server.Network.Response;
+import Server.Common.Command;
 
 import java.io.ObjectOutputStream;
 import java.io.ObjectInputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Map;
 import java.net.InetAddress;
 
 public class MiddlewareClient {
@@ -48,5 +51,46 @@ public class MiddlewareClient {
     
     public String getName() {
         return this.name;
+    }
+
+    public boolean start(int transactionId) throws IOException, ClassNotFoundException {
+        this.send(generateRequest(transactionId, Command.Start, null));
+        Response res = this.receive();
+        return res.getStatus().booleanValue();
+    }
+
+    public boolean commit (int transactionId) throws IOException, ClassNotFoundException {
+        this.send(generateRequest(transactionId, Command.Commit, null));
+        Response res = this.receive();
+        return res.getStatus().booleanValue();
+    }
+
+    public boolean abort(int transactionId) throws IOException, ClassNotFoundException {
+        this.send(generateRequest(transactionId, Command.Abort, null));
+        Response res = this.receive();
+        return res.getStatus().booleanValue();
+    }
+
+    public Response forward(Request req) throws IOException, ClassNotFoundException {
+        this.send(req);
+        return this.receive();
+    }
+
+    private Request generateRequest(int transactionId, Command command, Map<String, Object> arguments) {
+        final Request req = new Request();
+        final RequestData data = new RequestData();
+        data.addXId(transactionId)
+            .addCommand(command);
+        
+        if (arguments != null) {
+            for (String key: arguments.keySet()) {
+                data.addArgument(key, arguments.get(key));
+            }
+        }
+
+        req.addCurrentTimeStamp()
+            .addData(data);
+
+        return req;
     }
 }
