@@ -97,8 +97,6 @@ public class MiddlewareRequestHandler implements RequestHandler {
                     break;
                 }
 
-
-
                 Request voteRequest = new Request();
                 RequestData voteData = new RequestData();
                 voteData.addXId(xId).addCommand(Command.Vote);
@@ -106,59 +104,88 @@ public class MiddlewareRequestHandler implements RequestHandler {
 
                 Set<String> servers = this.coordinator.getTransactionRms(xId);
 
-                // VOTING PHASE
+                // VOTING PHASE (Phase 1)
                 boolean voteStatus = true;
                 for (String server: servers) {
                     if (server.equals(FLIGHT)) {
                         this.flightClient.send(voteRequest);
                         Response flightVote = this.flightClient.recieve();
                         voteStatus = voteStatus && flightVote.getStatus().booleanValue();
+                        if (!voteStatus) {
+                            break;
+                        } else {
+                            continue;
+                        }
                     } else if(server.equals(CAR)) {
                         this.carClient.send(voteRequest);
                         Response carVote = this.cartClient.recieve();
                         voteStatus = voteStatus && carVote.getStatus().booleanValue();
+                        if (!voteStatus) {
+                            break;
+                        } else {
+                            continue;
+                        }
                     } else if(server.equals(ROOM)) {
                         this.roomClient.send(voteRequest);
                         Response roomVote = this.roomClient.recieve();
                         voteStatus = voteStatus && roomVote.getStatus().booleanValue();
+                        if (!voteStatus) {
+                            break;
+                        } else {
+                            continue;
+                        }
                     } else if(server.equals(CUSTOMER)) {
                         //TODO
                     }
                 }
-
-
-                boolean commitSuccess = true;
-                for (String server: servers) {
-                    if (server.equals(FLIGHT)) {
-                        this.flightClient.send(request);
-                        Response flightResponse = this.flightClient.receive();
-                        commitSuccess = commitSuccess && flightResponse.getStatus().booleanValue();
-                        continue;
-                    } else if(server.equals(CAR)) {
-                        this.carClient.send(request);
-                        Response carResponse = this.carClient.receive();
-                        commitSuccess = commitSuccess && carResponse.getStatus().booleanValue();
-                        continue;
-                    } else if (server.equals(ROOM)) {
-                        this.roomClient.send(request);
-                        Response roomResponse = this.roomClient.receive();
-                        commitSuccess = commitSuccess && roomResponse.getStatus().booleanValue();
-                        continue;
-                    } else if (server.equals(CUSTOMER)) {
-                        boolean customerSuccess = this.customerResourceManager.commit(xId);
-                        commitSuccess = commitSuccess && customerSuccess;
-                    }
+                //if someone voted no
+                if(!voteStatus){
+                    // TELL the people to ABORT
+                    // Make an abort request
+                    // this.handle(abortRequest);
+                    Request abortRequest = new Request();
+                    RequestData abortData = new RequestData();
+                    abortData.addXId(xId).addCommand(Command.Abort);
+                    abortRequest.addData(abortData);
+                    response.addCurrentTimeStamp()
+                            .addStatus(false)
+                            .addMessage("Transaction " + xId + " not committed (PHASE 1)");
                 }
+                //everyone voted yes - phase 2
+                else {
+                    boolean commitSuccess = true;
+                    for (String server : servers) {
+                        if (server.equals(FLIGHT)) {
+                            this.flightClient.send(request);
+                            Response flightResponse = this.flightClient.receive();
+                            commitSuccess = commitSuccess && flightResponse.getStatus().booleanValue();
+                            continue;
+                        } else if (server.equals(CAR)) {
+                            this.carClient.send(request);
+                            Response carResponse = this.carClient.receive();
+                            commitSuccess = commitSuccess && carResponse.getStatus().booleanValue();
+                            continue;
+                        } else if (server.equals(ROOM)) {
+                            this.roomClient.send(request);
+                            Response roomResponse = this.roomClient.receive();
+                            commitSuccess = commitSuccess && roomResponse.getStatus().booleanValue();
+                            continue;
+                        } else if (server.equals(CUSTOMER)) {
+                            boolean customerSuccess = this.customerResourceManager.commit(xId);
+                            commitSuccess = commitSuccess && customerSuccess;
+                        }
+                    }
 
-                if (commitSuccess) {
-                    this.coordinator.commit(xId.intValue());
-                    response.addCurrentTimeStamp()
-                        .addStatus(true)
-                        .addMessage("Transaction " + xId + " committed.");
-                } else {
-                    response.addCurrentTimeStamp()
-                        .addStatus(false)
-                        .addMessage("Transaction " + xId + " not committed.");
+                    if (commitSuccess) {
+                        this.coordinator.commit(xId.intValue());
+                        response.addCurrentTimeStamp()
+                                .addStatus(true)
+                                .addMessage("Transaction " + xId + " committed.");
+                    } else {
+                        response.addCurrentTimeStamp()
+                                .addStatus(false)
+                                .addMessage("Transaction " + xId + " not committed (PHASE 2)");
+                    }
                 }
                 break;
             }

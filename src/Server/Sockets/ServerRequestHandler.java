@@ -82,7 +82,15 @@ public class ServerRequestHandler implements RequestHandler {
             case Abort: {
                 return new Boolean(resourceManager.abort(xId.intValue()));
             }
+            case Vote: {
+                //try and write to log
+                //if(success){
+                //vote yes
+                //}else {
+                //vote no
+                //}
 
+            }
             case Shutdown: {
                 System.out.println("Gracefully shutting down...");
                 try {
