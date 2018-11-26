@@ -12,7 +12,7 @@ import java.net.Socket;
 import java.util.Map;
 import java.net.InetAddress;
 
-public class MiddlewareClient {
+public class MiddlewareResourceManager {
     private final InetAddress inetAddress;
     private final int port;
     private final String name;
@@ -20,7 +20,7 @@ public class MiddlewareClient {
     private final ObjectOutputStream oos;
     private final ObjectInputStream ois;
 
-    public MiddlewareClient(String name, InetAddress inetAddress, int port) throws IOException, ClassNotFoundException{
+    public MiddlewareResourceManager(String name, InetAddress inetAddress, int port) throws IOException, ClassNotFoundException{
         this.name = name;
         this.inetAddress = inetAddress;
         this.port = port;

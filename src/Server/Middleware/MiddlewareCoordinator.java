@@ -33,17 +33,17 @@ public class MiddlewareCoordinator implements TransactionManager {
     private final Map<Integer, Transaction> transactionMap;
     private final Map<Integer, Status> transactionStatusMap;
     private final Map<Integer, Set<String>> rmMap;
-    private final MiddlewareClient flightClient;
-    private final MiddlewareClient carClient;
-    private final MiddlewareClient roomClient;
+    private final MiddlewareResourceManager flightClient;
+    private final MiddlewareResourceManager carClient;
+    private final MiddlewareResourceManager roomClient;
     private static final String CUSTOMER = Constants.CUSTOMER;
     private static final String FLIGHT = Constants.FLIGHT;
     private static final String ROOM = Constants.ROOM;
     private static final String CAR = Constants.CAR;
 
-    public MiddlewareCoordinator(MiddlewareClient flightClient,
-        MiddlewareClient carClient,
-        MiddlewareClient roomClient) {
+    public MiddlewareCoordinator(MiddlewareResourceManager flightClient,
+        MiddlewareResourceManager carClient,
+        MiddlewareResourceManager roomClient) {
         this.transactionMap = new HashMap<Integer, Transaction>();
         this.transactionStatusMap = new HashMap<Integer, Status>();
         this.rmMap = new HashMap<Integer, Set<String>>();
@@ -101,7 +101,7 @@ public class MiddlewareCoordinator implements TransactionManager {
         Transaction t = (Transaction)this.transactionMap.get(transactionId);
         this.transactionStatusMap.put(transactionId, Status.ABORTED);
         boolean success = true;
-        for (MiddlewareClient client: t.getClients()) {
+        for (MiddlewareResourceManager client: t.getClients()) {
             try {
                 success = success && client.abort(t.getId());
             } catch(Exception e) {
@@ -128,7 +128,7 @@ public class MiddlewareCoordinator implements TransactionManager {
         }
     }
 
-    private MiddlewareClient rmFromString(String rm) {
+    private MiddlewareResourceManager rmFromString(String rm) {
         if (rm.equals(Constants.FLIGHT)) {
             return this.flightClient;
         } else if (rm.equals(Constants.CAR)) {

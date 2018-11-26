@@ -26,9 +26,9 @@ import Server.Transactions.Operation.OperationType;
 
 public class MiddlewareRequestHandler implements RequestHandler {
     private final Socket client;
-    private final MiddlewareClient flightClient;
-    private final MiddlewareClient carClient;
-    private final MiddlewareClient roomClient;
+    private final MiddlewareResourceManager flightClient;
+    private final MiddlewareResourceManager carClient;
+    private final MiddlewareResourceManager roomClient;
 
     private final TransactionResourceManager customerResourceManager;
     private final MiddlewareCoordinator coordinator;
@@ -41,9 +41,9 @@ public class MiddlewareRequestHandler implements RequestHandler {
     public MiddlewareRequestHandler(Socket client,
     TransactionResourceManager customerResourceManager, 
     MiddlewareCoordinator coordinator, 
-    MiddlewareClient flightClient, 
-    MiddlewareClient carClient,
-     MiddlewareClient roomClient) throws IOException, ClassNotFoundException {
+    MiddlewareResourceManager flightClient,
+    MiddlewareResourceManager carClient,
+    MiddlewareResourceManager roomClient) throws IOException, ClassNotFoundException {
         this.client = client;
         this.customerResourceManager = customerResourceManager;
         this.coordinator = coordinator;
@@ -57,7 +57,7 @@ public class MiddlewareRequestHandler implements RequestHandler {
         final Command command = data.getCommand();
         Response response = new Response();
 
-        MiddlewareClient[] clients = {flightClient, carClient, roomClient};
+        MiddlewareResourceManager[] clients = {flightClient, carClient, roomClient};
 
         Trace.info(request.toString());
 
@@ -75,7 +75,7 @@ public class MiddlewareRequestHandler implements RequestHandler {
 
                 this.customerResourceManager.start(nextTransactionId);
                 boolean success = true;
-                for (MiddlewareClient client: clients) {
+                for (MiddlewareResourceManager client: clients) {
                     success = success && client.start(nextTransactionId);
                 }
                 if (success) {
@@ -83,7 +83,7 @@ public class MiddlewareRequestHandler implements RequestHandler {
                         .addStatus(new Boolean(true))
                         .addMessage(Integer.toString(nextTransactionId));
                 } else {
-                    for (MiddlewareClient client: clients) {
+                    for (MiddlewareResourceManager client: clients) {
                         client.abort(nextTransactionId);
                     }
                 }

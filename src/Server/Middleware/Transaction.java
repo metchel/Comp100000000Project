@@ -13,7 +13,7 @@ public class Transaction {
     private final static long DEFAULT_TTL = 10000;
     private static int nextTransactionId;
     private final int id;
-    private final Set<MiddlewareClient> clients;
+    private final Set<MiddlewareResourceManager> clients;
     private Status status;
     private final Queue commands;
     private final Set<RMItem> localData;
@@ -22,7 +22,7 @@ public class Transaction {
     public Transaction() {
         this.id = getNextTransactionId();
         this.ttl = System.currentTimeMillis() + DEFAULT_TTL;
-        this.clients = new HashSet<MiddlewareClient>();
+        this.clients = new HashSet<MiddlewareResourceManager>();
         this.commands = new LinkedList<Command>();
         this.localData = new HashSet<RMItem>();
     }
@@ -69,7 +69,7 @@ public class Transaction {
         return this.id;
     }
 
-    public Set<MiddlewareClient> getClients() {
+    public Set<MiddlewareResourceManager> getClients() {
         return this.clients;
     }
 
@@ -81,7 +81,7 @@ public class Transaction {
         this.commands.add(c);
     }
 
-    public void addClient(MiddlewareClient client) {
+    public void addClient(MiddlewareResourceManager client) {
         if (!this.clients.contains(client)) {
             this.clients.add(client);
         }
