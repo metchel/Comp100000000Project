@@ -52,6 +52,21 @@ public class SocketResourceManager implements IResourceManager {
 			m_data.remove(key);
 		}
 	}
+	// Clears out the entirety of the main memory data
+	protected void clearData()
+	{
+		synchronized (m_data){
+			m_data.clear();
+		}
+	}
+	// Sets the data to something else
+	protected void setData(Map newData)
+	{
+		synchronized (m_data){
+			m_data = new HashMap(newData);
+		}
+	}
+
 
 	// Deletes the encar item
 	protected boolean deleteItem(int xid, String key)

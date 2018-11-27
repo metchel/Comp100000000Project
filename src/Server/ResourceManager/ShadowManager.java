@@ -30,10 +30,14 @@ public class ShadowManager {
         return this.masterRecord.readFromLog();
     }
 
-    public boolean writeToStorage(Map currentState) throws IOException, ClassNotFoundException{
+    public boolean writeToStorage(Map currentState, int xid) throws IOException, ClassNotFoundException{
         String locToWrite = this.getUnusedLocation();
+
+        Map<String,Integer> mrmap = Map.ofEntries(entry(locToWrite, xid));
+
         if (locToWrite.equals(VERSION_A)){
             this.versionA.writeToLog(currentState);
+
         }
         else if (locToWrite.equals(VERSION_B)){
             this.versionB.writeToLog(currentState);
@@ -41,6 +45,9 @@ public class ShadowManager {
         else {
             return false;
         }
+
+        this.masterRecord.writeToLog(mrmap);
+
         return true;
 
     }
