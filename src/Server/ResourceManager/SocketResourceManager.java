@@ -63,7 +63,7 @@ public class SocketResourceManager implements IResourceManager {
 	protected void setData(Map newData)
 	{
 		synchronized (m_data){
-			m_data = new HashMap(newData);
+			m_data = (RMHashMap) newData;
 		}
 	}
 
