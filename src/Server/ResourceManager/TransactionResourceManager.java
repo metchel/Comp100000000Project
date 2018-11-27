@@ -8,7 +8,8 @@ import Server.Middleware.TransactionManager;
 import Server.Transactions.Operation;
 import Server.Transactions.Operation.OperationType;
 import Server.Transactions.ReserveOperation;
-
+import Server.ResourceManager.TransactionLog;
+import Server.ResourceManager.ShadowManager;
 import java.io.IOException;
 import java.util.Stack;
 import java.util.Map;
@@ -17,11 +18,14 @@ import java.util.Calendar;
 
 public class TransactionResourceManager extends SocketResourceManager {
     private final LockManager lockManager;
+    private final ShadowManager shadowManager;
     private Map<Integer, Stack<Operation>> txMap;
+
     
     public TransactionResourceManager(String name) {
         super(name);
         this.lockManager = new LockManager();
+        this.shadowManager = new ShadowManager(name);
         this.txMap = new HashMap<Integer, Stack<Operation>>();
     }
 
@@ -35,12 +39,21 @@ public class TransactionResourceManager extends SocketResourceManager {
             return true;
         } catch (Exception e) {
             Trace.info("Could not enlist transaction " + xId);
+            e.printStackTrace();
             return false;
         }
     }
 
     public synchronized boolean commit(int xId) {
         try {
+            boolean b = shadowManager.writeToStorage(m_data, xId);
+            return lockManager.UnlockAll(xId);
+        } catch(Exception e) {
+            Trace.info("Could not commit transaction " + xId);
+            e.printStackTrace();
+            return false;
+        }
+       /* try {
             Trace.info("Committing transaction " + xId);
             Stack txOps = this.txMap.get(xId);
             if (txOps == null) {
@@ -53,10 +66,22 @@ public class TransactionResourceManager extends SocketResourceManager {
         } catch(Exception e) {
             Trace.info("Could not commit transaction " + xId);
             return false;
-        }
+        }*/
     }
 
     public synchronized boolean abort(int xId){
+        try {
+            clearData();
+            Map lastCommitedVersion = shadowManager.loadFromStorage();
+            setData(lastCommitedVersion);
+            return lockManager.UnlockAll(xId);
+        } catch(Exception e){
+            e.printStackTrace();
+            Trace.warn("Exception during abort!");
+            return false;
+        }
+
+       /*
         try {
             System.out.println("Aborting transaction " + xId);
             Stack txOps = txMap.get(xId);
@@ -78,7 +103,7 @@ public class TransactionResourceManager extends SocketResourceManager {
             e.printStackTrace();
             Trace.warn("Exception during abort!");
             return false;
-        }
+        }*/
     }
 
     public boolean shutdown() {

@@ -11,7 +11,7 @@ import java.io.IOException;
 public class TransactionLog {
     private final File file;
     private final String fileName;
-    private final String PREFIX = "logfiles/";
+    private final String PREFIX = "Server/logfiles/";
     private final String SUFFIX = ".log";
 
     public TransactionLog(String fileName) {
@@ -19,6 +19,12 @@ public class TransactionLog {
         this.file = new File(PREFIX 
             + fileName 
             + SUFFIX);
+        try {
+            this.file.createNewFile();
+        } catch (Exception e) {
+            System.out.println(this.file.getPath());
+            e.printStackTrace();
+        }
     }
 
     public void writeToLog(Map data) throws IOException {
@@ -27,6 +33,13 @@ public class TransactionLog {
         final ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(path));
         out.writeObject(data);
         out.close();
+    }
+
+    public String getFileName(){
+        return this.fileName;
+    }
+    public int getFileSize(){
+        return ((int) this.file.length());
     }
 
     public Map readFromLog() throws IOException, ClassNotFoundException{
