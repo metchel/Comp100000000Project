@@ -94,9 +94,6 @@ public class ShadowManager {
         } else {
             return EMPTYMAP;
         }
-
-
-
     }
 
 

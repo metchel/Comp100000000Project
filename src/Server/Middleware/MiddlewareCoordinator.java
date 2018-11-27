@@ -141,7 +141,7 @@ public class MiddlewareCoordinator {
                 return true;
             } else {
                 for (MiddlewareResourceManager rm: commitMap.keySet()) {
-                    if (!commitMap.get(rm)) {
+                    if (commitMap.get(rm)) {
                         boolean res = rm.abort(xId);
                         abortMap.put(rm, new Boolean(res));
                     }

@@ -56,14 +56,19 @@ public class SocketResourceManager implements IResourceManager {
 	protected void clearData()
 	{
 		synchronized (m_data){
-			m_data.clear();
+			try {
+				m_data.clear();
+			} catch(NullPointerException e) {
+				return;
+			}
 		}
 	}
 	// Sets the data to something else
 	protected void setData(Map newData)
 	{
 		synchronized (m_data){
-			m_data = (RMHashMap) newData;
+			if (!newData.equals(Collections.EMPTY_MAP)) m_data = (RMHashMap) newData;
+			else m_data = null;
 		}
 	}
 

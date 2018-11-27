@@ -56,6 +56,7 @@ public class TransactionResourceManager extends SocketResourceManager {
 
     public synchronized boolean commit(int xId) {
         try {
+            Trace.info("About to write to master record for " + xId);
             boolean b = shadowManager.writeToMasterRecord(xId);
             return lockManager.UnlockAll(xId);
         } catch(Exception e) {
@@ -83,6 +84,7 @@ public class TransactionResourceManager extends SocketResourceManager {
         try {
             clearData();
             Map lastCommitedVersion = shadowManager.loadFromStorage();
+            Trace.info(lastCommitedVersion.toString());
             setData(lastCommitedVersion);
             return lockManager.UnlockAll(xId);
         } catch(Exception e){
