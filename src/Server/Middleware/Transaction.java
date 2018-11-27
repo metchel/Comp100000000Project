@@ -91,6 +91,7 @@ public class Transaction {
         STARTED,
         COMMITTED,
         ABORTED,
-        VOTING
+        VOTING,
+        PREPARED
     }
 }

@@ -103,32 +103,7 @@ public class MiddlewareRequestHandler implements RequestHandler {
                     break;
                 }
 
-                Set<String> servers = this.coordinator.getTransactionRms(xId);
-                boolean commitSuccess = true;
-                for (String server: servers) {
-                    if (server.equals(FLIGHT)) {
-                        this.flightClient.send(request);
-                        Response flightResponse = this.flightClient.receive();
-                        commitSuccess = commitSuccess && flightResponse.getStatus().booleanValue();
-                        continue;
-                    } else if(server.equals(CAR)) {
-                        this.carClient.send(request);
-                        Response carResponse = this.carClient.receive();
-                        commitSuccess = commitSuccess && carResponse.getStatus().booleanValue();
-                        continue;
-                    } else if (server.equals(ROOM)) {
-                        this.roomClient.send(request);
-                        Response roomResponse = this.roomClient.receive();
-                        commitSuccess = commitSuccess && roomResponse.getStatus().booleanValue();
-                        continue;
-                    } else if (server.equals(CUSTOMER)) {
-                        boolean customerSuccess = this.customerResourceManager.commit(xId);
-                        commitSuccess = commitSuccess && customerSuccess;
-                    }
-                }
-
-                if (commitSuccess) {
-                    this.coordinator.commit(xId.intValue());
+                if (this.coordinator.commit(xId)) {
                     response.addCurrentTimeStamp()
                         .addStatus(true)
                         .addMessage("Transaction " + xId + " committed.");
@@ -147,34 +122,7 @@ public class MiddlewareRequestHandler implements RequestHandler {
                     response.addMessage("Transaction " + xId + " doesn't exist.");
                     break;
                 }
-                this.coordinator.abort(xId.intValue());
-                Set<String> servers = this.coordinator.getTransactionRms(xId);
-                boolean abortSuccess = true;
-                for (String server: servers) {
-                    if (server.equals(FLIGHT)) {
-                        this.flightClient.send(request);
-                        Response flightResponse = this.flightClient.receive();
-                        abortSuccess = abortSuccess && flightResponse.getStatus().booleanValue();
-                        continue;
-                    } else if(server.equals(CAR)) {
-                        this.carClient.send(request);
-                        Response carResponse = this.carClient.receive();
-                        abortSuccess = abortSuccess && carResponse.getStatus().booleanValue();
-                        continue;
-                    } else if (server.equals(ROOM)) {
-                        this.roomClient.send(request);
-                        Response roomResponse = this.roomClient.receive();
-                        abortSuccess = abortSuccess && roomResponse.getStatus().booleanValue();
-                        continue;
-                    } else if (server.equals(CUSTOMER)) {
-                        boolean customerResponse = this.customerResourceManager.abort(xId);
-                        abortSuccess = abortSuccess && customerResponse;
-                    } else {
-                        System.out.println("Something has gone terribly wrong.");
-                    }
-                }
-                if (abortSuccess) {
-                    this.coordinator.abort(xId);
+                if (this.coordinator.abort(xId)) {
                     response.addCurrentTimeStamp()
                         .addStatus(true)
                         .addMessage("Transaction " + xId + " aborted.");

@@ -14,6 +14,9 @@ expires then the transaction should be aborted
 import Server.Common.Command;
 import Server.Common.Constants;
 import Server.Common.Trace;
+import Server.Network.CanCommitRequest;
+import Server.Network.DoCommitRequest;
+import Server.Network.Response;
 import Server.Middleware.Transaction.Status;
 import Server.Sockets.RequestHandler;
 
@@ -28,29 +31,29 @@ import java.util.HashSet;
 
 import java.io.IOException;
 
-public class MiddlewareCoordinator implements TransactionManager {
+public class MiddlewareCoordinator {
     private final ScheduledExecutorService ttlWorkerPool;
     private final Map<Integer, Transaction> transactionMap;
     private final Map<Integer, Status> transactionStatusMap;
     private final Map<Integer, Set<String>> rmMap;
-    private final MiddlewareResourceManager flightClient;
-    private final MiddlewareResourceManager carClient;
-    private final MiddlewareResourceManager roomClient;
+    private final MiddlewareResourceManager flightRM;
+    private final MiddlewareResourceManager carRM;
+    private final MiddlewareResourceManager roomRM;
     private static final String CUSTOMER = Constants.CUSTOMER;
     private static final String FLIGHT = Constants.FLIGHT;
     private static final String ROOM = Constants.ROOM;
     private static final String CAR = Constants.CAR;
 
-    public MiddlewareCoordinator(MiddlewareResourceManager flightClient,
-        MiddlewareResourceManager carClient,
-        MiddlewareResourceManager roomClient) {
+    public MiddlewareCoordinator(MiddlewareResourceManager flightRM,
+        MiddlewareResourceManager carRM,
+        MiddlewareResourceManager roomRM) {
         this.transactionMap = new HashMap<Integer, Transaction>();
         this.transactionStatusMap = new HashMap<Integer, Status>();
         this.rmMap = new HashMap<Integer, Set<String>>();
         this.ttlWorkerPool = Executors.newScheduledThreadPool(1);
-        this.flightClient = flightClient;
-        this.carClient = carClient;
-        this.roomClient = roomClient;
+        this.flightRM = flightRM;
+        this.carRM = carRM;
+        this.roomRM = roomRM;
     }
 
     public int start() {
@@ -87,16 +90,77 @@ public class MiddlewareCoordinator implements TransactionManager {
         return transactionMap.get(xid) != null;
     }
 
-    public synchronized boolean commit(int transactionId) {
-        Transaction t = (Transaction)this.transactionMap.get(transactionId);
-        boolean commitSuccess = t.commit();
-        if (commitSuccess) {
-            this.transactionStatusMap.put(transactionId, Status.COMMITTED);
+    public boolean commit(int xId) throws IOException, ClassNotFoundException {
+        Transaction t = (Transaction)this.transactionMap.get(xId);
+        if (t.voting()) {
+            this.transactionStatusMap.put(xId, Status.VOTING);
         }
-        return commitSuccess;
+
+        HashMap<MiddlewareResourceManager, Boolean> voteMap = new HashMap<MiddlewareResourceManager, Boolean>();
+        
+        for (MiddlewareResourceManager rm: t.getClients()) {
+            rm.send(new CanCommitRequest(xId));
+            Response res = rm.receive();
+            voteMap.put(rm, res.getStatus());
+        }
+
+        boolean allPrepared = false;
+        for (Boolean vote: voteMap.values()) {
+            if (vote) {
+                allPrepared = true;
+            } else {
+                allPrepared = false;
+                break;
+            }
+        }
+
+        HashMap<MiddlewareResourceManager, Boolean> commitMap = new HashMap<MiddlewareResourceManager, Boolean>();
+        HashMap<MiddlewareResourceManager, Boolean> abortMap = new HashMap<MiddlewareResourceManager, Boolean>();
+
+        if (allPrepared) {
+            this.transactionStatusMap.put(xId, Status.PREPARED);
+
+            boolean allCommitted = false;
+            for (MiddlewareResourceManager rm: t.getClients()) {
+                rm.send(new DoCommitRequest(xId));
+                Response res = rm.receive();
+                commitMap.put(rm, res.getStatus());
+            }
+
+            for (Boolean commitSuccess: commitMap.values()) {
+                if (commitSuccess) {
+                    allCommitted = true;
+                } else {
+                    allCommitted = false;
+                    break;
+                }
+            }
+
+            if (allCommitted) {
+                this.transactionStatusMap.put(xId, Status.COMMITTED);
+                return true;
+            } else {
+                for (MiddlewareResourceManager rm: commitMap.keySet()) {
+                    if (!commitMap.get(rm)) {
+                        boolean res = rm.abort(xId);
+                        abortMap.put(rm, new Boolean(res));
+                    }
+                }
+                return false;
+            }
+        } else {
+            for (MiddlewareResourceManager rm: voteMap.keySet()) {
+                if (!voteMap.get(rm)) {
+                    boolean res = rm.abort(xId);
+                    abortMap.put(rm, new Boolean(res));
+                }
+            }
+            this.transactionStatusMap.put(xId, Status.ABORTED);
+            return false;
+        }
     }
 
-    public synchronized void abort(int transactionId) {
+    public synchronized boolean abort(int transactionId) {
         Trace.info("ABORT " + transactionId);
         Transaction t = (Transaction)this.transactionMap.get(transactionId);
         this.transactionStatusMap.put(transactionId, Status.ABORTED);
@@ -109,6 +173,8 @@ public class MiddlewareCoordinator implements TransactionManager {
             }
         }
         t.abort();
+
+        return success;
     }
 
     public synchronized boolean shutdown() {
@@ -130,11 +196,11 @@ public class MiddlewareCoordinator implements TransactionManager {
 
     private MiddlewareResourceManager rmFromString(String rm) {
         if (rm.equals(Constants.FLIGHT)) {
-            return this.flightClient;
+            return this.flightRM;
         } else if (rm.equals(Constants.CAR)) {
-            return this.carClient;
+            return this.carRM;
         } else if (rm.equals(Constants.ROOM)) {
-            return this.roomClient;
+            return this.roomRM;
         } else {
             return null;
         }
