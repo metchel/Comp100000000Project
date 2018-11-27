@@ -38,6 +38,9 @@ public class TransactionLog {
     public String getFileName(){
         return this.fileName;
     }
+    public int getFileSize(){
+        return ((int) this.file.length());
+    }
 
     public Map readFromLog() throws IOException, ClassNotFoundException{
         final String path = this.getFullPath();

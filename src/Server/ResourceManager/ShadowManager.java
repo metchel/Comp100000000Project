@@ -69,15 +69,24 @@ public class ShadowManager {
 
     public Map loadFromStorage() throws IOException, ClassNotFoundException {
         String lastCommit = this.getLastCommitLocation();
+
         if (lastCommit.equals(VERSION_A)){
+            if(this.versionA.getFileSize() == 0){
+                return Collections.emptyMap();
+            }
             return this.versionA.readFromLog();
         }
         else if (lastCommit.equals(VERSION_B)){
+            if(this.versionB.getFileSize() == 0){
+                return Collections.emptyMap();
+            }
             return this.versionB.readFromLog();
-        }
-        else {
+        } else {
             return Collections.emptyMap();
         }
+
+
+
     }
 
 
