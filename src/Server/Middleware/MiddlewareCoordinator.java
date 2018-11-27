@@ -119,9 +119,9 @@ public class MiddlewareCoordinator implements TransactionManager {
         try {
             HashSet<String> transactionRMs = (HashSet)this.rmMap.get(transactionId);
             Transaction t = this.transactionMap.get(transactionId);
+            t.addClient(rmFromString(rm));
             if (!transactionRMs.contains(rm)) {
                 transactionRMs.add(rm);
-                t.addClient(rmFromString(rm));
             }
         } catch(NullPointerException e) {
             Trace.info("Transaction " + transactionId + " has not started.");
