@@ -20,6 +20,7 @@ public class ShadowManager {
         DEFAULTMAP = new HashMap<>();
         DEFAULTMAP.put(VERSION_B,0);
     }
+    public static final Map EMPTYMAP = Collections.emptyMap();
 
 
     public TransactionLog masterRecord;
@@ -32,7 +33,7 @@ public class ShadowManager {
         try {
             this.masterRecord.writeToLog(DEFAULTMAP);
         } catch (Exception e){
-            System.out.println("SM Constructor");
+            System.out.println("SM Constructor failure");
             e.printStackTrace();
         }
         this.name = rmname;
@@ -72,17 +73,17 @@ public class ShadowManager {
 
         if (lastCommit.equals(VERSION_A)){
             if(this.versionA.getFileSize() == 0){
-                return Collections.emptyMap();
+                return EMPTYMAP;
             }
             return this.versionA.readFromLog();
         }
         else if (lastCommit.equals(VERSION_B)){
             if(this.versionB.getFileSize() == 0){
-                return Collections.emptyMap();
+                return EMPTYMAP;
             }
             return this.versionB.readFromLog();
         } else {
-            return Collections.emptyMap();
+            return EMPTYMAP;
         }
 
 
