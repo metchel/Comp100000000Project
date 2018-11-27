@@ -44,9 +44,19 @@ public class TransactionResourceManager extends SocketResourceManager {
         }
     }
 
+    public synchronized boolean prepare(int xId) {
+        try {
+            return shadowManager.writeToStorage(m_data, xId);
+        } catch(Exception e) {
+            Trace.info("Could not commit transaction " + xId);
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public synchronized boolean commit(int xId) {
         try {
-            boolean b = shadowManager.writeToStorage(m_data, xId);
+            boolean b = shadowManager.writeToMasterRecord(xId);
             return lockManager.UnlockAll(xId);
         } catch(Exception e) {
             Trace.info("Could not commit transaction " + xId);

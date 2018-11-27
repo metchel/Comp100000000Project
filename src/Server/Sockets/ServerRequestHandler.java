@@ -21,16 +21,48 @@ public class ServerRequestHandler implements RequestHandler {
     }
 
     public synchronized Response handle(Request req) throws IOException, ClassNotFoundException {
-        Map<String, Object> arguments = ((RequestData)req.getData()).getCommandArgs();
+        Trace.info(req.xIdToString());
+        Boolean resStatus = null;
+        String message = null;
         RequestData data = req.getData();
-        Command cmd = data.getCommand();
         Integer xId = data.getXId();
+
+        if (req instanceof CanCommitRequest) {
+            Trace.info("CanCommitRequest Received.");
+            resStatus = resourceManager.prepare(xId);
+            if (resStatus) {
+                message = "Successfully prepared transaction " + xId.toString();
+            } else {
+                message = "Failed to prepare transaction " + xId.toString();
+            }
+
+            Response res = new Response();
+            return res.addCurrentTimeStamp()
+                .addStatus(resStatus)
+                .addMessage(message);
+        }
+
+        if (req instanceof DoCommitRequest) {
+            Trace.info("DoCommitRequest Received.");
+            resStatus = resourceManager.commit(xId);
+            if (resStatus) {
+                message = "Successfully commited transaction " + xId.toString();
+            } else {
+                message = "Failed to commit transaction " + xId.toString();
+            }
+
+            Response res = new Response();
+            return res.addCurrentTimeStamp()
+                .addStatus(resStatus)
+                .addMessage(message);
+        }
+
+        Map<String, Object> arguments = (data.getCommandArgs());
+        Command cmd = data.getCommand();
 
         Trace.info(req.toString());
 
         Object result = execute(xId, cmd, arguments);
-        Boolean resStatus = null;
-        String message = null;
         if (result instanceof Integer) {
             if(((Integer)result).intValue() == -1) {
                 resStatus = new Boolean(false);

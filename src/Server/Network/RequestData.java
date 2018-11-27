@@ -61,4 +61,8 @@ public class RequestData implements Serializable {
             + this.commandArgs.toString();
         }
     }
+
+    public String xIdToString() {
+        return this.xId.toString();
+    }
 }

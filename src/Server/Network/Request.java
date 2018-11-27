@@ -35,4 +35,8 @@ public class Request implements Serializable {
     public String toString() {
         return this.data.toString();
     }
+
+    public String xIdToString() {
+        return this.data.getXId().toString();
+    }
 }

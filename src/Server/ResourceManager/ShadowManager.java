@@ -22,10 +22,11 @@ public class ShadowManager {
     }
     public static final Map EMPTYMAP = Collections.emptyMap();
 
-
     public TransactionLog masterRecord;
     public TransactionLog versionA;
     public TransactionLog versionB;
+
+    private String lastVersion = VERSION_B;
     public String name;
 
     public ShadowManager(String rmname){
@@ -48,12 +49,8 @@ public class ShadowManager {
     public boolean writeToStorage(Map currentState, int xid) throws IOException, ClassNotFoundException{
         String locToWrite = this.getUnusedLocation();
 
-        Map<String,Integer> mrmap = new HashMap<> ();
-        mrmap.put(locToWrite,xid);
-
         if (locToWrite.equals(VERSION_A)){
             this.versionA.writeToLog(currentState);
-
         }
         else if (locToWrite.equals(VERSION_B)){
             this.versionB.writeToLog(currentState);
@@ -61,11 +58,23 @@ public class ShadowManager {
         else {
             return false;
         }
-
-        this.masterRecord.writeToLog(mrmap);
-
         return true;
 
+    }
+
+    public boolean writeToMasterRecord(int xid) throws IOException, ClassNotFoundException {
+        String locToWrite = this.getUnusedLocation();
+
+        Map<String,Integer> mrmap = new HashMap<>();
+        mrmap.put(locToWrite,xid);
+
+        try {
+            this.masterRecord.writeToLog(mrmap);
+            this.lastVersion = this.getUnusedLocation();
+            return true;
+        } catch(Exception e) {
+            return false;
+        }
     }
 
     public Map loadFromStorage() throws IOException, ClassNotFoundException {

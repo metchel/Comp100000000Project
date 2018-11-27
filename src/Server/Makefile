@@ -14,3 +14,4 @@ compile-middleware-rmi: ResourceManager/*.java Middleware/*.java Interface/IReso
 clean:
 	rm -f Network/*.class Sockets/*.class Interface/*.class Common/*.class Middleware/*.class Client/*.class ResourceManager/*.class LockManager/*.class Transactions/*.class
 	rm -f java.policy 
+	rm -f logfiles/*.log
