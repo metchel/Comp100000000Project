@@ -1,4 +1,6 @@
 .idea
 .DS_Store
 *.class
+*.privacy
+workspace.xml
 *.jar
