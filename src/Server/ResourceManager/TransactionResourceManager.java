@@ -84,16 +84,16 @@ public class TransactionResourceManager extends SocketResourceManager {
         try {
             clearData();
 <<<<<<< HEAD
+            lastCommitedVersion = shadowManager.loadFromStorage();
+            Trace.info(lastCommitedVersion.toString());
+            setData(lastCommitedVersion);
+=======
             Map lastCommitedVersion = shadowManager.loadFromStorage();
             //Trace.info(lastCommitedVersion.toString());
             if (lastCommitedVersion != null) {
                 setData(lastCommitedVersion);
             }
-=======
-            lastCommitedVersion = shadowManager.loadFromStorage();
-            Trace.info(lastCommitedVersion.toString());
-            setData(lastCommitedVersion);
->>>>>>> master
+>>>>>>> Olivers-new-work
             return lockManager.UnlockAll(xId);
         } catch(Exception e) {
             e.printStackTrace();
@@ -101,9 +101,9 @@ public class TransactionResourceManager extends SocketResourceManager {
             return lockManager.UnlockAll(xId);
         }
 <<<<<<< HEAD
-=======
 
->>>>>>> master
+=======
+>>>>>>> Olivers-new-work
 
        /*
         try {

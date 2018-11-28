@@ -164,7 +164,6 @@ public class MiddlewareCoordinator {
     public synchronized boolean abort(int transactionId) {
         Trace.info("ABORT " + transactionId);
         Transaction t = (Transaction)this.transactionMap.get(transactionId);
-        this.transactionStatusMap.put(transactionId, Status.ABORTED);
         boolean success = true;
         for (MiddlewareResourceManager client: t.getClients()) {
             try {
@@ -173,6 +172,7 @@ public class MiddlewareCoordinator {
                 e.printStackTrace();
             }
         }
+        this.transactionStatusMap.put(transactionId, Status.ABORTED);
         t.abort();
 
         return success;
@@ -404,6 +404,7 @@ public class MiddlewareCoordinator {
     public synchronized boolean abort(int transactionId) {
         Trace.info("ABORT " + transactionId);
         Transaction t = (Transaction)this.transactionMap.get(transactionId);
+        this.transactionStatusMap.put(transactionId, Status.ABORTED);
         boolean success = true;
         for (MiddlewareResourceManager client: t.getClients()) {
             try {
@@ -412,7 +413,6 @@ public class MiddlewareCoordinator {
                 e.printStackTrace();
             }
         }
-        this.transactionStatusMap.put(transactionId, Status.ABORTED);
         t.abort();
 
         return success;
@@ -478,5 +478,5 @@ public class MiddlewareCoordinator {
             }
         }
     }
->>>>>>> master
+>>>>>>> Olivers-new-work
 }
