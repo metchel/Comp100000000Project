@@ -41,7 +41,6 @@ public class ClientWorker implements Runnable {
         } catch(Exception e) {
             e.printStackTrace();
             System.out.println("ClientWorker::run failed on either in or out stream.");
-            System.exit(-1);
         }
 
         this.running = true;

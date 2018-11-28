@@ -122,7 +122,7 @@ public class ServerRequestHandler implements RequestHandler {
                 } catch(InterruptedException e) {
                     e.printStackTrace();
                 }
-                System.exit(0);
+                System.exit(1);
             }
 
             case AddFlight: {
