@@ -100,9 +100,6 @@ public class ShadowManager {
         } else {
             return null;
         }
-
-
-
     }
 
 

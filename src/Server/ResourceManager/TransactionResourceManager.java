@@ -56,12 +56,13 @@ public class TransactionResourceManager extends SocketResourceManager {
 
     public synchronized boolean commit(int xId) {
         try {
+            Trace.info("About to write to master record for " + xId);
             boolean b = shadowManager.writeToMasterRecord(xId);
             return lockManager.UnlockAll(xId);
         } catch(Exception e) {
             Trace.info("Could not commit transaction " + xId);
             e.printStackTrace();
-            return false;
+            return lockManager.UnlockAll(xId);
         }
        /* try {
             Trace.info("Committing transaction " + xId);
@@ -80,20 +81,17 @@ public class TransactionResourceManager extends SocketResourceManager {
     }
 
     public synchronized boolean abort(int xId){
-        Map lastCommitedVersion = null;
         try {
             clearData();
-            lastCommitedVersion = shadowManager.loadFromStorage();
+            Map lastCommitedVersion = shadowManager.loadFromStorage();
+            Trace.info(lastCommitedVersion.toString());
+            setData(lastCommitedVersion);
+            return lockManager.UnlockAll(xId);
         } catch(Exception e){
             e.printStackTrace();
             Trace.warn("Exception during abort!");
+            return lockManager.UnlockAll(xId);
         }
-        if (lastCommitedVersion != null){
-            setData(lastCommitedVersion);
-        }
-
-        return lockManager.UnlockAll(xId);
-
 
        /*
         try {

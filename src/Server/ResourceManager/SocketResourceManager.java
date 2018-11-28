@@ -55,15 +55,26 @@ public class SocketResourceManager implements IResourceManager {
 	// Clears out the entirety of the main memory data
 	protected void clearData()
 	{
-		synchronized (m_data){
-			m_data.clear();
+		try {
+			synchronized (m_data){
+
+					m_data.clear();
+
+			}
+		} catch(NullPointerException e) {
+
 		}
 	}
 	// Sets the data to something else
 	protected void setData(Map newData)
 	{
-		synchronized (m_data){
-			m_data = (RMHashMap) newData;
+		try {
+			synchronized (m_data){
+				if (!newData.equals(Collections.EMPTY_MAP)) m_data = (RMHashMap) newData;
+				else m_data = null;
+			}
+		} catch(NullPointerException e) {
+
 		}
 	}
 

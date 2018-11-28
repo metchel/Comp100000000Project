@@ -4,6 +4,7 @@ import Server.Network.Request;
 import Server.Network.RequestData;
 import Server.Network.Response;
 import Server.Common.Command;
+import Server.Common.Trace;
 
 import java.io.ObjectOutputStream;
 import java.io.ObjectInputStream;
@@ -30,11 +31,21 @@ public class MiddlewareResourceManager {
     }
 
     public synchronized void send(Request request) throws IOException {
-        this.oos.writeObject(request);
+        try {
+            this.oos.writeObject(request);
+        } catch(IOException e) {
+            Trace.warn("Broken Socket");
+        }
     }
 
     public synchronized Response receive() throws IOException, ClassNotFoundException {
-        return (Response)this.ois.readObject();
+        try {
+            return (Response)this.ois.readObject();
+        } catch(IOException e) {
+            e.printStackTrace();
+            Trace.warn("Detected Failure");
+            return new Response().addCurrentTimeStamp().addStatus(false).addMessage("Detect failure");
+        }
     }
 
     public void closeConnection() throws IOException {
