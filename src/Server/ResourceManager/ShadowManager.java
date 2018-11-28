@@ -93,7 +93,7 @@ public class ShadowManager {
         }
 
         if (lastCommit.equals(VERSION_A)){
-            System.out.pritln("Last commit is "+ VERSION_A);
+            System.out.println("Last commit is "+ VERSION_A);
             if(this.versionA.getFileSize() == 0){
                 System.out.println("Last commited version is EMPTY, "+VERSION_A);
                 return null;
@@ -101,14 +101,14 @@ public class ShadowManager {
             return this.versionA.readFromLog();
         }
         else if (lastCommit.equals(VERSION_B)){
-            System.out.pritln("Last commit is "+ VERSION_B);
+            System.out.println("Last commit is "+ VERSION_B);
             if(this.versionB.getFileSize() == 0){
                 System.out.println("Last commited version is EMPTY, "+VERSION_B);
                 return null;
             }
             return this.versionB.readFromLog();
         } else {
-            System.out.pritln("Something really funky happened");
+            System.out.println("Something really funky happened");
             return null;
         }
     }
