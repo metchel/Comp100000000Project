@@ -13,6 +13,7 @@ public class TransactionLog {
     private final String fileName;
     private final String PREFIX = "Server/logfiles/";
     private final String SUFFIX = ".log";
+    private boolean newFileB = false;
 
     public TransactionLog(String fileName) {
         this.fileName = fileName;
@@ -20,7 +21,7 @@ public class TransactionLog {
             + fileName 
             + SUFFIX);
         try {
-            this.file.createNewFile();
+            this.newFileB = this.file.createNewFile();
         } catch (Exception e) {
             System.out.println(this.file.getPath());
             e.printStackTrace();
@@ -40,6 +41,9 @@ public class TransactionLog {
     }
     public int getFileSize(){
         return ((int) this.file.length());
+    }
+    public boolean getBool(){
+        return this.newFileB;
     }
 
     public Map readFromLog() throws IOException, ClassNotFoundException{

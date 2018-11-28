@@ -30,16 +30,22 @@ public class ShadowManager {
     public String name;
 
     public ShadowManager(String rmname){
-        this.masterRecord = new TransactionLog(MASTER+rmname);
         try {
-            this.masterRecord.writeToLog(DEFAULTMAP);
+            this.masterRecord = new TransactionLog(MASTER + rmname);
+            //if file was just made, no existing master record.
+            if (this.masterRecord.getBool()){
+                this.masterRecord.writeToLog(DEFAULTMAP);
+            }
+            this.lastVersion = this.getLastCommitLocation();
         } catch (Exception e){
             System.out.println("SM Constructor failure");
             e.printStackTrace();
         }
-        this.name = rmname;
+
         this.versionA = new TransactionLog(VERSION_A+rmname);
         this.versionB = new TransactionLog(VERSION_B+rmname);
+
+        this.name = rmname;
     }
 
     public Map loadMasterRecord() throws IOException, ClassNotFoundException {
@@ -82,17 +88,17 @@ public class ShadowManager {
 
         if (lastCommit.equals(VERSION_A)){
             if(this.versionA.getFileSize() == 0){
-                return EMPTYMAP;
+                return null;
             }
             return this.versionA.readFromLog();
         }
         else if (lastCommit.equals(VERSION_B)){
             if(this.versionB.getFileSize() == 0){
-                return EMPTYMAP;
+                return null;
             }
             return this.versionB.readFromLog();
         } else {
-            return EMPTYMAP;
+            return null;
         }
     }
 

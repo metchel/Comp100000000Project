@@ -81,9 +81,10 @@ public class TransactionResourceManager extends SocketResourceManager {
     }
 
     public synchronized boolean abort(int xId){
+        Map lastCommitedVersion = null;
         try {
             clearData();
-            Map lastCommitedVersion = shadowManager.loadFromStorage();
+            lastCommitedVersion = shadowManager.loadFromStorage();
             Trace.info(lastCommitedVersion.toString());
             setData(lastCommitedVersion);
             return lockManager.UnlockAll(xId);
@@ -92,6 +93,12 @@ public class TransactionResourceManager extends SocketResourceManager {
             Trace.warn("Exception during abort!");
             return lockManager.UnlockAll(xId);
         }
+        if (lastCommitedVersion != null){
+            setData(lastCommitedVersion);
+        }
+
+        return lockManager.UnlockAll(xId);
+
 
        /*
         try {
