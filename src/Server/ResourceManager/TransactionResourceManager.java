@@ -26,6 +26,12 @@ public class TransactionResourceManager extends SocketResourceManager {
         super(name);
         this.lockManager = new LockManager();
         this.shadowManager = new ShadowManager(name);
+        try {
+            setData(this.shadowManager.loadFromStorage());
+            System.out.println(m_data.toString());
+        } catch (Exception e) {
+            System.out.println("SOMETHING FUNKY");
+        }
         this.txMap = new HashMap<Integer, Stack<Operation>>();
     }
 

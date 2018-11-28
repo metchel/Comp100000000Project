@@ -47,6 +47,7 @@ public class ShadowManager {
 
         this.versionA = new TransactionLog(VERSION_A+rmname);
         this.versionB = new TransactionLog(VERSION_B+rmname);
+
         this.name = rmname;
     }
 
