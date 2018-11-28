@@ -55,12 +55,14 @@ public class SocketResourceManager implements IResourceManager {
 	// Clears out the entirety of the main memory data
 	protected void clearData()
 	{
-		synchronized (m_data){
-			try {
-				m_data.clear();
-			} catch(NullPointerException e) {
-				return;
+		try {
+			synchronized (m_data){
+
+					m_data.clear();
+
 			}
+		} catch(NullPointerException e) {
+			
 		}
 	}
 	// Sets the data to something else

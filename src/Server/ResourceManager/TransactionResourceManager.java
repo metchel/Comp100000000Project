@@ -62,7 +62,7 @@ public class TransactionResourceManager extends SocketResourceManager {
         } catch(Exception e) {
             Trace.info("Could not commit transaction " + xId);
             e.printStackTrace();
-            return false;
+            return lockManager.UnlockAll(xId);
         }
        /* try {
             Trace.info("Committing transaction " + xId);
@@ -90,7 +90,7 @@ public class TransactionResourceManager extends SocketResourceManager {
         } catch(Exception e){
             e.printStackTrace();
             Trace.warn("Exception during abort!");
-            return false;
+            return lockManager.UnlockAll(xId);
         }
 
        /*
