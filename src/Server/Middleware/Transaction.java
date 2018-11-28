@@ -10,7 +10,7 @@ import java.util.Set;
 import java.util.HashSet;
 
 public class Transaction {
-    private final static long DEFAULT_TTL = 10000;
+    private final static long DEFAULT_TTL = 100000;
     private static int nextTransactionId;
     private final int id;
     private final Set<MiddlewareResourceManager> clients;

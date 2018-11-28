@@ -84,8 +84,10 @@ public class TransactionResourceManager extends SocketResourceManager {
         try {
             clearData();
             Map lastCommitedVersion = shadowManager.loadFromStorage();
-            Trace.info(lastCommitedVersion.toString());
-            setData(lastCommitedVersion);
+            //Trace.info(lastCommitedVersion.toString());
+            if (lastCommitedVersion != null) {
+                setData(lastCommitedVersion);
+            }
             return lockManager.UnlockAll(xId);
         } catch(Exception e){
             e.printStackTrace();
