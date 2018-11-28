@@ -12,6 +12,7 @@ import java.io.ObjectInputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Map;
+import java.util.HashMap;
 import java.net.InetAddress;
 
 public class MiddlewareResourceManager {
@@ -21,6 +22,7 @@ public class MiddlewareResourceManager {
     private Socket socket;
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
+    private Map<Integer, Boolean> crashMap;
 
     public MiddlewareResourceManager(String name, InetAddress inetAddress, int port) throws IOException, ClassNotFoundException{
         this.name = name;
@@ -29,6 +31,7 @@ public class MiddlewareResourceManager {
         this.socket = new Socket(inetAddress, port);
         this.oos = new ObjectOutputStream(this.socket.getOutputStream());
         this.ois = new ObjectInputStream(this.socket.getInputStream());
+        this.crashMap = new HashMap<Integer, Boolean>();
     }
 
     public void retryConnection(long interval) {
@@ -62,12 +65,27 @@ public class MiddlewareResourceManager {
 
     public synchronized Response receive() throws IOException, ClassNotFoundException {
         try {
-            return (Response)this.ois.readObject();
+            long start = System.currentTimeMillis();
+            long time = 5000;
+            while (System.currentTimeMillis() < start + time) {
+                return (Response)this.ois.readObject();
+            }
+            throw new Exception("Socket timeout");
         } catch(Exception e) {
             Trace.warn("Detected Failure");
             Response res = new Response();
             res.addCurrentTimeStamp().addStatus(false).addMessage("Failure");
             return res;
+        }
+    }
+
+    public void setCrash(int mode) {
+        this.crashMap.put(mode, true);
+    }
+
+    public void resetCrashes() {
+        for (Integer mode: crashMap.keySet()) {
+            this.crashMap.put(mode, false);
         }
     }
 
@@ -103,6 +121,10 @@ public class MiddlewareResourceManager {
         this.send(generateRequest(transactionId, Command.Abort, null));
         Response res = this.receive();
         return res.getStatus().booleanValue();
+    }
+
+    public void shutdown() throws IOException {
+        this.send(generateRequest(-1, Command.Shutdown, null));
     }
 
     public Response forward(Request req) throws IOException, ClassNotFoundException {
