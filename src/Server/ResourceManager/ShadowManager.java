@@ -35,7 +35,6 @@ public class ShadowManager {
 
             //if file was just made, no existing master record.
             if (this.masterRecord.getBool()){
-                System.out.println("yo");
                 this.masterRecord.writeToLog(DEFAULTMAP);
             }
 
@@ -79,7 +78,7 @@ public class ShadowManager {
 
         try {
             this.masterRecord.writeToLog(mrmap);
-            this.lastVersion = this.getUnusedLocation();
+            this.lastVersion = this.getLastCommitLocation();
             return true;
         } catch(Exception e) {
             return false;
@@ -94,17 +93,22 @@ public class ShadowManager {
         }
 
         if (lastCommit.equals(VERSION_A)){
+            System.out.pritln("Last commit is "+ VERSION_A);
             if(this.versionA.getFileSize() == 0){
+                System.out.println("Last commited version is EMPTY, "+VERSION_A);
                 return null;
             }
             return this.versionA.readFromLog();
         }
         else if (lastCommit.equals(VERSION_B)){
+            System.out.pritln("Last commit is "+ VERSION_B);
             if(this.versionB.getFileSize() == 0){
+                System.out.println("Last commited version is EMPTY, "+VERSION_B);
                 return null;
             }
             return this.versionB.readFromLog();
         } else {
+            System.out.pritln("Something really funky happened");
             return null;
         }
     }
@@ -130,7 +134,6 @@ public class ShadowManager {
     }
 
     public String getLastCommitLocation() throws IOException, ClassNotFoundException {
-        System.out.println("yooo");
         Map mr = this.loadMasterRecord();
         System.out.println(mr.toString());
         if (mr.size() != 1){
