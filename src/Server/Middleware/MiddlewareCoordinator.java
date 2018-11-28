@@ -237,4 +237,8 @@ public class MiddlewareCoordinator {
             }
         }
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> master
