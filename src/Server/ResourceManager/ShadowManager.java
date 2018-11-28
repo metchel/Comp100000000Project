@@ -32,11 +32,14 @@ public class ShadowManager {
     public ShadowManager(String rmname){
         try {
             this.masterRecord = new TransactionLog(MASTER + rmname);
+
             //if file was just made, no existing master record.
             if (this.masterRecord.getBool()){
                 this.masterRecord.writeToLog(DEFAULTMAP);
             }
+
             this.lastVersion = this.getLastCommitLocation();
+
         } catch (Exception e){
             System.out.println("SM Constructor failure");
             e.printStackTrace();
@@ -44,7 +47,6 @@ public class ShadowManager {
 
         this.versionA = new TransactionLog(VERSION_A+rmname);
         this.versionB = new TransactionLog(VERSION_B+rmname);
-
         this.name = rmname;
     }
 
@@ -76,7 +78,7 @@ public class ShadowManager {
 
         try {
             this.masterRecord.writeToLog(mrmap);
-            this.lastVersion = this.getUnusedLocation();
+            this.lastVersion = this.getLastCommitLocation();
             return true;
         } catch(Exception e) {
             return false;
@@ -86,18 +88,27 @@ public class ShadowManager {
     public Map loadFromStorage() throws IOException, ClassNotFoundException {
         String lastCommit = this.getLastCommitLocation();
 
+        if (this.versionA.getFileSize() == 0 && this.versionB.getFileSize() == 0){
+            return null;
+        }
+
         if (lastCommit.equals(VERSION_A)){
+            System.out.println("Last commit is "+ VERSION_A);
             if(this.versionA.getFileSize() == 0){
+                System.out.println("Last commited version is EMPTY, "+VERSION_A);
                 return null;
             }
             return this.versionA.readFromLog();
         }
         else if (lastCommit.equals(VERSION_B)){
+            System.out.println("Last commit is "+ VERSION_B);
             if(this.versionB.getFileSize() == 0){
+                System.out.println("Last commited version is EMPTY, "+VERSION_B);
                 return null;
             }
             return this.versionB.readFromLog();
         } else {
+            System.out.println("Something really funky happened");
             return null;
         }
     }
@@ -105,6 +116,7 @@ public class ShadowManager {
 
     public String getUnusedLocation() throws IOException, ClassNotFoundException{
         Map mr = this.loadMasterRecord();
+
         if (mr.size() != 1){
             System.out.println("This doesn't seem to be the master record");
             return ERRORS;
@@ -123,6 +135,7 @@ public class ShadowManager {
 
     public String getLastCommitLocation() throws IOException, ClassNotFoundException {
         Map mr = this.loadMasterRecord();
+        System.out.println(mr.toString());
         if (mr.size() != 1){
             System.out.println("This doesn't seem to be the master record");
             return ERRORS;
