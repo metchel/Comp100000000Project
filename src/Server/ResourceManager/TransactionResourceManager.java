@@ -88,16 +88,11 @@ public class TransactionResourceManager extends SocketResourceManager {
             Trace.info(lastCommitedVersion.toString());
             setData(lastCommitedVersion);
             return lockManager.UnlockAll(xId);
-        } catch(Exception e){
+        } catch(Exception e) {
             e.printStackTrace();
             Trace.warn("Exception during abort!");
             return lockManager.UnlockAll(xId);
         }
-        if (lastCommitedVersion != null){
-            setData(lastCommitedVersion);
-        }
-
-        return lockManager.UnlockAll(xId);
 
 
        /*
