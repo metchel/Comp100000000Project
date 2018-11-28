@@ -17,9 +17,9 @@ public class MiddlewareResourceManager {
     private final InetAddress inetAddress;
     private final int port;
     private final String name;
-    private final Socket socket;
-    private final ObjectOutputStream oos;
-    private final ObjectInputStream ois;
+    private Socket socket;
+    private ObjectOutputStream oos;
+    private ObjectInputStream ois;
 
     public MiddlewareResourceManager(String name, InetAddress inetAddress, int port) throws IOException, ClassNotFoundException{
         this.name = name;
@@ -30,21 +30,43 @@ public class MiddlewareResourceManager {
         this.ois = new ObjectInputStream(this.socket.getInputStream());
     }
 
+    public void retryConnection(long interval) {
+        boolean success = false;
+        while (!success) {
+            try {
+                this.socket = new Socket(inetAddress, port);
+                this.oos = new ObjectOutputStream(this.socket.getOutputStream());
+                this.ois = new ObjectInputStream(this.socket.getInputStream());
+                success = true;
+            } catch (IOException e) {
+                try {
+                    Thread.sleep(interval);
+                } catch(InterruptedException ie) {
+                    continue;
+                }
+                continue;
+            }
+        }
+    } 
+
     public synchronized void send(Request request) throws IOException {
         try {
             this.oos.writeObject(request);
-        } catch(IOException e) {
+        } catch(Exception e) {
             Trace.warn("Broken Socket");
+            retryConnection(1000);
+            send(request);
         }
     }
 
     public synchronized Response receive() throws IOException, ClassNotFoundException {
         try {
             return (Response)this.ois.readObject();
-        } catch(IOException e) {
-            e.printStackTrace();
+        } catch(Exception e) {
             Trace.warn("Detected Failure");
-            return new Response().addCurrentTimeStamp().addStatus(false).addMessage("Detect failure");
+            Response res = new Response();
+            res.addCurrentTimeStamp().addStatus(false).addMessage("Failure");
+            return res;
         }
     }
 
