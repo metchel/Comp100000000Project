@@ -69,7 +69,6 @@ public class ServerRequestHandler implements RequestHandler {
                 System.exit(1);
             }
 
-            System.out.println("NPE on get crashmap");
             resStatus = resourceManager.commit(xId);
             if (resStatus) {
                 message = "Successfully commited transaction " + xId.toString();

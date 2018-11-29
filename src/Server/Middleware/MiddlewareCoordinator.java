@@ -105,6 +105,9 @@ public class MiddlewareCoordinator {
         for (MiddlewareResourceManager rm : t.getClients()) {
             rm.send(new CanCommitRequest(xId));
             Response res = rm.receive();
+            if (this.crashMap.get(3)){
+                System.exit(1);
+            }
             voteMap.put(rm, res.getStatus());
         }
         if (this.crashMap.get(4)){
@@ -133,9 +136,14 @@ public class MiddlewareCoordinator {
             for (MiddlewareResourceManager rm : t.getClients()) {
                 rm.send(new DoCommitRequest(xId));
                 Response res = rm.receive();
+                if (this.crashMap.get(6)){
+                    System.exit(1);
+                }
                 commitMap.put(rm, res.getStatus());
             }
-
+            if (this.crashMap.get(7)){
+                System.exit(1);
+            }
             for (Boolean commitSuccess : commitMap.values()) {
                 if (commitSuccess) {
                     allCommitted = true;
@@ -144,9 +152,7 @@ public class MiddlewareCoordinator {
                     break;
                 }
             }
-            if (this.crashMap.get(6)){
-                System.exit(1);
-            }
+
 
             if (allCommitted) {
                 this.transactionStatusMap.put(xId, Status.COMMITTED);
@@ -161,14 +167,20 @@ public class MiddlewareCoordinator {
                 return false;
             }
         } else {
+            if (this.crashMap.get(5)){
+                System.exit(1);
+            }
             for (MiddlewareResourceManager rm : voteMap.keySet()) {
                 if (!voteMap.get(rm)) {
                     boolean res = rm.abort(xId);
+                    if (this.crashMap.get(6)){
+                        System.exit(1);
+                    }
                     abortMap.put(rm, new Boolean(res));
                 }
             }
             this.transactionStatusMap.put(xId, Status.ABORTED);
-            if (this.crashMap.get(6)){
+            if (this.crashMap.get(7)){
                 System.exit(1);
             }
             return false;
