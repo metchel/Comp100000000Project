@@ -35,11 +35,12 @@ public class TransactionResourceManager extends SocketResourceManager {
         }
         this.txMap = new HashMap<Integer, Stack<Operation>>();
         this.crashMap = initCrashMap();
+        System.out.println("initcm :"+this.crashMap.toString());
     }
     public static Map initCrashMap() {
         Map<Integer, Boolean> tmp = new HashMap<Integer, Boolean>();
         for (int i = 1; i < 5; i++){
-            tmp.put(1,false);
+            tmp.put(i,false);
         }
         return tmp;
     }

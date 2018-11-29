@@ -176,11 +176,6 @@ public abstract class ClientAlt
                 oos.writeObject(req);
                 Response response = (Response) ois.readObject();
 
-                if (response.getStatus()) {
-
-                } else {
-
-                }
             }
             case CrashCarRM: {
                 checkArgumentsCount(2, arguments.size());
@@ -211,11 +206,6 @@ public abstract class ClientAlt
                 oos.writeObject(req);
                 Response response = (Response) ois.readObject();
 
-                if (response.getStatus()) {
-
-                } else {
-
-                }
                 break;
             }
             case CrashMiddleware: {
