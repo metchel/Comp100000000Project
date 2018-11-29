@@ -39,13 +39,17 @@ public class MiddlewareResourceManager {
     public void retryConnection(long wait) {
         while (FAILURE_DETECTED) {
             try {
-                Thread.sleep(wait);
-                this.socket = new Socket(inetAddress, port);
-                this.oos = new ObjectOutputStream(this.socket.getOutputStream());
-                this.ois = new ObjectInputStream(this.socket.getInputStream());
-                FAILURE_DETECTED = false;
+                synchronized(this) {
+                    Thread.sleep(wait);
+                    Trace.info("Trying to reset connection.");
+                    this.socket = new Socket(inetAddress, port);
+                    this.oos = new ObjectOutputStream(this.socket.getOutputStream());
+                    this.ois = new ObjectInputStream(this.socket.getInputStream());
+                    Trace.info("Connection Reset");
+                    FAILURE_DETECTED = false;
+                }
             } catch (Exception e) {
-                return;
+                continue;
             }
         }
     } 
@@ -54,10 +58,6 @@ public class MiddlewareResourceManager {
         try {
             this.oos.writeObject(request);
         } catch(Exception e) {
-            FAILURE_DETECTED = true;
-            Thread t = new Thread(() -> {
-                retryConnection(5000);
-            });
             Trace.warn("Broken Socket");
         }
     }
@@ -79,6 +79,7 @@ public class MiddlewareResourceManager {
             Thread t = new Thread(() -> {
                 retryConnection(5000);
             });
+            t.start();
             Trace.warn("Detected Failure");
             Response res = new Response();
             res.addCurrentTimeStamp()
