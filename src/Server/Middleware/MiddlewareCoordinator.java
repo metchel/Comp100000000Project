@@ -43,6 +43,7 @@ public class MiddlewareCoordinator {
     private static final String FLIGHT = Constants.FLIGHT;
     private static final String ROOM = Constants.ROOM;
     private static final String CAR = Constants.CAR;
+    private Map<Integer, Boolean> crashMap;
 
     public MiddlewareCoordinator(MiddlewareResourceManager flightRM,
                                  MiddlewareResourceManager carRM,
@@ -54,6 +55,7 @@ public class MiddlewareCoordinator {
         this.flightRM = flightRM;
         this.carRM = carRM;
         this.roomRM = roomRM;
+        this.crashMap = initCrashMap();
     }
 
     public int start() {
@@ -97,13 +99,17 @@ public class MiddlewareCoordinator {
         }
 
         HashMap<MiddlewareResourceManager, Boolean> voteMap = new HashMap<MiddlewareResourceManager, Boolean>();
-
+        if (this.crashMap.get(1)){
+            System.exit(1);
+        }
         for (MiddlewareResourceManager rm : t.getClients()) {
             rm.send(new CanCommitRequest(xId));
             Response res = rm.receive();
             voteMap.put(rm, res.getStatus());
         }
-
+        if (this.crashMap.get(4)){
+            System.exit(1);
+        }
         boolean allPrepared = false;
         for (Boolean vote : voteMap.values()) {
             if (vote) {
@@ -117,6 +123,9 @@ public class MiddlewareCoordinator {
         HashMap<MiddlewareResourceManager, Boolean> commitMap = new HashMap<MiddlewareResourceManager, Boolean>();
         HashMap<MiddlewareResourceManager, Boolean> abortMap = new HashMap<MiddlewareResourceManager, Boolean>();
 
+        if (this.crashMap.get(5)){
+            System.exit(1);
+        }
         if (allPrepared) {
             this.transactionStatusMap.put(xId, Status.PREPARED);
 
@@ -134,6 +143,9 @@ public class MiddlewareCoordinator {
                     allCommitted = false;
                     break;
                 }
+            }
+            if (this.crashMap.get(6)){
+                System.exit(1);
             }
 
             if (allCommitted) {
@@ -156,6 +168,9 @@ public class MiddlewareCoordinator {
                 }
             }
             this.transactionStatusMap.put(xId, Status.ABORTED);
+            if (this.crashMap.get(6)){
+                System.exit(1);
+            }
             return false;
         }
     }
@@ -175,6 +190,28 @@ public class MiddlewareCoordinator {
         t.abort();
 
         return success;
+    }
+
+    public boolean forceCrash(int mode){
+        Trace.info("Force MW Crash " + mode);
+        this.crashMap.put(mode,true);
+        return ((Boolean) this.crashMap.get(mode));
+    }
+    public void setCrash(int mode) {
+        this.crashMap.put(mode, true);
+    }
+
+    public void resetCrashes() {
+        for (Integer mode: crashMap.keySet()) {
+            this.crashMap.put(mode, false);
+        }
+    }
+    public static Map initCrashMap() {
+        Map<Integer, Boolean> tmp = new HashMap<Integer, Boolean>();
+        for (int i = 1; i < 9; i++){
+            tmp.put(i,false);
+        }
+        return tmp;
     }
 
     public synchronized boolean shutdown() {

@@ -103,6 +103,7 @@ public class MiddlewareRequestHandler implements RequestHandler {
                     break;
                 }
 
+
                 if (this.coordinator.commit(xId)) {
                     response.addCurrentTimeStamp()
                         .addStatus(true)
@@ -151,13 +152,16 @@ public class MiddlewareRequestHandler implements RequestHandler {
              * Crash operations
              */
             case CrashMiddleware: {
-
+                int tmp = (Integer) data.getCommandArgs().get("mode");
+                System.out.println("CrashMidd:" + tmp);
+                System.out.println("Telling the MW Coordinator to crash");
+                this.coordinator.forceCrash(tmp);
+                break;
             }
             case CrashFlightRM: {
                 this.flightClient.send(request);
                 System.out.println("Telling the Flight RM to crash");
                 break;
-
             }
             case CrashCarRM: {
                 this.carClient.send(request);
