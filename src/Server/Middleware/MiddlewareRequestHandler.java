@@ -83,9 +83,9 @@ public class MiddlewareRequestHandler implements RequestHandler {
                         .addStatus(new Boolean(true))
                         .addMessage(Integer.toString(nextTransactionId));
                 } else {
-                    for (MiddlewareResourceManager client: clients) {
-                        client.abort(nextTransactionId);
-                    }
+                    response.addCurrentTimeStamp()
+                        .addStatus(new Boolean(false))
+                        .addMessage("Could not start transaction.");
                 }
                 break;
             }
