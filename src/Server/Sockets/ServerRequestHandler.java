@@ -16,6 +16,7 @@ import java.util.Date;
 public class ServerRequestHandler implements RequestHandler {
     private final TransactionResourceManager resourceManager;
 
+
     public ServerRequestHandler(TransactionResourceManager resourceManager) {
         this.resourceManager = resourceManager;
     }
@@ -29,7 +30,15 @@ public class ServerRequestHandler implements RequestHandler {
 
         if (req instanceof CanCommitRequest) {
             Trace.info("CanCommitRequest Received.");
+
+            if ((Boolean) resourceManager.getCrashMap().get(1)){
+                System.exit(1);
+            }
             resStatus = resourceManager.prepare(xId);
+            if ((Boolean) resourceManager.getCrashMap().get(2)){
+                System.exit(1);
+            }
+
             if (resStatus) {
                 message = "Successfully prepared transaction " + xId.toString();
             } else {
@@ -37,9 +46,21 @@ public class ServerRequestHandler implements RequestHandler {
             }
 
             Response res = new Response();
-            return res.addCurrentTimeStamp()
-                .addStatus(resStatus)
-                .addMessage(message);
+            Map cm = resourceManager.getCrashMap();
+            if ((Boolean) cm.get(3)){
+                return res.addCurrentTimeStamp()
+                        .addStatus(resStatus)
+                        .addMessage("3");
+            }else if ((Boolean) cm.get(4)){
+                return res.addCurrentTimeStamp()
+                        .addStatus(resStatus)
+                        .addMessage("4");
+            }
+            else {
+                return res.addCurrentTimeStamp()
+                        .addStatus(resStatus)
+                        .addMessage(message);
+            }
         }
 
         if (req instanceof DoCommitRequest) {
@@ -113,6 +134,24 @@ public class ServerRequestHandler implements RequestHandler {
 
             case Abort: {
                 return new Boolean(resourceManager.abort(xId.intValue()));
+            }
+
+            case CrashFlightRM: {
+                Integer mode = (Integer)arguments.get("mode");
+                System.out.println("Been told to Crash");
+                return new Boolean(resourceManager.forceCrash(mode));
+
+            }
+            case CrashRoomRM: {
+                Integer mode = (Integer)arguments.get("mode");
+                System.out.println("Been told to Crash");
+                return new Boolean(resourceManager.forceCrash(mode));
+            }
+
+            case CrashHotelRM: {
+                Integer mode = (Integer)arguments.get("mode");
+                System.out.println("Been told to Crash");
+                return new Boolean(resourceManager.forceCrash(mode));
             }
 
             case Shutdown: {
@@ -258,6 +297,8 @@ public class ServerRequestHandler implements RequestHandler {
             throw new IllegalArgumentException("Invalid number of arguments. Expected " + (expected - 1) + ", received " + (actual - 1) + ". Location \"help,<CommandName>\" to check usage of this command");
         }
     }
+
+
 
     public int toInt(String string) throws NumberFormatException {
         return (new Integer(string)).intValue();

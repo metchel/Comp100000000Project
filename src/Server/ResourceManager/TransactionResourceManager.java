@@ -20,6 +20,7 @@ public class TransactionResourceManager extends SocketResourceManager {
     private final LockManager lockManager;
     private final ShadowManager shadowManager;
     private Map<Integer, Stack<Operation>> txMap;
+    private Map<Integer, Boolean> crashMap;
 
     
     public TransactionResourceManager(String name) {
@@ -33,6 +34,30 @@ public class TransactionResourceManager extends SocketResourceManager {
             System.out.println("SOMETHING FUNKY");
         }
         this.txMap = new HashMap<Integer, Stack<Operation>>();
+        this.crashMap = initCrashMap();
+    }
+    public static Map initCrashMap() {
+        Map<Integer, Boolean> tmp = new HashMap<Integer, Boolean>();
+        for (int i = 1; i < 5; i++){
+            tmp.put(1,false);
+        }
+        return tmp;
+    }
+    public void setCrash(int mode) {
+        this.crashMap.put(mode, true);
+    }
+
+    public void resetCrashes() {
+        for (Integer mode: crashMap.keySet()) {
+            this.crashMap.put(mode, false);
+        }
+    }
+    public Map getCrashMap(){
+        return this.crashMap;
+    }
+
+    public boolean getCrash(String modeName){
+        return crashMap.get(modeName);
     }
 
     public synchronized boolean start(int xId) {
@@ -124,6 +149,11 @@ public class TransactionResourceManager extends SocketResourceManager {
             Trace.warn("Exception during abort!");
             return false;
         }*/
+    }
+
+    public boolean forceCrash(int mode){
+        this.crashMap.put(mode,true);
+        return ((Boolean) this.crashMap.get(mode));
     }
 
     public boolean shutdown() {

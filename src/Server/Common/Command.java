@@ -32,7 +32,10 @@ public enum Command {
 	ReserveCar("Reserve a car for a customer at a location", "<xid>,<CustomerID>,<Location>"),
 	ReserveRoom("Reserve a room for a customer at a location", "<xid>,<CustomerID>,<Location>"),
 
-	Vote("",""),
+	CrashMiddleware("Crash Middleware", "<mode>"),
+	CrashRoomRM("Crash Room RM","<mode>"),
+	CrashHotelRM("Crash Hotel RM","<RMname>,<mode>"),
+	CrashFlightRM("Crash Flight RM","<RMname>,<mode>"),
 
 	Bundle("Book N flight numbers, and optionally a room and/or car at a location", "<xid>,<CustomerID>,<FlightNumber1>...<FlightNumberN>,<Location>,<Car-Y/N>,<Room-Y/N>"),
 

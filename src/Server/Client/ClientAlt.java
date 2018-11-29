@@ -162,6 +162,89 @@ public abstract class ClientAlt
 
                 break;
             }
+
+            case CrashFlightRM: {
+                checkArgumentsCount(2, arguments.size());
+                RequestData data = new RequestData();
+                String mode = arguments.elementAt(1);
+                data.addArgument("mode", Integer.parseInt(mode)).addXId(-1).addCommand(cmd);
+
+                Request req = new Request();
+                req.addCurrentTimeStamp()
+                        .addData(data);
+
+                oos.writeObject(req);
+                Response response = (Response) ois.readObject();
+
+                if (response.getStatus()) {
+
+                } else {
+
+                }
+            }
+            case CrashRoomRM: {
+                checkArgumentsCount(2, arguments.size());
+                RequestData data = new RequestData();
+                String mode = arguments.elementAt(1);
+                data.addArgument("mode", Integer.parseInt(mode)).addXId(-1).addCommand(cmd);
+
+                Request req = new Request();
+                req.addCurrentTimeStamp()
+                        .addData(data);
+
+                oos.writeObject(req);
+                Response response = (Response) ois.readObject();
+
+                if (response.getStatus()) {
+
+                } else {
+
+                }
+                break;
+            }
+
+            case CrashHotelRM: {
+                checkArgumentsCount(2, arguments.size());
+                RequestData data = new RequestData();
+                String mode = arguments.elementAt(1);
+                data.addArgument("mode", Integer.parseInt(mode)).addXId(-1).addCommand(cmd);
+
+                Request req = new Request();
+                req.addCurrentTimeStamp()
+                        .addData(data);
+                System.out.println(req.toString());
+                oos.writeObject(req);
+                Response response = (Response) ois.readObject();
+
+                if (response.getStatus()) {
+
+                } else {
+
+                }
+                break;
+            }
+            case CrashMiddleware: {
+                checkArgumentsCount(2, arguments.size());
+                RequestData data = new RequestData();
+                String mode = arguments.elementAt(1);
+                data.addArgument("mode", Integer.parseInt(mode)).addXId(-1).addCommand(cmd);
+
+                Request req = new Request();
+                req.addCurrentTimeStamp()
+                        .addData(data);
+                System.out.println(req.toString());
+                oos.writeObject(req);
+                Response response = (Response) ois.readObject();
+
+                if (response.getStatus()) {
+
+                } else {
+
+                }
+                break;
+            }
+
+
             case AddFlight: {
                 checkArgumentsCount(5, arguments.size());
 
