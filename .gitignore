@@ -3,4 +3,5 @@
 *.class
 *.privacy
 workspace.xml
+*.log
 *.jar
