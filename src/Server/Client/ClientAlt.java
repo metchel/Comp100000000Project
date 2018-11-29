@@ -176,13 +176,8 @@ public abstract class ClientAlt
                 oos.writeObject(req);
                 Response response = (Response) ois.readObject();
 
-                if (response.getStatus()) {
-
-                } else {
-
-                }
             }
-            case CrashRoomRM: {
+            case CrashCarRM: {
                 checkArgumentsCount(2, arguments.size());
                 RequestData data = new RequestData();
                 String mode = arguments.elementAt(1);
@@ -195,15 +190,10 @@ public abstract class ClientAlt
                 oos.writeObject(req);
                 Response response = (Response) ois.readObject();
 
-                if (response.getStatus()) {
-
-                } else {
-
-                }
                 break;
             }
 
-            case CrashHotelRM: {
+            case CrashRoomRM: {
                 checkArgumentsCount(2, arguments.size());
                 RequestData data = new RequestData();
                 String mode = arguments.elementAt(1);
@@ -216,11 +206,6 @@ public abstract class ClientAlt
                 oos.writeObject(req);
                 Response response = (Response) ois.readObject();
 
-                if (response.getStatus()) {
-
-                } else {
-
-                }
                 break;
             }
             case CrashMiddleware: {

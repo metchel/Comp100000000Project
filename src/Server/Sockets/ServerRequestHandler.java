@@ -30,12 +30,14 @@ public class ServerRequestHandler implements RequestHandler {
 
         if (req instanceof CanCommitRequest) {
             Trace.info("CanCommitRequest Received.");
+            Map cm = resourceManager.getCrashMap();
+            System.out.println("Cm:"+cm.toString());
 
-            if ((Boolean) resourceManager.getCrashMap().get(1)){
+            if ((Boolean) resourceManager.getCrashMap().get(1)) {
                 System.exit(1);
             }
             resStatus = resourceManager.prepare(xId);
-            if ((Boolean) resourceManager.getCrashMap().get(2)){
+            if ((Boolean) resourceManager.getCrashMap().get(2)) {
                 System.exit(1);
             }
 
@@ -46,25 +48,27 @@ public class ServerRequestHandler implements RequestHandler {
             }
 
             Response res = new Response();
-            Map cm = resourceManager.getCrashMap();
-            if ((Boolean) cm.get(3)){
+
+            if ((Boolean) cm.get(3)) {
                 return res.addCurrentTimeStamp()
                         .addStatus(resStatus)
                         .addMessage("3");
-            }else if ((Boolean) cm.get(4)){
-                return res.addCurrentTimeStamp()
-                        .addStatus(resStatus)
-                        .addMessage("4");
-            }
-            else {
+            } else {
                 return res.addCurrentTimeStamp()
                         .addStatus(resStatus)
                         .addMessage(message);
             }
+
         }
 
         if (req instanceof DoCommitRequest) {
             Trace.info("DoCommitRequest Received.");
+            System.out.println("Cm:"+resourceManager.getCrashMap().toString());
+
+            if ((Boolean) resourceManager.getCrashMap().get(4)) {
+                System.exit(1);
+            }
+
             resStatus = resourceManager.commit(xId);
             if (resStatus) {
                 message = "Successfully commited transaction " + xId.toString();
@@ -105,7 +109,6 @@ public class ServerRequestHandler implements RequestHandler {
             resStatus = new Boolean(false);
             message = "Reservation failed";
         }
-
         Response response = new Response();
         response.addCurrentTimeStamp()
             .addStatus(resStatus)
@@ -133,24 +136,27 @@ public class ServerRequestHandler implements RequestHandler {
             }
 
             case Abort: {
+                if ((Boolean) resourceManager.getCrashMap().get(4)){
+                    System.exit(1);
+                }
                 return new Boolean(resourceManager.abort(xId.intValue()));
             }
 
             case CrashFlightRM: {
                 Integer mode = (Integer)arguments.get("mode");
-                System.out.println("Been told to Crash");
+                System.out.println("Been told to Crash mode "+mode);
                 return new Boolean(resourceManager.forceCrash(mode));
 
             }
+            case CrashCarRM: {
+                Integer mode = (Integer)arguments.get("mode");
+                System.out.println("Been told to Crash mode "+mode);
+                return new Boolean(resourceManager.forceCrash(mode));
+            }
+
             case CrashRoomRM: {
                 Integer mode = (Integer)arguments.get("mode");
-                System.out.println("Been told to Crash");
-                return new Boolean(resourceManager.forceCrash(mode));
-            }
-
-            case CrashHotelRM: {
-                Integer mode = (Integer)arguments.get("mode");
-                System.out.println("Been told to Crash");
+                System.out.println("Been told to Crash mode "+mode);
                 return new Boolean(resourceManager.forceCrash(mode));
             }
 

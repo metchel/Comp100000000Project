@@ -43,6 +43,7 @@ public class MiddlewareCoordinator {
     private static final String FLIGHT = Constants.FLIGHT;
     private static final String ROOM = Constants.ROOM;
     private static final String CAR = Constants.CAR;
+    private Map<Integer, Boolean> crashMap;
 
     public MiddlewareCoordinator(MiddlewareResourceManager flightRM,
                                  MiddlewareResourceManager carRM,
@@ -54,6 +55,7 @@ public class MiddlewareCoordinator {
         this.flightRM = flightRM;
         this.carRM = carRM;
         this.roomRM = roomRM;
+        this.crashMap = initCrashMap();
     }
 
     public int start() {
@@ -97,16 +99,29 @@ public class MiddlewareCoordinator {
         }
 
         HashMap<MiddlewareResourceManager, Boolean> voteMap = new HashMap<MiddlewareResourceManager, Boolean>();
-
+        if (this.crashMap.get(1)){
+            System.exit(1);
+        }
         for (MiddlewareResourceManager rm : t.getClients()) {
             rm.send(new CanCommitRequest(xId));
             Response res = rm.receive();
+<<<<<<< HEAD
             System.out.println(res.toString());
             voteMap.put(rm, res.getStatus());
         }
 
         Trace.info("VOTES: " + voteMap.toString());
 
+=======
+            if (this.crashMap.get(3)){
+                System.exit(1);
+            }
+            voteMap.put(rm, res.getStatus());
+        }
+        if (this.crashMap.get(4)){
+            System.exit(1);
+        }
+>>>>>>> 5432f67321270163579cd4ddf70eeda0a153aeb7
         boolean allPrepared = false;
         for (Boolean vote : voteMap.values()) {
             if (vote) {
@@ -119,6 +134,9 @@ public class MiddlewareCoordinator {
 
         HashMap<MiddlewareResourceManager, Boolean> commitMap = new HashMap<MiddlewareResourceManager, Boolean>();
 
+        if (this.crashMap.get(5)){
+            System.exit(1);
+        }
         if (allPrepared) {
             this.transactionStatusMap.put(xId, Status.PREPARED);
 
@@ -126,11 +144,20 @@ public class MiddlewareCoordinator {
             for (MiddlewareResourceManager rm : t.getClients()) {
                 rm.send(new DoCommitRequest(xId));
                 Response res = rm.receive();
+                if (this.crashMap.get(6)){
+                    System.exit(1);
+                }
                 commitMap.put(rm, res.getStatus());
             }
+<<<<<<< HEAD
 
             Trace.info("COMMITS: " + commitMap.toString());
 
+=======
+            if (this.crashMap.get(7)){
+                System.exit(1);
+            }
+>>>>>>> 5432f67321270163579cd4ddf70eeda0a153aeb7
             for (Boolean commitSuccess : commitMap.values()) {
                 if (commitSuccess) {
                     allCommitted = true;
@@ -139,6 +166,7 @@ public class MiddlewareCoordinator {
                     break;
                 }
             }
+
 
             if (allCommitted) {
                 this.transactionStatusMap.put(xId, Status.COMMITTED);
@@ -152,12 +180,25 @@ public class MiddlewareCoordinator {
                 return false;
             }
         } else {
+            if (this.crashMap.get(5)){
+                System.exit(1);
+            }
             for (MiddlewareResourceManager rm : voteMap.keySet()) {
                 if (voteMap.get(rm).equals(true)) {
                     boolean res = rm.abort(xId);
+<<<<<<< HEAD
+=======
+                    if (this.crashMap.get(6)){
+                        System.exit(1);
+                    }
+                    abortMap.put(rm, new Boolean(res));
+>>>>>>> 5432f67321270163579cd4ddf70eeda0a153aeb7
                 }
             }
             this.transactionStatusMap.put(xId, Status.ABORTED);
+            if (this.crashMap.get(7)){
+                System.exit(1);
+            }
             return false;
         }
     }
@@ -177,6 +218,28 @@ public class MiddlewareCoordinator {
         t.abort();
 
         return success;
+    }
+
+    public boolean forceCrash(int mode){
+        Trace.info("Force MW Crash " + mode);
+        this.crashMap.put(mode,true);
+        return ((Boolean) this.crashMap.get(mode));
+    }
+    public void setCrash(int mode) {
+        this.crashMap.put(mode, true);
+    }
+
+    public void resetCrashes() {
+        for (Integer mode: crashMap.keySet()) {
+            this.crashMap.put(mode, false);
+        }
+    }
+    public static Map initCrashMap() {
+        Map<Integer, Boolean> tmp = new HashMap<Integer, Boolean>();
+        for (int i = 1; i < 9; i++){
+            tmp.put(i,false);
+        }
+        return tmp;
     }
 
     public synchronized boolean shutdown() {
