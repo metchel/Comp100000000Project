@@ -66,7 +66,7 @@ public class TransactionResourceManager extends SocketResourceManager {
                    this.statusMap.remove(statusPair.getKey());
                } else if (statusPair.getValue().equals("PREPARED")){
                    try {
-                       setData(this.shadowManager.loadFromOtherStorage());
+                       setData(this.shadowManager.loadFromStorage());
                    } catch (Exception e) {
                        System.out.println("SOMETHING FUNKYq2");
                    }
