@@ -171,10 +171,17 @@ public class MiddlewareRequestHandler implements RequestHandler {
 
             case CrashRoomRM: {
                 this.roomClient.send(request);
-                System.out.println("Telling the Hotel RM to crash");
+                System.out.println("Telling the Room RM to crash");
                 break;
             }
 
+            case ResetCrash: {
+                this.roomClient.send(request);
+                this.carClient.send(request);
+                this.flightClient.send(request);
+                this.coordinator.resetCrash();
+                break;
+            }
 
             /**
              * Read only operations

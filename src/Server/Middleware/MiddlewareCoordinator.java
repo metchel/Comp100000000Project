@@ -213,7 +213,7 @@ public class MiddlewareCoordinator {
         this.crashMap.put(mode, true);
     }
 
-    public void resetCrashes() {
+    public void resetCrash() {
         for (Integer mode: crashMap.keySet()) {
             this.crashMap.put(mode, false);
         }

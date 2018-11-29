@@ -36,6 +36,7 @@ public enum Command {
 	CrashCarRM("Crash Car RM","<mode>"),
 	CrashRoomRM("Crash Room RM","<RMname>,<mode>"),
 	CrashFlightRM("Crash Flight RM","<RMname>,<mode>"),
+	ResetCrash("Reset all crashes",""),
 
 	Bundle("Book N flight numbers, and optionally a room and/or car at a location", "<xid>,<CustomerID>,<FlightNumber1>...<FlightNumberN>,<Location>,<Car-Y/N>,<Room-Y/N>"),
 

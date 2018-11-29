@@ -159,6 +159,10 @@ public class ServerRequestHandler implements RequestHandler {
                 System.out.println("Been told to Crash mode "+mode);
                 return new Boolean(resourceManager.forceCrash(mode));
             }
+            case ResetCrash: {
+                resourceManager.resetCrash();
+                return true;
+            }
 
             case Shutdown: {
                 System.out.println("Gracefully shutting down...");

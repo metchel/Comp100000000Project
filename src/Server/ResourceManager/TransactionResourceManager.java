@@ -157,6 +157,11 @@ public class TransactionResourceManager extends SocketResourceManager {
         System.out.println(this.crashMap.get(mode).toString());
         return ((Boolean) this.crashMap.get(mode));
     }
+    public void resetCrash(){
+        for (Integer mode: crashMap.keySet()) {
+            this.crashMap.put(mode, false);
+        }
+    }
 
     public boolean shutdown() {
         return false;

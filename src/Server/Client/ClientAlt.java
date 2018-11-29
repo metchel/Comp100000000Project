@@ -229,6 +229,28 @@ public abstract class ClientAlt
                 break;
             }
 
+            case ResetCrash: {
+                checkArgumentsCount(1, arguments.size());
+                RequestData data = new RequestData();
+                data.addXId(-1)
+                        .addCommand(cmd);
+
+                Request req = new Request();
+                req.addCurrentTimeStamp()
+                        .addData(data);
+                System.out.println(req.toString());
+                oos.writeObject(req);
+                Response response = (Response) ois.readObject();
+
+                if (response.getStatus()) {
+
+                } else {
+
+                }
+                break;
+
+            }
+
 
             case AddFlight: {
                 checkArgumentsCount(5, arguments.size());
