@@ -237,6 +237,7 @@ public class MiddlewareCoordinator {
         Trace.info("ABORT " + transactionId);
         Transaction t = (Transaction) this.transactionMap.get(transactionId);
         boolean success = true;
+        success = success && this.customerRM.abort(transactionId);
         for (MiddlewareResourceManager client : t.getClients()) {
             try {
                 success = success && client.abort(t.getId());
