@@ -15,29 +15,68 @@ import java.util.Stack;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Calendar;
+import java.util.*;
+
 
 public class TransactionResourceManager extends SocketResourceManager {
     private final LockManager lockManager;
     private final ShadowManager shadowManager;
     private Map<Integer, Stack<Operation>> txMap;
     private Map<Integer, Boolean> crashMap;
+    private Map<Integer, String> statusMap;
 
     
     public TransactionResourceManager(String name) {
         super(name);
         this.lockManager = new LockManager();
         this.shadowManager = new ShadowManager(name);
+        this.statusMap = new HashMap<Integer,String>();
         try {
+            setStatusMap(this.shadowManager.loadStatus());
             setData(this.shadowManager.loadFromStorage());
             System.out.println(m_data.toString());
         } catch (Exception e) {
             System.out.println("SOMETHING FUNKY");
         }
+        performRecovery();
         this.txMap = new HashMap<Integer, Stack<Operation>>();
         this.crashMap = initCrashMap();
         System.out.println("initcm :"+this.crashMap.toString());
+
+
     }
-    
+
+    public void setStatusMap(Map mp){
+        try {
+        if (!mp.equals(Collections.EMPTY_MAP)) this.statusMap = (Map) mp;
+        else m_data = null;
+        } catch(NullPointerException e) {
+            System.out.println("Cant set status map");
+        }
+    }
+
+    public void performRecovery(){
+        try{
+            System.out.println("recov"+this.statusMap.toString());
+
+            for (Map.Entry<Integer, String> statusPair : this.statusMap.entrySet()) {
+               if (statusPair.getValue().equals("COMMITTED")){
+                   this.statusMap.remove(statusPair.getKey());
+               } else if (statusPair.getValue().equals("ABORTED")){
+                   this.statusMap.remove(statusPair.getKey());
+               } else if (statusPair.getValue().equals("PREPARED")){
+
+                } else if (statusPair.getValue().equals("STARTED")){
+
+                }
+            }
+
+            System.out.println("recov pt 2:"+this.statusMap.toString());
+        }catch(Exception e){
+            System.out.println("status file empty");
+        }
+
+    }
     public static Map initCrashMap() {
         Map<Integer, Boolean> tmp = new HashMap<Integer, Boolean>();
         for (int i = 1; i < 5; i++){
@@ -69,6 +108,9 @@ public class TransactionResourceManager extends SocketResourceManager {
                 return false;
             } 
             this.txMap.put(xId, new Stack<Operation>());
+            System.out.println("xid:"+xId);
+            this.statusMap.put(xId,"STARTED");
+            this.shadowManager.writeToStatus(this.statusMap);
             return true;
         } catch (Exception e) {
             Trace.info("Could not enlist transaction " + xId);
@@ -79,7 +121,14 @@ public class TransactionResourceManager extends SocketResourceManager {
 
     public synchronized boolean prepare(int xId) {
         try {
-            return shadowManager.writeToStorage(m_data, xId);
+            if (shadowManager.writeToStorage(m_data, xId)){
+                this.statusMap.put(xId,"PREPARED");
+                this.shadowManager.writeToStatus(this.statusMap);
+                return true;
+            } else {
+                System.out.println("COULDNT PREPARE TRM");
+                return false;
+            }
         } catch(Exception e) {
             Trace.info("Could not commit transaction " + xId);
             e.printStackTrace();
@@ -89,8 +138,13 @@ public class TransactionResourceManager extends SocketResourceManager {
 
     public synchronized boolean commit(int xId) {
         try {
+
             Trace.info("About to write to master record for " + xId);
             boolean b = shadowManager.writeToMasterRecord(xId);
+            if (b) {
+                this.statusMap.put(xId,"COMMITTED");
+                this.shadowManager.writeToStatus(this.statusMap);
+            }
             return lockManager.UnlockAll(xId);
         } catch(Exception e) {
             Trace.info("Could not commit transaction " + xId);
@@ -121,6 +175,8 @@ public class TransactionResourceManager extends SocketResourceManager {
             if (lastCommitedVersion != null) {
                 setData(lastCommitedVersion);
             }
+            this.statusMap.put(xId,"ABORTED");
+            this.shadowManager.writeToStatus(this.statusMap);
             return lockManager.UnlockAll(xId);
         } catch(Exception e) {
             e.printStackTrace();

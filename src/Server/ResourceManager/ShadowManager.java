@@ -14,6 +14,7 @@ public class ShadowManager {
     public static final String MASTER = "master";
     public static final String VERSION_A = "versionA";
     public static final String VERSION_B = "versionB";
+    public static final String STATUS = "status";
     public static final String ERRORS = "SomethingsWrong";
     public static final Map DEFAULTMAP;
     static {
@@ -25,6 +26,7 @@ public class ShadowManager {
     public TransactionLog masterRecord;
     public TransactionLog versionA;
     public TransactionLog versionB;
+    public TransactionLog status;
 
     private String lastVersion = VERSION_B;
     public String name;
@@ -32,27 +34,29 @@ public class ShadowManager {
     public ShadowManager(String rmname){
         try {
             this.masterRecord = new TransactionLog(MASTER + rmname);
-
             //if file was just made, no existing master record.
             if (this.masterRecord.getBool()){
                 this.masterRecord.writeToLog(DEFAULTMAP);
             }
-
             this.lastVersion = this.getLastCommitLocation();
 
         } catch (Exception e){
             System.out.println("SM Constructor failure");
             e.printStackTrace();
         }
-
         this.versionA = new TransactionLog(VERSION_A+rmname);
         this.versionB = new TransactionLog(VERSION_B+rmname);
-
+        this.status = new TransactionLog(STATUS+rmname);
         this.name = rmname;
     }
 
+
     public Map loadMasterRecord() throws IOException, ClassNotFoundException {
         return this.masterRecord.readFromLog();
+    }
+
+    public Map loadStatus() throws IOException, ClassNotFoundException {
+        return this.status.readFromLog();
     }
 
     public boolean writeToStorage(Map currentState, int xid) throws IOException, ClassNotFoundException{
@@ -85,6 +89,17 @@ public class ShadowManager {
             return false;
         }
     }
+
+    public boolean writeToStatus(Map mp){
+        try {
+            this.status.writeToLog(mp);
+            return true;
+        } catch(Exception e){
+            return false;
+        }
+    }
+
+
 
     public Map loadFromStorage() throws IOException, ClassNotFoundException {
         String lastCommit = this.getLastCommitLocation();
