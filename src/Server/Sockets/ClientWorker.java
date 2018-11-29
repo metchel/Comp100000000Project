@@ -19,7 +19,6 @@ public class ClientWorker implements Runnable {
     private volatile boolean running = false;
     final Socket client;
     final RequestHandler handler;
-    private boolean crashFlag = false;
 
     public ClientWorker(Socket client, RequestHandler handler) {
         this.client = client;
@@ -54,10 +53,13 @@ public class ClientWorker implements Runnable {
                 t.start();
                 t.join();
                 final Response response = requestWorker.getResponse();
-                if (response.getMessage().equals("3")){
-                    System.exit(1);
-                } else if (response.getMessage().equals("4")){
-                    this.crashFlag = true;
+                try {
+                    if (response.getMessage().equals("3")){
+                        System.exit(1);
+                    }
+                }
+                catch (Exception e){
+
                 }
                 oos.writeObject(response);
             } catch (Exception e) {

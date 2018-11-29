@@ -51,10 +51,6 @@ public class ServerRequestHandler implements RequestHandler {
                 return res.addCurrentTimeStamp()
                         .addStatus(resStatus)
                         .addMessage("3");
-            }else if ((Boolean) cm.get(4)){
-                return res.addCurrentTimeStamp()
-                        .addStatus(resStatus)
-                        .addMessage("4");
             }
             else {
                 return res.addCurrentTimeStamp()
@@ -65,6 +61,9 @@ public class ServerRequestHandler implements RequestHandler {
 
         if (req instanceof DoCommitRequest) {
             Trace.info("DoCommitRequest Received.");
+            if ((Boolean) resourceManager.getCrashMap().get(4)){
+                System.exit(1);
+            }
             resStatus = resourceManager.commit(xId);
             if (resStatus) {
                 message = "Successfully commited transaction " + xId.toString();
@@ -105,7 +104,7 @@ public class ServerRequestHandler implements RequestHandler {
             resStatus = new Boolean(false);
             message = "Reservation failed";
         }
-
+        System.out.println("yo");
         Response response = new Response();
         response.addCurrentTimeStamp()
             .addStatus(resStatus)
@@ -114,7 +113,7 @@ public class ServerRequestHandler implements RequestHandler {
         if (result instanceof RMHashMap) {
             response.addReservationData(result);
         }
-
+        System.out.println("yoooooo");
         return response;
     }
 
@@ -133,24 +132,27 @@ public class ServerRequestHandler implements RequestHandler {
             }
 
             case Abort: {
+                if ((Boolean) resourceManager.getCrashMap().get(4)){
+                    System.exit(1);
+                }
                 return new Boolean(resourceManager.abort(xId.intValue()));
             }
 
             case CrashFlightRM: {
                 Integer mode = (Integer)arguments.get("mode");
-                System.out.println("Been told to Crash");
+                System.out.println("Been told to Crash mode "+mode);
                 return new Boolean(resourceManager.forceCrash(mode));
 
             }
+            case CrashCarRM: {
+                Integer mode = (Integer)arguments.get("mode");
+                System.out.println("Been told to Crash mode "+mode);
+                return new Boolean(resourceManager.forceCrash(mode));
+            }
+
             case CrashRoomRM: {
                 Integer mode = (Integer)arguments.get("mode");
-                System.out.println("Been told to Crash");
-                return new Boolean(resourceManager.forceCrash(mode));
-            }
-
-            case CrashHotelRM: {
-                Integer mode = (Integer)arguments.get("mode");
-                System.out.println("Been told to Crash");
+                System.out.println("Been told to Crash mode "+mode);
                 return new Boolean(resourceManager.forceCrash(mode));
             }
 
