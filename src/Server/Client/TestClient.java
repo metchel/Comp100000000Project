@@ -22,7 +22,7 @@ public class TestClient extends TCPClient implements Runnable{
     boolean TEST_RESPONSE_TIME = true;
     boolean TEST_THROUGHPUT = false;
 
-    private static int transactionCount;
+    private static int transactionCount = 1;
     private static String serverHost;
     private static int serverPort;
     private static int numClients = 0;
@@ -38,10 +38,10 @@ public class TestClient extends TCPClient implements Runnable{
 
     public static void main(String[] a) {
         try {
-            Thread[] threads = new Thread[32];
+            Thread[] threads = new Thread[1];
             for (int i = 0; i < threads.length; i++) {
                 try {
-                    TimeUnit.SECONDS.sleep(10);
+                    TimeUnit.SECONDS.sleep(1);
                 } catch(InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -77,7 +77,7 @@ public class TestClient extends TCPClient implements Runnable{
             }
 
             long startTime = System.currentTimeMillis();
-            for (int i = 1; i < 500; i++ ) {
+            for (int i = 1; i < 10; i++ ) {
                 Vector<String> start = new Vector<String>();
                 start.add("Start");
 
@@ -132,13 +132,21 @@ public class TestClient extends TCPClient implements Runnable{
                 if (TEST_RESPONSE_TIME) {
                     try {
                         execute(Command.Start, start);
-                        writeResponseTime(Command.AddFlight, addFlight);
-                        writeResponseTime(Command.AddCars, addCars);
-                        writeResponseTime(Command.AddRooms, addRooms);
-                        writeResponseTime(Command.AddCustomerID, addCustomerId);
-                        writeResponseTime(Command.ReserveFlight, reserveFlight);
-                        writeResponseTime(Command.ReserveCar, reserveCar);
-                        writeResponseTime(Command.ReserveRoom, reserveRoom);
+                        delay();
+                        execute(Command.AddFlight, addFlight);
+                        delay();
+                        execute(Command.AddCars, addCars);
+                        delay();
+                        execute(Command.AddRooms, addRooms);
+                        delay();
+                        execute(Command.AddCustomerID, addCustomerId);
+                        delay();
+                        execute(Command.ReserveFlight, reserveFlight);
+                        delay();
+                        execute(Command.ReserveCar, reserveCar);
+                        delay();
+                        execute(Command.ReserveRoom, reserveRoom);
+                        delay();
                         execute(Command.Commit, commit);
                         transactionCount++;
                     } catch(Exception e) {

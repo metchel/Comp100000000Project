@@ -1,0 +1,3 @@
+cd Server
+make
+cd ..
