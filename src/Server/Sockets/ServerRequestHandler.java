@@ -30,18 +30,17 @@ public class ServerRequestHandler implements RequestHandler {
 
         if (req instanceof CanCommitRequest) {
             Trace.info("CanCommitRequest Received.");
-            System.out.println("Cm:"+resourceManager.getCrashMap().toString());
-            try {
-                if ((Boolean) resourceManager.getCrashMap().get(1)) {
-                    System.exit(1);
-                }
-                resStatus = resourceManager.prepare(xId);
-                if ((Boolean) resourceManager.getCrashMap().get(2)) {
-                    System.exit(1);
-                }
-            }catch (Exception e){
-                System.out.println("NPE on get crashmap");
+            Map cm = resourceManager.getCrashMap();
+            System.out.println("Cm:"+cm.toString());
+
+            if ((Boolean) resourceManager.getCrashMap().get(1)) {
+                System.exit(1);
             }
+            resStatus = resourceManager.prepare(xId);
+            if ((Boolean) resourceManager.getCrashMap().get(2)) {
+                System.exit(1);
+            }
+
             if (resStatus) {
                 message = "Successfully prepared transaction " + xId.toString();
             } else {
@@ -49,32 +48,28 @@ public class ServerRequestHandler implements RequestHandler {
             }
 
             Response res = new Response();
-            Map cm = resourceManager.getCrashMap();
-            try {
-                if ((Boolean) cm.get(3)) {
-                    return res.addCurrentTimeStamp()
-                            .addStatus(resStatus)
-                            .addMessage("3");
-                } else {
-                    return res.addCurrentTimeStamp()
-                            .addStatus(resStatus)
-                            .addMessage(message);
-                }
-            } catch (Exception e){
 
+            if ((Boolean) cm.get(3)) {
+                return res.addCurrentTimeStamp()
+                        .addStatus(resStatus)
+                        .addMessage("3");
+            } else {
+                return res.addCurrentTimeStamp()
+                        .addStatus(resStatus)
+                        .addMessage(message);
             }
+
         }
 
         if (req instanceof DoCommitRequest) {
             Trace.info("DoCommitRequest Received.");
             System.out.println("Cm:"+resourceManager.getCrashMap().toString());
-            try {
-                if ((Boolean) resourceManager.getCrashMap().get(4)) {
-                    System.exit(1);
-                }
-            } catch (Exception e){
-                System.out.println("NPE on get crashmap");
+
+            if ((Boolean) resourceManager.getCrashMap().get(4)) {
+                System.exit(1);
             }
+
+            System.out.println("NPE on get crashmap");
             resStatus = resourceManager.commit(xId);
             if (resStatus) {
                 message = "Successfully commited transaction " + xId.toString();
