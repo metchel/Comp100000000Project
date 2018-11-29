@@ -24,6 +24,8 @@ public class MiddlewareResourceManager {
     private ObjectInputStream ois;
     private Map<Integer, Boolean> crashMap;
 
+    private boolean FAILURE_DETECTED = false;
+
     public MiddlewareResourceManager(String name, InetAddress inetAddress, int port) throws IOException, ClassNotFoundException{
         this.name = name;
         this.inetAddress = inetAddress;
@@ -34,20 +36,19 @@ public class MiddlewareResourceManager {
         this.crashMap = new HashMap<Integer, Boolean>();
     }
 
-    public void retryConnection(long interval) {
-        boolean success = false;
-        while (!success) {
+    public void retryConnection(long wait) {
+        while (FAILURE_DETECTED) {
             try {
-                this.socket = new Socket(inetAddress, port);
-                this.oos = new ObjectOutputStream(this.socket.getOutputStream());
-                this.ois = new ObjectInputStream(this.socket.getInputStream());
-                success = true;
-            } catch (IOException e) {
-                try {
-                    Thread.sleep(interval);
-                } catch(InterruptedException ie) {
-                    continue;
+                synchronized(this) {
+                    Thread.sleep(wait);
+                    Trace.info("Trying to reset connection.");
+                    this.socket = new Socket(inetAddress, port);
+                    this.oos = new ObjectOutputStream(this.socket.getOutputStream());
+                    this.ois = new ObjectInputStream(this.socket.getInputStream());
+                    Trace.info("Connection Reset");
+                    FAILURE_DETECTED = false;
                 }
+            } catch (Exception e) {
                 continue;
             }
         }
@@ -58,8 +59,6 @@ public class MiddlewareResourceManager {
             this.oos.writeObject(request);
         } catch(Exception e) {
             Trace.warn("Broken Socket");
-            retryConnection(1000);
-            send(request);
         }
     }
 
@@ -70,11 +69,22 @@ public class MiddlewareResourceManager {
             while (System.currentTimeMillis() < start + time) {
                 return (Response)this.ois.readObject();
             }
-            throw new Exception("Socket timeout");
-        } catch(Exception e) {
-            Trace.warn("Detected Failure");
+
+            Trace.warn("Timeout waiting for response from RM.");
             Response res = new Response();
             res.addCurrentTimeStamp().addStatus(false).addMessage("Failure");
+            return res;
+        } catch(Exception e) {
+            FAILURE_DETECTED = true;
+            Thread t = new Thread(() -> {
+                retryConnection(5000);
+            });
+            t.start();
+            Trace.warn("Detected Failure");
+            Response res = new Response();
+            res.addCurrentTimeStamp()
+                .addStatus(false)
+                .addMessage("Failure");
             return res;
         }
     }

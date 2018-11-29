@@ -101,8 +101,11 @@ public class MiddlewareCoordinator {
         for (MiddlewareResourceManager rm : t.getClients()) {
             rm.send(new CanCommitRequest(xId));
             Response res = rm.receive();
+            System.out.println(res.toString());
             voteMap.put(rm, res.getStatus());
         }
+
+        Trace.info("VOTES: " + voteMap.toString());
 
         boolean allPrepared = false;
         for (Boolean vote : voteMap.values()) {
@@ -115,7 +118,6 @@ public class MiddlewareCoordinator {
         }
 
         HashMap<MiddlewareResourceManager, Boolean> commitMap = new HashMap<MiddlewareResourceManager, Boolean>();
-        HashMap<MiddlewareResourceManager, Boolean> abortMap = new HashMap<MiddlewareResourceManager, Boolean>();
 
         if (allPrepared) {
             this.transactionStatusMap.put(xId, Status.PREPARED);
@@ -126,6 +128,8 @@ public class MiddlewareCoordinator {
                 Response res = rm.receive();
                 commitMap.put(rm, res.getStatus());
             }
+
+            Trace.info("COMMITS: " + commitMap.toString());
 
             for (Boolean commitSuccess : commitMap.values()) {
                 if (commitSuccess) {
@@ -141,18 +145,16 @@ public class MiddlewareCoordinator {
                 return true;
             } else {
                 for (MiddlewareResourceManager rm : commitMap.keySet()) {
-                    if (commitMap.get(rm)) {
+                    if (commitMap.get(rm).equals(true)) {
                         boolean res = rm.abort(xId);
-                        abortMap.put(rm, new Boolean(res));
                     }
                 }
                 return false;
             }
         } else {
             for (MiddlewareResourceManager rm : voteMap.keySet()) {
-                if (!voteMap.get(rm)) {
+                if (voteMap.get(rm).equals(true)) {
                     boolean res = rm.abort(xId);
-                    abortMap.put(rm, new Boolean(res));
                 }
             }
             this.transactionStatusMap.put(xId, Status.ABORTED);
