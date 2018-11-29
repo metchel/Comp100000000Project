@@ -2,6 +2,8 @@
 .DS_Store
 *.class
 *.privacy
+.idea/*
+.vscode/*
 workspace.xml
 *.log
 *.jar
