@@ -50,7 +50,7 @@ public class Middleware {
             final MiddlewareResourceManager flightRM = new MiddlewareResourceManager(Constants.FLIGHT, InetAddress.getByName(inetFlights), portFlights);
             final MiddlewareResourceManager carRM = new MiddlewareResourceManager(Constants.CAR, InetAddress.getByName(inetCars), portCars);
             final MiddlewareResourceManager roomRM = new MiddlewareResourceManager(Constants.ROOM, InetAddress.getByName(inetRooms), portRooms);
-            final MiddlewareCoordinator coordinator = new MiddlewareCoordinator(flightRM, carRM, roomRM);
+            final MiddlewareCoordinator coordinator = new MiddlewareCoordinator(customerResourceManager, flightRM, carRM, roomRM);
             middleware = new Middleware.Builder()
                 .atInetAddress(InetAddress.getByName(inetMiddleware))
                 .atPort(portMiddleware)

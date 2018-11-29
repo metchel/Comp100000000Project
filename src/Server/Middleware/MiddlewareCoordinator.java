@@ -19,6 +19,7 @@ import Server.Network.DoCommitRequest;
 import Server.Network.Response;
 import Server.Middleware.Transaction.Status;
 import Server.Sockets.RequestHandler;
+import Server.ResourceManager.TransactionResourceManager;
 
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.Executors;
@@ -36,22 +37,28 @@ public class MiddlewareCoordinator {
     private final Map<Integer, Transaction> transactionMap;
     private final Map<Integer, Status> transactionStatusMap;
     private final Map<Integer, Set<String>> rmMap;
+    
+    private final TransactionResourceManager customerRM;
     private final MiddlewareResourceManager flightRM;
     private final MiddlewareResourceManager carRM;
     private final MiddlewareResourceManager roomRM;
+
     private static final String CUSTOMER = Constants.CUSTOMER;
     private static final String FLIGHT = Constants.FLIGHT;
     private static final String ROOM = Constants.ROOM;
     private static final String CAR = Constants.CAR;
     private Map<Integer, Boolean> crashMap;
 
-    public MiddlewareCoordinator(MiddlewareResourceManager flightRM,
-                                 MiddlewareResourceManager carRM,
-                                 MiddlewareResourceManager roomRM) {
+    public MiddlewareCoordinator(TransactionResourceManager customerRM,
+                                MiddlewareResourceManager flightRM,
+                                MiddlewareResourceManager carRM,
+                                MiddlewareResourceManager roomRM) {
         this.transactionMap = new HashMap<Integer, Transaction>();
         this.transactionStatusMap = new HashMap<Integer, Status>();
         this.rmMap = new HashMap<Integer, Set<String>>();
         this.ttlWorkerPool = Executors.newScheduledThreadPool(1);
+
+        this.customerRM = customerRM;
         this.flightRM = flightRM;
         this.carRM = carRM;
         this.roomRM = roomRM;
@@ -76,20 +83,20 @@ public class MiddlewareCoordinator {
         this.ttlWorkerPool.schedule(new TtlWorker(t), t.getTtl(), TimeUnit.MILLISECONDS);
     }
 
-    public synchronized boolean hasCommited(Integer xid) {
+    public boolean hasCommited(Integer xid) {
         return this.transactionStatusMap.get(xid) == Status.COMMITTED;
     }
 
-    public synchronized boolean hasAborted(Integer xid) {
+    public boolean hasAborted(Integer xid) {
         return this.transactionStatusMap.get(xid) == Status.ABORTED;
     }
 
-    public synchronized boolean hasStarted(Integer xid) {
+    public boolean hasStarted(Integer xid) {
         return transactionStatusMap.get(xid) == Status.STARTED;
     }
 
-    public synchronized boolean exists(Integer xid) {
-        return transactionMap.get(xid) != null;
+    public boolean exists(Integer xid) {
+        return hasStarted(xid);
     }
 
     public boolean commit(int xId) throws IOException, ClassNotFoundException {
@@ -98,41 +105,46 @@ public class MiddlewareCoordinator {
             this.transactionStatusMap.put(xId, Status.VOTING);
         }
 
-        HashMap<MiddlewareResourceManager, Boolean> voteMap = new HashMap<MiddlewareResourceManager, Boolean>();
+        HashMap<String, Boolean> voteMap = new HashMap<String, Boolean>();
         if (this.crashMap.get(1)){
             System.exit(1);
         }
+
         for (MiddlewareResourceManager rm : t.getClients()) {
+            if (t.getClients().isEmpty()) {
+                break;
+            }
             rm.send(new CanCommitRequest(xId));
             Response res = rm.receive();
-<<<<<<< HEAD
-            System.out.println(res.toString());
-            voteMap.put(rm, res.getStatus());
-        }
-
-        Trace.info("VOTES: " + voteMap.toString());
-
-=======
+            Trace.info(res.toString());
             if (this.crashMap.get(3)){
                 System.exit(1);
             }
-            voteMap.put(rm, res.getStatus());
-        }
-        if (this.crashMap.get(4)){
-            System.exit(1);
-        }
->>>>>>> 5432f67321270163579cd4ddf70eeda0a153aeb7
-        boolean allPrepared = false;
-        for (Boolean vote : voteMap.values()) {
-            if (vote) {
-                allPrepared = true;
+
+            if (res.getMessage().equals("true")) {
+                voteMap.put(rm.getName(), false);
+                rm.forceFailureDetection();
             } else {
-                allPrepared = false;
-                break;
+                voteMap.put(rm.getName(), res.getStatus());
             }
         }
 
-        HashMap<MiddlewareResourceManager, Boolean> commitMap = new HashMap<MiddlewareResourceManager, Boolean>();
+        if (rmMap.get(xId).contains(CUSTOMER)) {
+            voteMap.put(CUSTOMER, this.customerRM.prepare(xId));
+        }
+
+        if (this.crashMap.get(4)){
+            System.exit(1);
+        }
+
+        Trace.info(voteMap.toString());
+
+        boolean allPrepared = true;
+        if (voteMap.containsValue(false)) {
+            allPrepared = false;
+        }
+
+        HashMap<String, Boolean> commitMap = new HashMap<String, Boolean>();
 
         if (this.crashMap.get(5)){
             System.exit(1);
@@ -147,17 +159,16 @@ public class MiddlewareCoordinator {
                 if (this.crashMap.get(6)){
                     System.exit(1);
                 }
-                commitMap.put(rm, res.getStatus());
+                commitMap.put(rm.getName(), res.getStatus());
             }
-<<<<<<< HEAD
 
-            Trace.info("COMMITS: " + commitMap.toString());
+            if (rmMap.get(xId).contains(CUSTOMER)) {
+                commitMap.put(CUSTOMER, this.customerRM.commit(xId));
+            }
 
-=======
             if (this.crashMap.get(7)){
                 System.exit(1);
             }
->>>>>>> 5432f67321270163579cd4ddf70eeda0a153aeb7
             for (Boolean commitSuccess : commitMap.values()) {
                 if (commitSuccess) {
                     allCommitted = true;
@@ -172,9 +183,14 @@ public class MiddlewareCoordinator {
                 this.transactionStatusMap.put(xId, Status.COMMITTED);
                 return true;
             } else {
-                for (MiddlewareResourceManager rm : commitMap.keySet()) {
+                for (String rm : commitMap.keySet()) {
                     if (commitMap.get(rm).equals(true)) {
-                        boolean res = rm.abort(xId);
+                        boolean res;
+                        if (rm.equals(CUSTOMER)) {
+                            res = this.customerRM.abort(xId);
+                        } else {
+                            res = getRMFromString(rm).abort(xId);
+                        }
                     }
                 }
                 return false;
@@ -183,16 +199,17 @@ public class MiddlewareCoordinator {
             if (this.crashMap.get(5)){
                 System.exit(1);
             }
-            for (MiddlewareResourceManager rm : voteMap.keySet()) {
+            for (String rm : voteMap.keySet()) {
                 if (voteMap.get(rm).equals(true)) {
-                    boolean res = rm.abort(xId);
-<<<<<<< HEAD
-=======
+                    boolean res;
+                    if (rm.equals(CUSTOMER)) {
+                        res = this.customerRM.abort(xId);
+                    } else {
+                        res = getRMFromString(rm).abort(xId);
+                    }
                     if (this.crashMap.get(6)){
                         System.exit(1);
                     }
-                    abortMap.put(rm, new Boolean(res));
->>>>>>> 5432f67321270163579cd4ddf70eeda0a153aeb7
                 }
             }
             this.transactionStatusMap.put(xId, Status.ABORTED);
@@ -203,7 +220,20 @@ public class MiddlewareCoordinator {
         }
     }
 
-    public synchronized boolean abort(int transactionId) {
+    private MiddlewareResourceManager getRMFromString(String rm) {
+        switch(rm) {
+            case FLIGHT:
+                return this.flightRM;
+            case CAR:
+                return this.carRM;
+            case ROOM:
+                return this.roomRM;
+        }
+
+        return null;
+    }
+
+    public boolean abort(int transactionId) {
         Trace.info("ABORT " + transactionId);
         Transaction t = (Transaction) this.transactionMap.get(transactionId);
         boolean success = true;
@@ -250,7 +280,9 @@ public class MiddlewareCoordinator {
         try {
             HashSet<String> transactionRMs = (HashSet) this.rmMap.get(transactionId);
             Transaction t = this.transactionMap.get(transactionId);
-            t.addClient(rmFromString(rm));
+            if (!rm.equals(CUSTOMER)) {
+                t.addClient(rmFromString(rm));
+            }
             if (!transactionRMs.contains(rm)) {
                 transactionRMs.add(rm);
             }

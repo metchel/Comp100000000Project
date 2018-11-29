@@ -55,7 +55,7 @@ public class ClientWorker implements Runnable {
                 t.join();
                 final Response response = requestWorker.getResponse();
                 try {
-                    if (response.getMessage().equals("3")){
+                    if (response.getMessage().equals("CRASH 3")){
                         System.exit(1);
                     }
                 }

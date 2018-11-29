@@ -62,6 +62,14 @@ public class MiddlewareResourceManager {
         }
     }
 
+    public void forceFailureDetection() {
+        FAILURE_DETECTED = true;
+        Thread t = new Thread(() -> {
+            retryConnection(1000);
+        });
+        t.start();
+    }
+
     public synchronized Response receive() throws IOException, ClassNotFoundException {
         try {
             long start = System.currentTimeMillis();
@@ -77,7 +85,7 @@ public class MiddlewareResourceManager {
         } catch(Exception e) {
             FAILURE_DETECTED = true;
             Thread t = new Thread(() -> {
-                retryConnection(5000);
+                retryConnection(1000);
             });
             t.start();
             Trace.warn("Detected Failure");

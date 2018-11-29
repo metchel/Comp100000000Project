@@ -33,11 +33,12 @@ public class ServerRequestHandler implements RequestHandler {
             Map cm = resourceManager.getCrashMap();
             System.out.println("Cm:"+cm.toString());
 
-            if ((Boolean) resourceManager.getCrashMap().get(1)) {
+            if ((Boolean) cm.get(1)) {
                 System.exit(1);
             }
             resStatus = resourceManager.prepare(xId);
-            if ((Boolean) resourceManager.getCrashMap().get(2)) {
+            if ((Boolean) cm.get(2)) {
+                Trace.info("Crash Mode 2");
                 System.exit(1);
             }
 
@@ -52,7 +53,7 @@ public class ServerRequestHandler implements RequestHandler {
             if ((Boolean) cm.get(3)) {
                 return res.addCurrentTimeStamp()
                         .addStatus(resStatus)
-                        .addMessage("3");
+                        .addMessage("CRASH 3");
             } else {
                 return res.addCurrentTimeStamp()
                         .addStatus(resStatus)

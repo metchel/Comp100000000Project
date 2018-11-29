@@ -16,7 +16,9 @@ public class RequestWorker implements Runnable {
         synchronized(this.active) {
             while(this.active.booleanValue()) {
                 try {
-                    this.response = this.handler.handle(this.request);
+                    synchronized(this.response) {
+                        this.response = this.handler.handle(this.request);
+                    }
                 } catch(Exception e) {
                     e.printStackTrace();
                     this.response = null;
@@ -24,7 +26,6 @@ public class RequestWorker implements Runnable {
                 }
                 this.active = new Boolean(false);
             }
-
         }
     }
 
@@ -32,6 +33,7 @@ public class RequestWorker implements Runnable {
         active = new Boolean(true);
         this.request = request;
         this.handler = handler;
+        this.response = new Response();
     }
 
     public synchronized Response getResponse() {

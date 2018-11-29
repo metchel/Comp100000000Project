@@ -37,6 +37,7 @@ public class TransactionResourceManager extends SocketResourceManager {
         this.crashMap = initCrashMap();
         System.out.println("initcm :"+this.crashMap.toString());
     }
+    
     public static Map initCrashMap() {
         Map<Integer, Boolean> tmp = new HashMap<Integer, Boolean>();
         for (int i = 1; i < 5; i++){

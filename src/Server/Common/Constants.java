@@ -1,8 +1,8 @@
 package Server.Common;
 
 public class Constants {
-    public static String CUSTOMER = "CUSTOMER";
-    public static String FLIGHT = "FLIGHT";
-    public static String CAR = "CAR";
-    public static String ROOM = "ROOM";
+    public static final String CUSTOMER = "CUSTOMER";
+    public static final String FLIGHT = "FLIGHT";
+    public static final String CAR = "CAR";
+    public static final String ROOM = "ROOM";
 }
