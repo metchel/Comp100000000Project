@@ -154,7 +154,6 @@ public class TransactionResourceManager extends SocketResourceManager {
     public synchronized boolean commit(int xId) {
         try {
             Trace.info("Committing Transaction " + xId);
-            Trace.info("Writing to master record for " + xId);
             boolean b = shadowManager.writeToMasterRecord(xId);
             if (b) {
                 this.committedRound = true;

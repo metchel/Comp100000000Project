@@ -47,11 +47,11 @@ public class ServerRequestHandler implements RequestHandler {
         if (req instanceof AskDecisionRequest) {
             String status = this.resourceManager.getStatus(xId);
             if (status.equals("COMMITTED")) {
-                return new CommitSuccessResponse(xId, true);
+                return new CommitSuccessResponse(xId, true).addMessage("COMMIT");
             } else if (status.equals("ABORTED")) {
-                return new CommitSuccessResponse(xId, false);
+                return new CommitSuccessResponse(xId, false).addMessage("ABORT");
             } else {
-                return null;
+                return new CommitSuccessResponse(xId, false).addMessage("UNDECIDED");
             }
         }
 
@@ -83,6 +83,15 @@ public class ServerRequestHandler implements RequestHandler {
                 }
                 // timeout. detect Middleware failure
                 Trace.info("Detected Coordinator Failure.");
+                long now2 = System.currentTimeMillis();
+                while (System.currentTimeMillis() < now2 + 3000) {
+                    Trace.info("...");
+                    try {
+                        Thread.sleep(500);
+                    } catch (Exception e) {
+                        break;
+                    }
+                }
                 // run termination protocol
                 Trace.info("Running Cooperative Termination Protocol");
                 HashSet<CommitSuccessResponse> resps = new HashSet<CommitSuccessResponse>();
@@ -93,8 +102,21 @@ public class ServerRequestHandler implements RequestHandler {
                         ObjectOutputStream OOS = new ObjectOutputStream(SOCKET.getOutputStream());
 
                         OOS.writeObject(new AskDecisionRequest(xId));
-                        CommitSuccessResponse res = (CommitSuccessResponse) OIS.readObject();
-                        resps.add(res);
+                        try {
+                            CommitSuccessResponse res = (CommitSuccessResponse) OIS.readObject();
+                            if (res.getMessage().equals("COMMIT")) {
+                                Trace.info("Received a response from a participant who decided commit.");
+                            }
+                            if (res.getMessage().equals("ABORT")) {
+                                Trace.info("Received a response from a participant who decided abort.");
+                            }
+                            if (res.getMessage().equals("UNDECIDED")) {
+                                Trace.info("Received a response from a participant who is undecided.");
+                            }
+                            resps.add(res);
+                        } catch(ClassNotFoundException ex) {
+                            continue;
+                        }
                     } catch (Exception e) {
                         this.resourceManager.abort(xId);
                         break;

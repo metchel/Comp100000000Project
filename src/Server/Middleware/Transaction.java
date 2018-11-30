@@ -20,8 +20,8 @@ public class Transaction {
     private long ttl;
 
     public Transaction() {
-        //this.id = (int)(Math.random()*10000);
-        this.id = getNextTransactionId();
+        this.id = (int)(Math.random()*100);
+        //this.id = getNextTransactionId();
         this.ttl = System.currentTimeMillis() + DEFAULT_TTL;
         this.clients = new HashSet<MiddlewareResourceManager>();
         this.commands = new LinkedList<Command>();
@@ -57,7 +57,6 @@ public class Transaction {
 
     public void updateTtl() {
         this.ttl = this.ttl + DEFAULT_TTL;
-        System.out.println(this.ttl);
     }
 
     public long getTtl() {

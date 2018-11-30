@@ -142,7 +142,7 @@ public class ShadowManager {
         }
 
         if (lastCommit.equals(VERSION_A)){
-            Trace.info("Location of data from last commit is version "+ VERSION_A);
+            Trace.info("Location of data from last commit is "+ VERSION_A);
             if(this.versionA.getFileSize() == 0){
                 Trace.info("No data in version "+VERSION_A);
                 return null;
@@ -150,7 +150,7 @@ public class ShadowManager {
             return this.versionA.readFromLog();
         }
         else if (lastCommit.equals(VERSION_B)){
-            Trace.info("Location of data from last commit is version "+ VERSION_B);
+            Trace.info("Location of data from last commit is "+ VERSION_B);
             if(this.versionB.getFileSize() == 0){
                 Trace.info("No data in version "+VERSION_B);
                 return null;
