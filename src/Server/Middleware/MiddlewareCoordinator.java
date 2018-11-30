@@ -95,14 +95,13 @@ public class MiddlewareCoordinator {
                 for (MiddlewareResourceManager participant: participants) {
                     try {
                         if (!rm.equals(participant)) {
-                            rm.send(new InformGroupRequest(participant.getInetAddress().toString, participant.getPort()));
+                            rm.send(new InformGroupRequest(participant.getInetAddress().toString(), participant.getPort()));
                         }
                     } catch(IOException e) {
                         e.printStackTrace();
                     }
                 }
             }
-
             this.participantsInformed = true;
         }
     }
@@ -190,11 +189,16 @@ public class MiddlewareCoordinator {
             boolean allCommitted = false;
             for (MiddlewareResourceManager rm : t.getClients()) {
                 rm.send(new DoCommitRequest(xId));
-                Response res = rm.receive();
+                CommitSuccessResponse res = rm.receiveCommitResponse();
                 if (this.crashMap.get(6)){
                     System.exit(1);
                 }
-                commitMap.put(rm.getName(), res.getStatus());
+
+                if (res != null) {
+                    commitMap.put(rm.getName(), res.getStatus());
+                } else {
+                    commitMap.put(rm.getName(), false);
+                }
             }
 
             if (rmMap.get(xId).contains(CUSTOMER)) {
@@ -204,6 +208,8 @@ public class MiddlewareCoordinator {
             if (this.crashMap.get(7)){
                 System.exit(1);
             }
+
+            Trace.info(commitMap.toString());
             for (Boolean commitSuccess : commitMap.values()) {
                 if (commitSuccess) {
                     allCommitted = true;

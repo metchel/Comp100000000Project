@@ -5,6 +5,7 @@ import Server.Network.Request;
 import Server.Network.RequestData;
 import Server.Network.Response;
 import Server.Network.VoteResponse;
+import Server.Network.CommitSuccessResponse;
 import Server.Network.InformGroupRequest;
 import Server.Common.Command;
 import Server.Common.Trace;
@@ -90,6 +91,19 @@ public class MiddlewareResourceManager {
         while (System.currentTimeMillis() < now + 5000) {
             try {
                 return (VoteResponse)this.ois.readObject();
+            } catch(Exception e) {
+                continue;
+            }
+        }
+        failureDetected();
+        return null;
+    }
+
+    public CommitSuccessResponse receiveCommitResponse() throws IOException, ClassNotFoundException {
+        long now = System.currentTimeMillis();
+        while (System.currentTimeMillis() < now + 5000) {
+            try {
+                return (CommitSuccessResponse)this.ois.readObject();
             } catch(Exception e) {
                 continue;
             }

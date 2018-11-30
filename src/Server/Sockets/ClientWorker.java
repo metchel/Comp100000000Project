@@ -54,6 +54,7 @@ public class ClientWorker implements Runnable {
                 t.start();
                 t.join();
                 final Response response = requestWorker.getResponse();
+                oos.writeObject(response);
                 try {
                     if (response.getMessage().equals("CRASH 3")){
                         System.exit(1);
@@ -62,7 +63,6 @@ public class ClientWorker implements Runnable {
                 catch (Exception e){
 
                 }
-                oos.writeObject(response);
             } catch (Exception e) {
                 System.out.println("ClientWorker::run failed on in or out stream.");
                 this.running = false;

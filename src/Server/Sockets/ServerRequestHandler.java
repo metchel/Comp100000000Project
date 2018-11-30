@@ -76,7 +76,13 @@ public class ServerRequestHandler implements RequestHandler {
 
             });
             t.start();
-
+            if ((Boolean) cm.get(3)) {
+                if (resStatus) {
+                    return new VoteResponse(xId.intValue(), "YES").addMessage("CRASH 3");
+                } else {
+                    return new VoteResponse(xId.intValue(), "NO").addMessage("CRASH 3");
+                }
+            }
             if (resStatus) {
                 return new VoteResponse(xId.intValue(), "YES");
             } else {
@@ -99,10 +105,11 @@ public class ServerRequestHandler implements RequestHandler {
                 message = "Failed to commit transaction " + xId.toString();
             }
 
-            Response res = new Response();
-            return res.addCurrentTimeStamp()
-                .addStatus(resStatus)
-                .addMessage(message);
+            if (resStatus) {
+                return new CommitSuccessResponse(xId.intValue(), true);
+            } else {
+                return new CommitSuccessResponse(xId.intValue(), false);
+            }
         }
 
         Map<String, Object> arguments = (data.getCommandArgs());
