@@ -35,7 +35,7 @@ public class TransactionResourceManager extends SocketResourceManager {
         try {
             setStatusMap(this.shadowManager.loadStatus());
             setData(this.shadowManager.loadFromStorage());
-            System.out.println(m_data.toString());
+            Trace.info("Set data to:" + m_data.toString());
         } catch (Exception e) {
             System.out.println("SOMETHING FUNKY");
             e.printStackTrace();
@@ -43,8 +43,8 @@ public class TransactionResourceManager extends SocketResourceManager {
         //performRecovery();
         this.txMap = new HashMap<Integer, Stack<Operation>>();
         this.crashMap = initCrashMap();
-        System.out.println("initcm :"+this.crashMap.toString());
-        System.out.println(this.statusMap.toString());
+        //System.out.println("initcm :"+this.crashMap.toString());
+        Trace.info("Status Map:"+this.statusMap.toString());
     }
 
     public Map<Integer, String> getStatusMap() {
@@ -66,7 +66,7 @@ public class TransactionResourceManager extends SocketResourceManager {
 
     public void performRecovery(){
         try{
-            System.out.println("recov"+this.statusMap.toString());
+            Trace.info("Statuses"+this.statusMap.toString());
 
             for (Map.Entry<Integer, String> statusPair : this.statusMap.entrySet()) {
                if (statusPair.getValue().equals("COMMITTED")){
@@ -89,9 +89,9 @@ public class TransactionResourceManager extends SocketResourceManager {
                     // abort. but our logging here is incorrect.
                 }
             }
-            System.out.println("recov pt 2:"+this.statusMap.toString());
+
         }catch(Exception e){
-            System.out.println("status file empty");
+           Trace.info("status file empty");
         }
     }
 
@@ -127,7 +127,7 @@ public class TransactionResourceManager extends SocketResourceManager {
             }
             this.committedRound = false;
             this.txMap.put(xId, new Stack<Operation>());
-            System.out.println("xid:"+xId);
+            //System.out.println("xid:"+xId);
             this.statusMap.put(xId,"STARTED");
             this.shadowManager.writeToStatus(this.statusMap);
             return true;
@@ -145,7 +145,7 @@ public class TransactionResourceManager extends SocketResourceManager {
                 this.shadowManager.writeToStatus(this.statusMap);
                 return true;
             } else {
-                System.out.println("COULDNT PREPARE TRM");
+                Trace.info("COULDNT PREPARE TRM");
                 return false;
             }
         } catch(Exception e) {
@@ -176,16 +176,16 @@ public class TransactionResourceManager extends SocketResourceManager {
 
     public synchronized boolean abort(int xId){
         try {
-            System.out.println("ENTERED ABORTED");
+           // System.out.println("ENTERED ABORTED");
             clearData();
             if (!this.committedRound) {
-                System.out.println("CommitedRound is false,normal abort");
+                Trace.info("Normal abort");
                 Map lastCommittedVersion = shadowManager.loadFromStorage();
                 if (lastCommittedVersion != null) {
                     setData(lastCommittedVersion);
                 }
             } else {
-                System.out.println("CommitedRound is true, someone timed out");
+                Trace.info("Another RM wasn't able to commit, throwing away last commit and reverting to previous.");
                 Map otherCommittedVersion = shadowManager.loadFromOtherStorage();
                 if (otherCommittedVersion != null) {
                     setData(otherCommittedVersion);
@@ -205,7 +205,7 @@ public class TransactionResourceManager extends SocketResourceManager {
 
     public boolean forceCrash(int mode){
         this.crashMap.put(mode,true);
-        System.out.println(this.crashMap.get(mode).toString());
+        //System.out.println(this.crashMap.get(mode).toString());
         return ((Boolean) this.crashMap.get(mode));
     }
 
