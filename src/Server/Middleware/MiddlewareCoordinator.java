@@ -100,6 +100,7 @@ public class MiddlewareCoordinator {
                     try {
                         if (!rm.equals(participant)) {
                             rm.send(new InformGroupRequest(participant.getInetAddress().toString(), participant.getPort()));
+                            Response response = rm.receive();
                         }
                     } catch(IOException e) {
                         e.printStackTrace();
