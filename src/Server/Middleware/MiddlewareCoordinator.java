@@ -144,12 +144,23 @@ public class MiddlewareCoordinator {
             System.exit(1);
         }
 
+        if (this.crashMap.get(2)){
+            if (rmMap.get(xId).contains(CUSTOMER)) {
+                voteMap.put(CUSTOMER, this.customerRM.prepare(xId));
+            }
+            for (MiddlewareResourceManager man: t.getClients()) {
+                man.send(new CanCommitRequest(xId));
+            }
+            System.exit(1);
+        }
+
         for (MiddlewareResourceManager rm : t.getClients()) {
             if (t.getClients().isEmpty()) {
                 break;
             }
             Trace.info("Sending a CanCommitRequest (vote) for " + xId + " to " + rm.getName() + ".");
             rm.send(new CanCommitRequest(xId));
+
             VoteResponse res = rm.receiveVote();
             if (res != null) {
                 String vote = res.getVote();
