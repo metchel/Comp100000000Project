@@ -59,6 +59,7 @@ public class MiddlewareRequestHandler implements RequestHandler {
         final int xid = request.getData().getXId();
 
         if (request instanceof AskDecisionRequest) {
+            Trace.info("Decision has been asked for...");
             Transaction.Status decision = this.coordinator.getStatus(xid);
             if (decision.equals(Transaction.Status.ABORTED)) {
                 return new CommitSuccessResponse(xid, false);
@@ -173,17 +174,20 @@ public class MiddlewareRequestHandler implements RequestHandler {
             }
             case CrashFlightRM: {
                 this.flightClient.send(request);
+                Response res = this.flightClient.receive();
                 System.out.println("Telling the Flight RM to crash");
                 break;
             }
             case CrashCarRM: {
                 this.carClient.send(request);
+                Response res = this.carClient.receive();
                 System.out.println("Telling the Room RM to crash");
                 break;
             }
 
             case CrashRoomRM: {
                 this.roomClient.send(request);
+                Response res = this.roomClient.receive();
                 System.out.println("Telling the Hotel RM to crash");
                 break;
             }

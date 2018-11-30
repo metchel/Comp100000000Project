@@ -14,6 +14,11 @@ public class ItemResourceManager extends TransactionResourceManager {
         for (Integer xid: this.getStatusMap().keySet()) {
             String status = this.getStatusMap().get(xid);
             if (status.equals("PREPARED")) {
+                try {
+                    Thread.sleep(100);
+                } catch (Exception e) {
+                    
+                }
                 askDecision(xid);
             }
         }
@@ -27,11 +32,14 @@ public class ItemResourceManager extends TransactionResourceManager {
         Trace.info("ASKING FOR DECISION FROM COORDINATOR");
         CommitSuccessResponse decision = this.coordinator.sendAskDecisionRequest(new AskDecisionRequest(xid));
         if (decision != null) {
+            Trace.info("received decision ");
             if (decision.getStatus().equals(true)) {
                 this.commit(xid);
             } else {
                 this.abort(xid);
             }
+        } else {
+            Trace.info("didn't receive decision.");
         }
     }
 }
