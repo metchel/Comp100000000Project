@@ -102,7 +102,7 @@ public class MiddlewareCoordinator {
                             rm.send(new InformGroupRequest(participant.getInetAddress().toString(), participant.getPort()));
                             Response response = rm.receive();
                         }
-                    } catch(IOException e) {
+                    } catch(Exception e) {
                         e.printStackTrace();
                     }
                 }
