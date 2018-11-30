@@ -164,9 +164,6 @@ public class ServerRequestHandler implements RequestHandler {
             }
 
             case Abort: {
-                if ((Boolean) resourceManager.getCrashMap().get(4)){
-                    System.exit(1);
-                }
                 return new Boolean(resourceManager.abort(xId.intValue()));
             }
 

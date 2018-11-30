@@ -13,13 +13,13 @@ public class CoordinatorStub {
         this.port = port;
     }
 
-    public Response sendAskDecisionRequest(AskDecisionRequest r) {
+    public CommitSuccessResponse sendAskDecisionRequest(AskDecisionRequest r) {
         try {
             final Socket SOCKET = new Socket(inetAddress, port);
             final ObjectOutputStream OOS = new ObjectOutputStream(SOCKET.getOutputStream());
             final ObjectInputStream OIS = new ObjectInputStream(SOCKET.getInputStream());
             OOS.writeObject(r);
-            return (Response) OIS.readObject();
+            return (CommitSuccessResponse) OIS.readObject();
         } catch(IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }

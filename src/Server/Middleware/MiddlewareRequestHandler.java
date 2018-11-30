@@ -3,6 +3,8 @@ package Server.Middleware;
 import Server.Network.Request;
 import Server.Network.RequestData;
 import Server.Network.Response;
+import Server.Network.CommitSuccessResponse;
+import Server.Network.AskDecisionRequest;
 import Server.ResourceManager.SocketResourceManager;
 import Server.ResourceManager.CustomerResourceManager;
 import Server.Common.Command;
@@ -54,14 +56,25 @@ public class MiddlewareRequestHandler implements RequestHandler {
 
     public synchronized Response handle(Request request) throws IOException, ClassNotFoundException {
         final RequestData data = (RequestData) request.getData();
+        final int xid = request.getData().getXId();
+
+        if (request instanceof AskDecisionRequest) {
+            Transaction.Status decision = this.coordinator.getStatus(xid);
+            if (decision.equals(Transaction.Status.ABORTED)) {
+                return new CommitSuccessResponse(xid, false);
+            }
+            if (decision.equals(Transaction.Status.COMMITTED)) {
+                return new CommitSuccessResponse(xid, true);
+            }
+            
+        }
+
         final Command command = data.getCommand();
         Response response = new Response();
 
         MiddlewareResourceManager[] clients = {flightClient, carClient, roomClient};
 
         Trace.info(request.toString());
-
-        final int xid = request.getData().getXId();
 
         switch (command) {
             case Help: {

@@ -43,8 +43,11 @@ public class TransactionResourceManager extends SocketResourceManager {
         this.txMap = new HashMap<Integer, Stack<Operation>>();
         this.crashMap = initCrashMap();
         System.out.println("initcm :"+this.crashMap.toString());
+        System.out.println(this.statusMap.toString());
+    }
 
-
+    public Map<Integer, String> getStatusMap() {
+        return this.statusMap;
     }
 
     public void setStatusMap(Map mp){

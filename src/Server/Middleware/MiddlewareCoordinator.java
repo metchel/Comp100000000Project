@@ -69,6 +69,10 @@ public class MiddlewareCoordinator {
         this.crashMap = initCrashMap();
     }
 
+    public Transaction.Status getStatus(int xid) {
+        return this.transactionStatusMap.get(xid);
+    }
+
     public int start() {
         if (!participantsInformed) {
             informParticipants();
@@ -237,6 +241,7 @@ public class MiddlewareCoordinator {
                         }
                     }
                 }
+                this.transactionStatusMap.put(xId, Status.ABORTED);
                 return false;
             }
         } else {
