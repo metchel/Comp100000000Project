@@ -53,6 +53,7 @@ public class Server {
 
         RequestHandler handler = new ServerRequestHandler((ItemResourceManager)server.getResourceManager(), server.getCoordinator());
 
+        Trace.info("Server is running on host " + server.getInetAddress().toString()  + " on port " + server.getPort() + ".");
         while(true) {
             try {
                 Socket client = serverSocket.accept();
@@ -106,7 +107,7 @@ public class Server {
         return this.port;
     }
 
-    public InetAddress getInetAddres() {
+    public InetAddress getInetAddress() {
         return this.inetAddress;
     }
 

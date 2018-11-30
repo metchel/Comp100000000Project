@@ -133,6 +133,7 @@ public class MiddlewareCoordinator {
     }
 
     public boolean commit(int xId) throws IOException, ClassNotFoundException {
+        Trace.info("Beginning 2PC for transaction " + xId);
         Transaction t = (Transaction) this.transactionMap.get(xId);
         if (t.voting()) {
             this.transactionStatusMap.put(xId, Status.VOTING);
@@ -147,16 +148,18 @@ public class MiddlewareCoordinator {
             if (t.getClients().isEmpty()) {
                 break;
             }
-            System.out.println("Sending a CANCOMMITREQUEST for xid="+xId);
+            Trace.info("Sending a CanCommitRequest (vote) for " + xId + " to " + rm.getName() + ".");
             rm.send(new CanCommitRequest(xId));
             VoteResponse res = rm.receiveVote();
             if (res != null) {
                 String vote = res.getVote();
                 if (vote.equals("YES")) {
                     voteMap.put(rm.getName(), true);
+                    Trace.info("Received YES vote from " + rm.getName() + " ResourceManager.");
                 }
                 if (vote.equals("NO")) {
                     voteMap.put(rm.getName(), false);
+                    Trace.info("Received NO vote from " + rm.getName() + " ResourceManager.");
                 }
 
                 if (this.crashMap.get(3)){
@@ -188,10 +191,12 @@ public class MiddlewareCoordinator {
             System.exit(1);
         }
         if (allPrepared) {
+            Trace.info("All ResourceManagers voted YES.");
             this.transactionStatusMap.put(xId, Status.PREPARED);
 
             boolean allCommitted = false;
             for (MiddlewareResourceManager rm : t.getClients()) {
+                Trace.info("Sending a DoCommitRequest (decision) for " + xId + " to " + rm.getName() + ".");
                 rm.send(new DoCommitRequest(xId));
                 CommitSuccessResponse res = rm.receiveCommitResponse();
                 if (this.crashMap.get(6)){
@@ -245,6 +250,7 @@ public class MiddlewareCoordinator {
                 return false;
             }
         } else {
+            Trace.info("One or more ResourceManagers voted NO or was not heard from.");
             if (this.crashMap.get(5)){
                 System.exit(1);
             }
@@ -283,7 +289,7 @@ public class MiddlewareCoordinator {
     }
 
     public boolean abort(int transactionId) {
-        Trace.info("ABORT " + transactionId);
+        Trace.info("Aborting Transaction " + transactionId);
         Transaction t = (Transaction) this.transactionMap.get(transactionId);
         boolean success = true;
         success = success && this.customerRM.abort(transactionId);
@@ -373,8 +379,7 @@ public class MiddlewareCoordinator {
                 }
                 long ttl = this.tx.getTtl();
                 if (ttl <= 0) {
-                    Trace.info("Reached time to live for transaction " + this.tx.getId() + " IT SHOULD ABORT NOW BUT SHITTY DESIGN PREVENTS THIS FROM BEING EASY");
-                    System.out.println("ABORTING CLIENT");
+                    Trace.info("Reached time to live for transaction " + this.tx.getId() + ".");
                     try {
                         abort(tx.getId());
                     } catch (Exception e) {

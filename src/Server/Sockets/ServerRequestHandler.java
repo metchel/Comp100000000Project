@@ -9,9 +9,12 @@ import Server.Common.Trace;
 import Server.Middleware.MiddlewareResourceManager;
 
 
-import java.io.IOException;
+import java.io.*;
+import java.net.InetAddress;
+import java.net.Socket;
 import java.util.Vector;
 import java.util.Set;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.StringTokenizer;
@@ -30,10 +33,8 @@ public class ServerRequestHandler implements RequestHandler {
 
     public synchronized Response handle(Request req) throws IOException, ClassNotFoundException {
         if (req instanceof InformGroupRequest) {
-            Trace.info("INFORM GROUP RECEIEVED");
             InformGroupRequest groupReq = (InformGroupRequest)req;
             participants.put(groupReq.getAddress(), groupReq.getPort());
-            Trace.info("RECIEVED INFORMATION ABOUT PARTICIPANTS, in case of termination protocol." + this.participants.toString());
             Response resp = new Response();
             return resp.addCurrentTimeStamp().addStatus(true).addMessage("Informed");
         }
@@ -42,6 +43,17 @@ public class ServerRequestHandler implements RequestHandler {
         String message = null;
         RequestData data = req.getData();
         Integer xId = data.getXId();
+
+        if (req instanceof AskDecisionRequest) {
+            String status = this.resourceManager.getStatus(xId);
+            if (status.equals("COMMITTED")) {
+                return new CommitSuccessResponse(xId, true);
+            } else if (status.equals("ABORTED")) {
+                return new CommitSuccessResponse(xId, false);
+            } else {
+                return null;
+            }
+        }
 
         if (req instanceof CanCommitRequest) {
             Trace.info("CanCommitRequest Received.");
@@ -70,8 +82,24 @@ public class ServerRequestHandler implements RequestHandler {
                     }
                 }
                 // timeout. detect Middleware failure
-                Trace.info("BLOCK RM, DETECTED COORDINATOR FAILIURE. NO DECISION RECIEVED.");
+                Trace.info("Detected Coordinator Failure.");
                 // run termination protocol
+                Trace.info("Running Cooperative Termination Protocol");
+                HashSet<CommitSuccessResponse> resps = new HashSet<CommitSuccessResponse>();
+                for (Map.Entry<String, Integer> participant: participants.entrySet()) { 
+                    try {
+                        Socket SOCKET = new Socket(participant.getKey(), participant.getValue());
+                        ObjectInputStream OIS = new ObjectInputStream(SOCKET.getInputStream());
+                        ObjectOutputStream OOS = new ObjectOutputStream(SOCKET.getOutputStream());
+
+                        OOS.writeObject(new AskDecisionRequest(xId));
+                        CommitSuccessResponse res = (CommitSuccessResponse) OIS.readObject();
+                        resps.add(res);
+                    } catch (Exception e) {
+                        this.resourceManager.abort(xId);
+                        break;
+                    }
+                }   
             });
             t.start();
             if ((Boolean) cm.get(3)) {
@@ -169,19 +197,19 @@ public class ServerRequestHandler implements RequestHandler {
 
             case CrashFlightRM: {
                 Integer mode = (Integer)arguments.get("mode");
-                System.out.println("Been told to Crash mode "+mode);
+                Trace.info("Been told to Crash mode "+mode);
                 return new Boolean(resourceManager.forceCrash(mode));
 
             }
             case CrashCarRM: {
                 Integer mode = (Integer)arguments.get("mode");
-                System.out.println("Been told to Crash mode "+mode);
+                Trace.info("Been told to Crash mode "+mode);
                 return new Boolean(resourceManager.forceCrash(mode));
             }
 
             case CrashRoomRM: {
                 Integer mode = (Integer)arguments.get("mode");
-                System.out.println("Been told to Crash mode "+mode);
+                Trace.info("Been told to Crash mode "+mode);
                 return new Boolean(resourceManager.forceCrash(mode));
             }
 

@@ -35,7 +35,6 @@ public class TransactionResourceManager extends SocketResourceManager {
         try {
             setStatusMap(this.shadowManager.loadStatus());
             setData(this.shadowManager.loadFromStorage());
-            System.out.println(m_data.toString());
         } catch (Exception e) {
             System.out.println("SOMETHING FUNKY");
             e.printStackTrace();
@@ -43,8 +42,6 @@ public class TransactionResourceManager extends SocketResourceManager {
         //performRecovery();
         this.txMap = new HashMap<Integer, Stack<Operation>>();
         this.crashMap = initCrashMap();
-        System.out.println("initcm :"+this.crashMap.toString());
-        System.out.println(this.statusMap.toString());
     }
 
     public Map<Integer, String> getStatusMap() {
@@ -55,9 +52,7 @@ public class TransactionResourceManager extends SocketResourceManager {
         try {
         if (!mp.equals(Collections.EMPTY_MAP)) this.statusMap = (Map) mp;
         else m_data = null;
-        } catch(NullPointerException e) {
-            System.out.println("Cant set status map");
-        }
+        } catch(NullPointerException e) {}
     }
 
     public String getStatus(int xid) {
@@ -66,7 +61,7 @@ public class TransactionResourceManager extends SocketResourceManager {
 
     public void performRecovery(){
         try{
-            System.out.println("recov"+this.statusMap.toString());
+           Trace.info("Performing Recovery of Transaction Statuses.");
 
             for (Map.Entry<Integer, String> statusPair : this.statusMap.entrySet()) {
                if (statusPair.getValue().equals("COMMITTED")){
@@ -89,9 +84,8 @@ public class TransactionResourceManager extends SocketResourceManager {
                     // abort. but our logging here is incorrect.
                 }
             }
-            System.out.println("recov pt 2:"+this.statusMap.toString());
+            Trace.info("Transaction Statuses: \n"+this.statusMap.toString());
         }catch(Exception e){
-            System.out.println("status file empty");
         }
     }
 
@@ -127,7 +121,6 @@ public class TransactionResourceManager extends SocketResourceManager {
             }
             this.committedRound = false;
             this.txMap.put(xId, new Stack<Operation>());
-            System.out.println("xid:"+xId);
             this.statusMap.put(xId,"STARTED");
             this.shadowManager.writeToStatus(this.statusMap);
             return true;
@@ -140,16 +133,16 @@ public class TransactionResourceManager extends SocketResourceManager {
 
     public synchronized boolean prepare(int xId) {
         try {
+            Trace.info("Preparing transaction " + xId);
             if (shadowManager.writeToStorage(m_data, xId)){
                 this.statusMap.put(xId,"PREPARED");
                 this.shadowManager.writeToStatus(this.statusMap);
                 return true;
             } else {
-                System.out.println("COULDNT PREPARE TRM");
                 return false;
             }
         } catch(Exception e) {
-            Trace.info("Could not commit transaction " + xId);
+            System.out.println("Could not prepare transaction " + xId);
             e.printStackTrace();
             return false;
         }
@@ -157,8 +150,8 @@ public class TransactionResourceManager extends SocketResourceManager {
 
     public synchronized boolean commit(int xId) {
         try {
-
-            Trace.info("About to write to master record for " + xId);
+            Trace.info("Committing Transaction " + xId);
+            Trace.info("Writing to master record for " + xId);
             boolean b = shadowManager.writeToMasterRecord(xId);
             if (b) {
                 this.committedRound = true;
@@ -176,16 +169,14 @@ public class TransactionResourceManager extends SocketResourceManager {
 
     public synchronized boolean abort(int xId){
         try {
-            System.out.println("ENTERED ABORTED");
+            Trace.info("Aborting Transaction " + xId);
             clearData();
             if (!this.committedRound) {
-                System.out.println("CommitedRound is false,normal abort");
                 Map lastCommittedVersion = shadowManager.loadFromStorage();
                 if (lastCommittedVersion != null) {
                     setData(lastCommittedVersion);
                 }
             } else {
-                System.out.println("CommitedRound is true, someone timed out");
                 Map otherCommittedVersion = shadowManager.loadFromOtherStorage();
                 if (otherCommittedVersion != null) {
                     setData(otherCommittedVersion);

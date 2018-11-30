@@ -65,6 +65,8 @@ public class Middleware {
             serverSocket = new ServerSocket(middleware.getPort());
             Socket client = new Socket();
             RequestHandler handler = new MiddlewareRequestHandler(client, (CustomerResourceManager)customerResourceManager, coordinator, flightRM, carRM, roomRM);
+            
+            Trace.info("Middleware is running on host " + middleware.getInetAddress().toString() + " on port " + middleware.getPort() + ".");
             while(true) {
                 try {
                     client = serverSocket.accept();
