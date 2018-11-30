@@ -10,7 +10,7 @@ import java.util.Set;
 import java.util.HashSet;
 
 public class Transaction {
-    private final static long DEFAULT_TTL = 100000;
+    private final static long DEFAULT_TTL = 45000;
     private static int nextTransactionId;
     private final int id;
     private final Set<MiddlewareResourceManager> clients;
@@ -20,7 +20,8 @@ public class Transaction {
     private long ttl;
 
     public Transaction() {
-        this.id = getNextTransactionId();
+        this.id = (int)(Math.random()*10000);
+        //this.id = getNextTransactionId();
         this.ttl = System.currentTimeMillis() + DEFAULT_TTL;
         this.clients = new HashSet<MiddlewareResourceManager>();
         this.commands = new LinkedList<Command>();

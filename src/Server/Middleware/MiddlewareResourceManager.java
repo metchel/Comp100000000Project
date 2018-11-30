@@ -4,6 +4,8 @@ package Server.Middleware;
 import Server.Network.Request;
 import Server.Network.RequestData;
 import Server.Network.Response;
+import Server.Network.VoteResponse;
+import Server.Network.InformGroupRequest;
 import Server.Common.Command;
 import Server.Common.Trace;
 
@@ -14,6 +16,7 @@ import java.net.Socket;
 import java.util.Map;
 import java.util.HashMap;
 import java.net.InetAddress;
+import java.util.Set;
 
 public class MiddlewareResourceManager {
     private final InetAddress inetAddress;
@@ -62,7 +65,7 @@ public class MiddlewareResourceManager {
         }
     }
 
-    public void forceFailureDetection() {
+    public void failureDetected() {
         FAILURE_DETECTED = true;
         Thread t = new Thread(() -> {
             retryConnection(1000);
@@ -72,29 +75,27 @@ public class MiddlewareResourceManager {
 
     public synchronized Response receive() throws IOException, ClassNotFoundException {
         try {
-            long start = System.currentTimeMillis();
-            long time = 5000;
-            while (System.currentTimeMillis() < start + time) {
-                return (Response)this.ois.readObject();
-            }
-
-            Trace.warn("Timeout waiting for response from RM.");
-            Response res = new Response();
-            res.addCurrentTimeStamp().addStatus(false).addMessage("Failure");
-            return res;
+            return (Response)this.ois.readObject();
         } catch(Exception e) {
-            FAILURE_DETECTED = true;
-            Thread t = new Thread(() -> {
-                retryConnection(1000);
-            });
-            t.start();
-            Trace.warn("Detected Failure");
             Response res = new Response();
             res.addCurrentTimeStamp()
                 .addStatus(false)
                 .addMessage("Failure");
             return res;
         }
+    }
+
+    public VoteResponse receiveVote() throws IOException, ClassNotFoundException {
+        long now = System.currentTimeMillis();
+        while (System.currentTimeMillis() < now + 5000) {
+            try {
+                return (VoteResponse)this.ois.readObject();
+            } catch(Exception e) {
+                continue;
+            }
+        }
+        failureDetected();
+        return null;
     }
 
     public void setCrash(int mode) {

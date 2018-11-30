@@ -3,6 +3,7 @@ package Server.Sockets;
 import Server.Common.Trace;
 import Server.Common.ResourceManager;
 import Server.ResourceManager.TransactionResourceManager;
+import Server.ResourceManager.ItemResourceManager;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,11 +19,12 @@ public class Server {
     private InetAddress inetAddress;
     private int port;
     private TransactionResourceManager resourceManager;
+    private CoordinatorStub coordinatorStub;
 
     private Server() {}
     public static void main (String[] args) {
         
-        if (args.length != 3) {
+        if (args.length != 5) {
             System.out.println("Server::main not enough arguments.");
             System.exit(-1);
         }
@@ -30,21 +32,26 @@ public class Server {
         String inetAddress = args[0];
         int port = Integer.parseInt(args[1]);
         String rmName = args[2];
+        String coordinatorAddress = args[3];
+        int coordinatorPort = Integer.parseInt(args[4]);
 
         Server server = null;
         ServerSocket serverSocket = null;
+
         try {
+            CoordinatorStub coordinator = new CoordinatorStub(InetAddress.getByName(coordinatorAddress), coordinatorPort);
             server = new Server.Builder()
                 .atInetAddress(InetAddress.getByName(inetAddress))
                 .atPort(port)
-                .withResourceManager(new TransactionResourceManager(rmName))
+                .withResourceManager(new ItemResourceManager(rmName, coordinator))
+                .withCoordinator(coordinator)
                 .build();
             serverSocket = new ServerSocket(server.getPort());
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        RequestHandler handler = new ServerRequestHandler(server.getResourceManager());
+        RequestHandler handler = new ServerRequestHandler((ItemResourceManager)server.getResourceManager(), server.getCoordinator());
 
         while(true) {
             try {
@@ -63,6 +70,7 @@ public class Server {
         private InetAddress inetAddress;
         private int port;
         private TransactionResourceManager resourceManager;
+        private CoordinatorStub coordinator;
 
         public Builder atInetAddress(InetAddress inetAddress) throws UnknownHostException {
             this.inetAddress = inetAddress;
@@ -79,12 +87,17 @@ public class Server {
             return this;
         }
 
+        public Builder withCoordinator(CoordinatorStub coord) {
+            this.coordinator = coord;
+            return this;
+        }
+
         public Server build() throws IOException {
             Server server = new Server();
             server.inetAddress = this.inetAddress;
             server.port = this.port;
             server.resourceManager = this.resourceManager;
-
+            server.coordinatorStub = this.coordinator;
             return server;
         }
     }
@@ -99,5 +112,9 @@ public class Server {
 
     public TransactionResourceManager getResourceManager() {
         return this.resourceManager;
+    }
+
+    public CoordinatorStub getCoordinator() {
+        return this.coordinatorStub;
     }
 }

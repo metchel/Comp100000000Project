@@ -3,25 +3,40 @@ package Server.Sockets;
 import Server.Interface.IResourceManager;
 import Server.Common.Command;
 import Server.Network.*;
-import Server.ResourceManager.TransactionResourceManager;
+import Server.ResourceManager.ItemResourceManager;
 import Server.Common.RMHashMap;
 import Server.Common.Trace;
+import Server.Middleware.MiddlewareResourceManager;
+
 
 import java.io.IOException;
 import java.util.Vector;
+import java.util.Set;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.StringTokenizer;
 import java.util.Date;
 
 public class ServerRequestHandler implements RequestHandler {
-    private final TransactionResourceManager resourceManager;
+    private final ItemResourceManager resourceManager;
+    private final CoordinatorStub coordinator;
+    private final Map<String, Integer> participants;
 
-
-    public ServerRequestHandler(TransactionResourceManager resourceManager) {
+    public ServerRequestHandler(ItemResourceManager resourceManager, CoordinatorStub coordinator) {
         this.resourceManager = resourceManager;
+        this.coordinator = coordinator;
+        this.participants = new HashMap<String, Integer>();
     }
 
     public synchronized Response handle(Request req) throws IOException, ClassNotFoundException {
+        if (req instanceof InformGroupRequest) {
+            Trace.info("INFORM GROUP RECEIEVED");
+            InformGroupRequest groupReq = (InformGroupRequest)req;
+            participants.put(groupReq.getAddress(), groupReq.getPort());
+            Trace.info("RECIEVED INFORMATION ABOUT PARTICIPANTS, in case of termination protocol." + this.participants.toString());
+            Response resp = new Response();
+            return resp.addCurrentTimeStamp().addStatus(true).addMessage("Informed");
+        }
         Trace.info(req.xIdToString());
         Boolean resStatus = null;
         String message = null;
@@ -42,24 +57,31 @@ public class ServerRequestHandler implements RequestHandler {
                 System.exit(1);
             }
 
+            /**
+             * The uncertainty period
+             */
+            Thread t = new Thread(() -> {
+                long now = System.currentTimeMillis();
+                while (System.currentTimeMillis() < now + 5000) {
+                    if (this.resourceManager.getStatus(xId) == "COMMITTED" 
+                    || this.resourceManager.getStatus(xId).equals("ABORTED")) {
+                        // decision reached, no timeout.
+                        return;
+                    }
+                }
+                // timeout. detect Middleware failure
+                Trace.info("BLOCK RM, DETECTED COORDINATOR FAILIURE. NO DECISION RECIEVED.");
+                // run termination protocol
+
+
+            });
+            t.start();
+
             if (resStatus) {
-                message = "Successfully prepared transaction " + xId.toString();
+                return new VoteResponse(xId.intValue(), "YES");
             } else {
-                message = "Failed to prepare transaction " + xId.toString();
+                return new VoteResponse(xId.intValue(), "NO");
             }
-
-            Response res = new Response();
-
-            if ((Boolean) cm.get(3)) {
-                return res.addCurrentTimeStamp()
-                        .addStatus(resStatus)
-                        .addMessage("CRASH 3");
-            } else {
-                return res.addCurrentTimeStamp()
-                        .addStatus(resStatus)
-                        .addMessage(message);
-            }
-
         }
 
         if (req instanceof DoCommitRequest) {
@@ -305,6 +327,9 @@ public class ServerRequestHandler implements RequestHandler {
         }
     }
 
+    public void runTerminationProtocol() {
+
+    }
 
 
     public int toInt(String string) throws NumberFormatException {

@@ -17,6 +17,9 @@ import Server.Common.Trace;
 import Server.Network.CanCommitRequest;
 import Server.Network.DoCommitRequest;
 import Server.Network.Response;
+import Server.Network.VoteResponse;
+import Server.Network.InformGroupRequest;
+import Server.Network.CommitSuccessResponse;
 import Server.Middleware.Transaction.Status;
 import Server.Sockets.RequestHandler;
 import Server.ResourceManager.TransactionResourceManager;
@@ -47,6 +50,7 @@ public class MiddlewareCoordinator {
     private static final String FLIGHT = Constants.FLIGHT;
     private static final String ROOM = Constants.ROOM;
     private static final String CAR = Constants.CAR;
+    private boolean participantsInformed = false;
     private Map<Integer, Boolean> crashMap;
 
     public MiddlewareCoordinator(TransactionResourceManager customerRM,
@@ -66,6 +70,9 @@ public class MiddlewareCoordinator {
     }
 
     public int start() {
+        if (!participantsInformed) {
+            informParticipants();
+        }
         Transaction t = new Transaction();
         t.start();
         int id = t.getId();
@@ -75,6 +82,29 @@ public class MiddlewareCoordinator {
 
         this.ttlWorkerPool.schedule(new TtlWorker(t), t.getTtl(), TimeUnit.MILLISECONDS);
         return id;
+    }
+
+    public void informParticipants() {
+        if (!participantsInformed) {
+            HashSet<MiddlewareResourceManager> participants = new HashSet<MiddlewareResourceManager>();
+            participants.add(flightRM);
+            participants.add(carRM);
+            participants.add(roomRM);
+    
+            for (MiddlewareResourceManager rm: participants) {
+                for (MiddlewareResourceManager participant: participants) {
+                    try {
+                        if (!rm.equals(participant)) {
+                            rm.send(new InformGroupRequest(participant.getInetAddress().toString, participant.getPort()));
+                        }
+                    } catch(IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            this.participantsInformed = true;
+        }
     }
 
     public void updateTransactionTtl(int transactionId) {
@@ -116,17 +146,21 @@ public class MiddlewareCoordinator {
             }
             System.out.println("Sending a CANCOMMITREQUEST for xid="+xId);
             rm.send(new CanCommitRequest(xId));
-            Response res = rm.receive();
-            Trace.info(res.toString());
-            if (this.crashMap.get(3)){
-                System.exit(1);
-            }
+            VoteResponse res = rm.receiveVote();
+            if (res != null) {
+                String vote = res.getVote();
+                if (vote.equals("YES")) {
+                    voteMap.put(rm.getName(), true);
+                }
+                if (vote.equals("NO")) {
+                    voteMap.put(rm.getName(), false);
+                }
 
-            if (res.getMessage().equals("true")) {
-                voteMap.put(rm.getName(), false);
-                rm.forceFailureDetection();
+                if (this.crashMap.get(3)){
+                    System.exit(1);
+                }
             } else {
-                voteMap.put(rm.getName(), res.getStatus());
+                voteMap.put(rm.getName(), false);
             }
         }
 

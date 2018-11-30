@@ -39,7 +39,7 @@ public class TransactionResourceManager extends SocketResourceManager {
             System.out.println("SOMETHING FUNKY");
             e.printStackTrace();
         }
-        performRecovery();
+        //performRecovery();
         this.txMap = new HashMap<Integer, Stack<Operation>>();
         this.crashMap = initCrashMap();
         System.out.println("initcm :"+this.crashMap.toString());
@@ -56,33 +56,41 @@ public class TransactionResourceManager extends SocketResourceManager {
         }
     }
 
+    public String getStatus(int xid) {
+        return this.statusMap.get(xid);
+    }
+
     public void performRecovery(){
         try{
             System.out.println("recov"+this.statusMap.toString());
 
             for (Map.Entry<Integer, String> statusPair : this.statusMap.entrySet()) {
                if (statusPair.getValue().equals("COMMITTED")){
+                   // do nothing. decision already made
                    this.statusMap.remove(statusPair.getKey());
                } else if (statusPair.getValue().equals("ABORTED")){
+                   // do nothing. decision already made.
                    this.statusMap.remove(statusPair.getKey());
                } else if (statusPair.getValue().equals("PREPARED")){
                    try {
+                       // must ask middleware for decision
+                       // may have successfully sent YES and so the tx went through elsewhere.
+                       // if failed on writing COMMIT then there is inconsistency here.
                        setData(this.shadowManager.loadFromStorage());
                    } catch (Exception e) {
                        System.out.println("SOMETHING FUNKYq2");
                    }
 
                 } else if (statusPair.getValue().equals("STARTED")){
-
+                    // abort. but our logging here is incorrect.
                 }
             }
-
             System.out.println("recov pt 2:"+this.statusMap.toString());
         }catch(Exception e){
             System.out.println("status file empty");
         }
-
     }
+
     public static Map initCrashMap() {
         Map<Integer, Boolean> tmp = new HashMap<Integer, Boolean>();
         for (int i = 1; i < 5; i++){

@@ -5,6 +5,7 @@ import Server.Common.ResourceManager;
 import Server.Common.Constants;
 import Server.Sockets.ClientWorker;
 import Server.ResourceManager.TransactionResourceManager;
+import Server.ResourceManager.CustomerResourceManager;
 import Server.Sockets.RequestHandler;
 
 import java.io.BufferedReader;
@@ -46,7 +47,7 @@ public class Middleware {
         final ServerSocket serverSocket;
         
         try {
-            final TransactionResourceManager customerResourceManager = new TransactionResourceManager(Constants.CUSTOMER);
+            final TransactionResourceManager customerResourceManager = new CustomerResourceManager(Constants.CUSTOMER);
             final MiddlewareResourceManager flightRM = new MiddlewareResourceManager(Constants.FLIGHT, InetAddress.getByName(inetFlights), portFlights);
             final MiddlewareResourceManager carRM = new MiddlewareResourceManager(Constants.CAR, InetAddress.getByName(inetCars), portCars);
             final MiddlewareResourceManager roomRM = new MiddlewareResourceManager(Constants.ROOM, InetAddress.getByName(inetRooms), portRooms);
@@ -63,7 +64,7 @@ public class Middleware {
 
             serverSocket = new ServerSocket(middleware.getPort());
             Socket client = new Socket();
-            RequestHandler handler = new MiddlewareRequestHandler(client, customerResourceManager, coordinator, flightRM, carRM, roomRM);
+            RequestHandler handler = new MiddlewareRequestHandler(client, (CustomerResourceManager)customerResourceManager, coordinator, flightRM, carRM, roomRM);
             while(true) {
                 try {
                     client = serverSocket.accept();

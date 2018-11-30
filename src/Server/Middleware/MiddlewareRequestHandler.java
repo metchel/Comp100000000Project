@@ -4,7 +4,7 @@ import Server.Network.Request;
 import Server.Network.RequestData;
 import Server.Network.Response;
 import Server.ResourceManager.SocketResourceManager;
-import Server.ResourceManager.TransactionResourceManager;
+import Server.ResourceManager.CustomerResourceManager;
 import Server.Common.Command;
 import Server.Common.Constants;
 import Server.Common.Customer;
@@ -30,7 +30,7 @@ public class MiddlewareRequestHandler implements RequestHandler {
     private final MiddlewareResourceManager carClient;
     private final MiddlewareResourceManager roomClient;
 
-    private final TransactionResourceManager customerResourceManager;
+    private final CustomerResourceManager customerResourceManager;
     private final MiddlewareCoordinator coordinator;
 
     private static final String CUSTOMER = Constants.CUSTOMER;
@@ -39,7 +39,7 @@ public class MiddlewareRequestHandler implements RequestHandler {
     private static final String CAR = Constants.CAR;
 
     public MiddlewareRequestHandler(Socket client,
-    TransactionResourceManager customerResourceManager, 
+    CustomerResourceManager customerResourceManager, 
     MiddlewareCoordinator coordinator, 
     MiddlewareResourceManager flightClient,
     MiddlewareResourceManager carClient,
@@ -238,13 +238,6 @@ public class MiddlewareRequestHandler implements RequestHandler {
                 this.coordinator.addOperation(xId, CAR);
                 this.coordinator.addOperation(xId, ROOM);
 
-                this.flightClient.send(request);
-                Response flightResponse = this.flightClient.receive();
-                this.carClient.send(request);
-                Response carResponse = this.carClient.receive();
-                this.roomClient.send(request);
-                Response roomResponse = this.roomClient.receive();
-
                 Integer cId = (Integer)data.getCommandArgs().get("cId");
                 String info = this.customerResourceManager.queryCustomerInfo(xId, cId);
                 Boolean resStatus = new Boolean(false);
@@ -415,23 +408,29 @@ public class MiddlewareRequestHandler implements RequestHandler {
                 boolean resStatus = this.customerResourceManager.newCustomer(xId, cId);
                 Boolean resStatusBoolean = new Boolean(resStatus);
 
-                Request clone = new Request();
-                clone.addCurrentTimeStamp()
-                    .addData(data);
-                this.flightClient.send(clone);
-                Response flightResponse = this.flightClient.receive();
-                this.carClient.send(clone);
-                Response carResponse = this.carClient.receive();
-                this.roomClient.send(clone);
-                Response roomResponse = this.roomClient.receive();
-                boolean informClientSuccess = resStatus 
-                    && flightResponse.getStatus().booleanValue() 
-                    && carResponse.getStatus().booleanValue()
-                    && roomResponse.getStatus().booleanValue();
-                
-                response.addCurrentTimeStamp()
-                    .addStatus(new Boolean(informClientSuccess))
-                    .addMessage(Boolean.toString(informClientSuccess));
+                if (resStatus) {
+                    Request clone = new Request();
+                    clone.addCurrentTimeStamp()
+                        .addData(data);
+                    this.flightClient.send(clone);
+                    Response flightResponse = this.flightClient.receive();
+                    this.carClient.send(clone);
+                    Response carResponse = this.carClient.receive();
+                    this.roomClient.send(clone);
+                    Response roomResponse = this.roomClient.receive();
+                    boolean informClientSuccess = resStatus 
+                        && flightResponse.getStatus().booleanValue() 
+                        && carResponse.getStatus().booleanValue()
+                        && roomResponse.getStatus().booleanValue(); 
+                    
+                    response.addCurrentTimeStamp()
+                        .addStatus(new Boolean(informClientSuccess))
+                        .addMessage(Boolean.toString(informClientSuccess));
+                } else {
+                    response.addCurrentTimeStamp()
+                        .addStatus(new Boolean(false))
+                        .addMessage("Customer could not be added.");
+                }
                 break;
             }
             case DeleteFlight: {
