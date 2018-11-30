@@ -220,8 +220,6 @@ public class MiddlewareRequestHandler implements RequestHandler {
 
                 this.roomClient.send(request);
                 response = this.roomClient.receive();
-
-                System.out.println(response.toString());
                 break;
             }
             case QueryCustomer: {
@@ -624,17 +622,7 @@ public class MiddlewareRequestHandler implements RequestHandler {
                         final RMHashMap reservationData = flightResponse.getReservationData();
                         this.customerResourceManager.updateReservationData(xId, cId, reservationData);
                     } else {
-                        this.customerResourceManager.undoLastReservation(xId.intValue(), cId.intValue());
-                        this.flightClient.send(
-                            new Request().addCurrentTimeStamp()
-                                .addData(new RequestData()
-                                .addXId(xId)
-                                .addCommand(Command.Bundle)
-                                .addArgument("cId", cId))
-                        );
-                        Response r = this.flightClient.receive();
                         successResponse = false;
-                        break;
                     }
                 }
 
@@ -650,14 +638,6 @@ public class MiddlewareRequestHandler implements RequestHandler {
                         this.customerResourceManager.updateReservationData(xId, cId, reservationData);
                     } else {
                         successResponse = false;
-                        this.customerResourceManager.undoLastReservation(xId.intValue(), cId.intValue());
-                        this.carClient.send(
-                            new Request().addCurrentTimeStamp()
-                                .addData(new RequestData().addXId(xId)
-                                .addCommand(Command.Bundle)
-                                .addArgument("cId", cId))
-                        );
-                        Response r = this.carClient.receive();
                     }
                 }
 
@@ -674,14 +654,6 @@ public class MiddlewareRequestHandler implements RequestHandler {
                         this.customerResourceManager.updateReservationData(xId, cId, reservationData);
                     } else {
                         successResponse = false;
-                        this.customerResourceManager.undoLastReservation(xId.intValue(), cId.intValue());
-                        this.roomClient.send(
-                            new Request().addCurrentTimeStamp()
-                                .addData(new RequestData().addXId(xId)
-                                .addCommand(Command.Bundle)
-                                .addArgument("cId", cId))
-                        );
-                        Response r = this.roomClient.receive();
                     }
                 }
 

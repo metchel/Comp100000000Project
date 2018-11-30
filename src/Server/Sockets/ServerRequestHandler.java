@@ -72,8 +72,6 @@ public class ServerRequestHandler implements RequestHandler {
                 // timeout. detect Middleware failure
                 Trace.info("BLOCK RM, DETECTED COORDINATOR FAILIURE. NO DECISION RECIEVED.");
                 // run termination protocol
-
-
             });
             t.start();
             if ((Boolean) cm.get(3)) {

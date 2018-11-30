@@ -202,7 +202,7 @@ public class MiddlewareCoordinator {
             }
 
             if (rmMap.get(xId).contains(CUSTOMER)) {
-                commitMap.put(CUSTOMER, this.customerRM.commit(xId));
+                commitMap.put(CUSTOMER, true);
             }
 
             if (this.crashMap.get(7)){
@@ -221,6 +221,9 @@ public class MiddlewareCoordinator {
 
 
             if (allCommitted) {
+                if (commitMap.keySet().contains(CUSTOMER)) {
+                    boolean customerCommitted = customerRM.commit(xId);
+                }
                 this.transactionStatusMap.put(xId, Status.COMMITTED);
                 return true;
             } else {
