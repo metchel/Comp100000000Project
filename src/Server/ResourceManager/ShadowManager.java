@@ -64,11 +64,14 @@ public class ShadowManager {
 
     public boolean writeToStorage(Map currentState, int xid) throws IOException, ClassNotFoundException{
         String locToWrite = this.getUnusedLocation();
+        System.out.println("writeToStorage.locToWrite"+locToWrite);
 
         if (locToWrite.equals(VERSION_A)){
+            System.out.println("writeToStorage:"+VERSION_A);
             this.versionA.writeToLog(currentState);
         }
         else if (locToWrite.equals(VERSION_B)){
+            System.out.println("writeToStorage:"+VERSION_A);
             this.versionB.writeToLog(currentState);
         }
         else {
@@ -125,7 +128,7 @@ public class ShadowManager {
                 return null;
             }
             System.out.println("Loading other version"+ VERSION_A);
-            return this.versionB.readFromLog();
+            return this.versionA.readFromLog();
         } else {
             System.out.println("Something really funky happened");
             return null;
@@ -163,6 +166,7 @@ public class ShadowManager {
 
     public String getUnusedLocation() throws IOException, ClassNotFoundException{
         Map mr = this.loadMasterRecord();
+        System.out.println("getting unused location, master record:"+mr.toString());
 
         if (mr.size() != 1){
             System.out.println("This doesn't seem to be the master record");

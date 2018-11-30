@@ -24,6 +24,7 @@ public class TransactionResourceManager extends SocketResourceManager {
     private Map<Integer, Stack<Operation>> txMap;
     private Map<Integer, Boolean> crashMap;
     private Map<Integer, String> statusMap;
+    private boolean committedRound = false;
 
     
     public TransactionResourceManager(String name) {
@@ -123,7 +124,8 @@ public class TransactionResourceManager extends SocketResourceManager {
             Stack txOps = this.txMap.get(xId);
             if (txOps != null) {
                 return false;
-            } 
+            }
+            this.committedRound = false;
             this.txMap.put(xId, new Stack<Operation>());
             System.out.println("xid:"+xId);
             this.statusMap.put(xId,"STARTED");
@@ -159,6 +161,7 @@ public class TransactionResourceManager extends SocketResourceManager {
             Trace.info("About to write to master record for " + xId);
             boolean b = shadowManager.writeToMasterRecord(xId);
             if (b) {
+                this.committedRound = true;
                 this.statusMap.put(xId,"COMMITTED");
                 this.shadowManager.writeToStatus(this.statusMap);
             }
@@ -173,12 +176,22 @@ public class TransactionResourceManager extends SocketResourceManager {
 
     public synchronized boolean abort(int xId){
         try {
+            System.out.println("ENTERED ABORTED");
             clearData();
-            Map lastCommitedVersion = shadowManager.loadFromStorage();
-            //Trace.info(lastCommitedVersion.toString());
-            if (lastCommitedVersion != null) {
-                setData(lastCommitedVersion);
+            if (!this.committedRound) {
+                System.out.println("CommitedRound is false,normal abort");
+                Map lastCommittedVersion = shadowManager.loadFromStorage();
+                if (lastCommittedVersion != null) {
+                    setData(lastCommittedVersion);
+                }
+            } else {
+                System.out.println("CommitedRound is true, someone timed out");
+                Map otherCommittedVersion = shadowManager.loadFromOtherStorage();
+                if (otherCommittedVersion != null) {
+                    setData(otherCommittedVersion);
+                }
             }
+            //Trace.info(lastCommitedVersion.toString());
             this.statusMap.put(xId,"ABORTED");
             this.shadowManager.writeToStatus(this.statusMap);
             return lockManager.UnlockAll(xId);
