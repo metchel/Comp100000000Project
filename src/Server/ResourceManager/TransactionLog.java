@@ -50,7 +50,7 @@ public class TransactionLog {
         final String path = this.getFullPath();
 
         final ObjectInputStream in = new ObjectInputStream(new FileInputStream(path));
-        final Map map = (Map)in.readObject();
+        final Map map = (Map) in.readObject();
         return map;
     }
 

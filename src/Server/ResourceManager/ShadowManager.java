@@ -56,6 +56,9 @@ public class ShadowManager {
     }
 
     public Map loadStatus() throws IOException, ClassNotFoundException {
+        if (this.status.getFileSize() == 0 ){
+            return null;
+        }
         return this.status.readFromLog();
     }
 
