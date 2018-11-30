@@ -37,6 +37,7 @@ public class TransactionResourceManager extends SocketResourceManager {
             System.out.println(m_data.toString());
         } catch (Exception e) {
             System.out.println("SOMETHING FUNKY");
+            e.printStackTrace();
         }
         performRecovery();
         this.txMap = new HashMap<Integer, Stack<Operation>>();
@@ -65,6 +66,11 @@ public class TransactionResourceManager extends SocketResourceManager {
                } else if (statusPair.getValue().equals("ABORTED")){
                    this.statusMap.remove(statusPair.getKey());
                } else if (statusPair.getValue().equals("PREPARED")){
+                   try {
+                       setData(this.shadowManager.loadFromStorage());
+                   } catch (Exception e) {
+                       System.out.println("SOMETHING FUNKYq2");
+                   }
 
                 } else if (statusPair.getValue().equals("STARTED")){
 
@@ -151,20 +157,7 @@ public class TransactionResourceManager extends SocketResourceManager {
             e.printStackTrace();
             return lockManager.UnlockAll(xId);
         }
-       /* try {
-            Trace.info("Committing transaction " + xId);
-            Stack txOps = this.txMap.get(xId);
-            if (txOps == null) {
-                Trace.info("Could not commit " + xId);
-                return false;
-            }
 
-            this.txMap.remove(xId);
-            return lockManager.UnlockAll(xId);
-        } catch(Exception e) {
-            Trace.info("Could not commit transaction " + xId);
-            return false;
-        }*/
     }
 
     public synchronized boolean abort(int xId){
@@ -184,29 +177,6 @@ public class TransactionResourceManager extends SocketResourceManager {
             return lockManager.UnlockAll(xId);
         }
 
-       /*
-        try {
-            System.out.println("Aborting transaction " + xId);
-            Stack txOps = txMap.get(xId);
-
-            if(txOps == null) {
-                Trace.warn("null operations!");
-                return false;
-            }
-
-            while(!txOps.isEmpty()) {
-                Operation op = (Operation)txOps.pop();
-                undo(xId, op);
-            }
-
-            txMap.remove(xId);
-            lockManager.UnlockAll(xId);
-            return true;
-        } catch(Exception e) {
-            e.printStackTrace();
-            Trace.warn("Exception during abort!");
-            return false;
-        }*/
     }
 
     public boolean forceCrash(int mode){

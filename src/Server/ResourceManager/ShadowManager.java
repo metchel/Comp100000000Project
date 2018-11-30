@@ -56,6 +56,9 @@ public class ShadowManager {
     }
 
     public Map loadStatus() throws IOException, ClassNotFoundException {
+        if (this.status.getFileSize() == 0 ){
+            return null;
+        }
         return this.status.readFromLog();
     }
 
@@ -99,7 +102,35 @@ public class ShadowManager {
         }
     }
 
+    public Map loadFromOtherStorage() throws IOException, ClassNotFoundException {
+        String lastCommit = this.getLastCommitLocation();
 
+        if (this.versionA.getFileSize() == 0 && this.versionB.getFileSize() == 0){
+            return null;
+        }
+
+        if (lastCommit.equals(VERSION_A)){
+            System.out.println("Last commit is "+ VERSION_A);
+            if(this.versionB.getFileSize() == 0){
+                System.out.println("Other version is EMPTY, "+VERSION_B);
+                return null;
+            }
+            System.out.println("Loading other version"+ VERSION_B);
+            return this.versionB.readFromLog();
+        }
+        else if (lastCommit.equals(VERSION_B)){
+            System.out.println("Last commit is "+ VERSION_B);
+            if(this.versionB.getFileSize() == 0){
+                System.out.println("Last commited version is EMPTY, "+VERSION_A);
+                return null;
+            }
+            System.out.println("Loading other version"+ VERSION_A);
+            return this.versionB.readFromLog();
+        } else {
+            System.out.println("Something really funky happened");
+            return null;
+        }
+    }
 
     public Map loadFromStorage() throws IOException, ClassNotFoundException {
         String lastCommit = this.getLastCommitLocation();

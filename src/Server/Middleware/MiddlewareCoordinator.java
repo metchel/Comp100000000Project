@@ -114,6 +114,7 @@ public class MiddlewareCoordinator {
             if (t.getClients().isEmpty()) {
                 break;
             }
+            System.out.println("Sending a CANCOMMITREQUEST for xid="+xId);
             rm.send(new CanCommitRequest(xId));
             Response res = rm.receive();
             Trace.info(res.toString());
