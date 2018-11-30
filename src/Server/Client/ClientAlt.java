@@ -175,6 +175,12 @@ public abstract class ClientAlt
 
                 oos.writeObject(req);
                 Response response = (Response) ois.readObject();
+                if (response.getStatus()) {
+                    System.out.println("Flight crash set");
+                } else {
+                    System.out.println("Flight crash could not be set");
+                }
+                break;
 
             }
             case CrashCarRM: {
@@ -189,6 +195,11 @@ public abstract class ClientAlt
 
                 oos.writeObject(req);
                 Response response = (Response) ois.readObject();
+                if (response.getStatus()) {
+                    System.out.println("Car crash set");
+                } else {
+                    System.out.println("Car crash could not be set");
+                }
 
                 break;
             }
@@ -202,10 +213,14 @@ public abstract class ClientAlt
                 Request req = new Request();
                 req.addCurrentTimeStamp()
                         .addData(data);
-                System.out.println(req.toString());
+               // System.out.println(req.toString());
                 oos.writeObject(req);
                 Response response = (Response) ois.readObject();
-
+                if (response.getStatus()) {
+                    System.out.println("Room crash set");
+                } else {
+                    System.out.println("Room crash could not be set");
+                }
                 break;
             }
             case CrashMiddleware: {
@@ -222,12 +237,32 @@ public abstract class ClientAlt
                 Response response = (Response) ois.readObject();
 
                 if (response.getStatus()) {
-
+                    System.out.println("Middleware crash set");
                 } else {
-
+                    System.out.println("Middleware crash could not be set");
                 }
                 break;
             }
+
+            case ResetCrash: {
+                checkArgumentsCount(1, arguments.size());
+                RequestData data = new RequestData();
+                data.addXId(-1).addCommand(cmd);
+
+                Request req = new Request();
+                req.addCurrentTimeStamp()
+                        .addData(data);
+                System.out.println(req.toString());
+                oos.writeObject(req);
+                Response response = (Response) ois.readObject();
+                if (response.getStatus()) {
+                    System.out.println("Crashes sucessfully reset");
+                } else {
+                    System.out.println("Crashes could not be reset");
+                }
+                break;
+            }
+
 
 
             case AddFlight: {

@@ -35,6 +35,7 @@ public class TransactionResourceManager extends SocketResourceManager {
         try {
             setStatusMap(this.shadowManager.loadStatus());
             setData(this.shadowManager.loadFromStorage());
+            Trace.info("Set data to:" + m_data.toString());
         } catch (Exception e) {
             System.out.println("SOMETHING FUNKY");
             e.printStackTrace();
@@ -42,6 +43,8 @@ public class TransactionResourceManager extends SocketResourceManager {
         //performRecovery();
         this.txMap = new HashMap<Integer, Stack<Operation>>();
         this.crashMap = initCrashMap();
+        //System.out.println("initcm :"+this.crashMap.toString());
+        Trace.info("Status Map: "+this.statusMap.toString());
     }
 
     public Map<Integer, String> getStatusMap() {
@@ -177,6 +180,7 @@ public class TransactionResourceManager extends SocketResourceManager {
                     setData(lastCommittedVersion);
                 }
             } else {
+                Trace.info("Another RM wasn't able to commit, throwing away last commit and reverting to previous.");
                 Map otherCommittedVersion = shadowManager.loadFromOtherStorage();
                 if (otherCommittedVersion != null) {
                     setData(otherCommittedVersion);
@@ -196,7 +200,7 @@ public class TransactionResourceManager extends SocketResourceManager {
 
     public boolean forceCrash(int mode){
         this.crashMap.put(mode,true);
-        System.out.println(this.crashMap.get(mode).toString());
+        //System.out.println(this.crashMap.get(mode).toString());
         return ((Boolean) this.crashMap.get(mode));
     }
 

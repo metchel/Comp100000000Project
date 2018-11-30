@@ -167,31 +167,48 @@ public class MiddlewareRequestHandler implements RequestHandler {
              */
             case CrashMiddleware: {
                 int tmp = (Integer) data.getCommandArgs().get("mode");
-                System.out.println("CrashMidd:" + tmp);
-                System.out.println("Telling the MW Coordinator to crash");
+                Trace.info("CrashMidd:" + tmp);
+                Trace.info("Telling the MW Coordinator to crash");
                 this.coordinator.forceCrash(tmp);
+                response.addCurrentTimeStamp()
+                        .addStatus(true)
+                        .addMessage("Middleware crash mode set");
                 break;
             }
             case CrashFlightRM: {
                 this.flightClient.send(request);
-                Response res = this.flightClient.receive();
-                System.out.println("Telling the Flight RM to crash");
+                //Response res = this.roomClient.receive();
+                response = this.flightClient.receive();
+                Trace.info("Telling the Flight RM to crash");
                 break;
             }
             case CrashCarRM: {
                 this.carClient.send(request);
-                Response res = this.carClient.receive();
-                System.out.println("Telling the Room RM to crash");
+                //Response res = this.roomClient.receive();
+                response = this.carClient.receive();
+                Trace.info("Telling the Room RM to crash");
                 break;
             }
 
             case CrashRoomRM: {
                 this.roomClient.send(request);
-                Response res = this.roomClient.receive();
-                System.out.println("Telling the Hotel RM to crash");
+                //Response res = this.roomClient.receive();
+                response = this.roomClient.receive();
+                Trace.info("Telling the Hotel RM to crash");
                 break;
             }
 
+            case ResetCrash: {
+                this.roomClient.send(request);
+                this.carClient.send(request);
+                this.flightClient.send(request);
+                Trace.info("Resetting Crashes");
+                this.coordinator.resetCrashes();
+                response.addCurrentTimeStamp()
+                        .addStatus(true)
+                        .addMessage("Reset the crashes");
+                break;
+            }
 
             /**
              * Read only operations

@@ -58,7 +58,7 @@ public class ServerRequestHandler implements RequestHandler {
         if (req instanceof CanCommitRequest) {
             Trace.info("CanCommitRequest Received.");
             Map cm = resourceManager.getCrashMap();
-            System.out.println("Cm:"+cm.toString());
+            //System.out.println("Cm:"+cm.toString());
 
             if ((Boolean) cm.get(1)) {
                 System.exit(1);
@@ -118,7 +118,7 @@ public class ServerRequestHandler implements RequestHandler {
 
         if (req instanceof DoCommitRequest) {
             Trace.info("DoCommitRequest Received.");
-            System.out.println("Cm:"+resourceManager.getCrashMap().toString());
+           //System.out.println("Cm:"+resourceManager.getCrashMap().toString());
 
             if ((Boolean) resourceManager.getCrashMap().get(4)) {
                 System.exit(1);
@@ -212,9 +212,13 @@ public class ServerRequestHandler implements RequestHandler {
                 Trace.info("Been told to Crash mode "+mode);
                 return new Boolean(resourceManager.forceCrash(mode));
             }
-
+            case ResetCrash: {
+                Trace.info("Been told to reset crashes");
+                resourceManager.resetCrashes();
+                return true;
+            }
             case Shutdown: {
-                System.out.println("Gracefully shutting down...");
+                Trace.info("Gracefully shutting down...");
                 try {
                     Thread.sleep(2000);
                 } catch(InterruptedException e) {

@@ -178,7 +178,7 @@ public class MiddlewareCoordinator {
             System.exit(1);
         }
 
-        Trace.info(voteMap.toString());
+        Trace.info("Votes"+voteMap.toString());
 
         boolean allPrepared = true;
         if (voteMap.containsValue(false)) {
@@ -236,6 +236,7 @@ public class MiddlewareCoordinator {
                 this.transactionStatusMap.put(xId, Status.COMMITTED);
                 return true;
             } else {
+                Trace.info("Some RM wasn't able to commit, tell others to abort.");
                 for (String rm : commitMap.keySet()) {
                     if (commitMap.get(rm).equals(true)) {
                         boolean res;
