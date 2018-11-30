@@ -55,6 +55,7 @@ public abstract class ClientAlt
                     execute(cmd, arguments);
                 }
                 catch(Exception e){
+                    System.err.println("Couldn't execute command");
                     e.printStackTrace();
                 }
 
